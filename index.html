@@ -16,8 +16,10 @@
 <meta property="og:type" content="website">
 <title>PDF44 — Every PDF Tool You Need · Free Online PDF Toolkit</title>
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/4712/4712109.png">
-<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/256/4712/4712109.png">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAgMTYwIj4KICA8cmVjdCB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcng9IjMyIiBmaWxsPSIjNjM2NmYxIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iMTI0IiBoZWlnaHQ9IjEyNCIgcng9IjIyIiBmaWxsPSJ1cmwoI2xnKSIvPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJsZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjODE4Y2Y4Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzYzNjZmMSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHRleHQgeD0iODAiIHk9IjExOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InN5c3RlbS11aSwtYXBwbGUtc3lzdGVtLHNhbnMtc2VyaWYiCiAgICBmb250LXNpemU9Ijg4IiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSJ3aGl0ZSIgbGV0dGVyLXNwYWNpbmc9Ii00Ij5QPC90ZXh0Pgo8L3N2Zz4=">
+<link rel="icon" type="image/png" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjAgMTYwIj4KICA8cmVjdCB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgcng9IjMyIiBmaWxsPSIjNjM2NmYxIi8+CiAgPHJlY3QgeD0iMTgiIHk9IjE4IiB3aWR0aD0iMTI0IiBoZWlnaHQ9IjEyNCIgcng9IjIyIiBmaWxsPSJ1cmwoI2xnKSIvPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJsZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjODE4Y2Y4Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzYzNjZmMSIvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHRleHQgeD0iODAiIHk9IjExOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1mYW1pbHk9InN5c3RlbS11aSwtYXBwbGUtc3lzdGVtLHNhbnMtc2VyaWYiCiAgICBmb250LXNpemU9Ijg4IiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSJ3aGl0ZSIgbGV0dGVyLXNwYWNpbmc9Ii00Ij5QPC90ZXh0Pgo8L3N2Zz4=">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -265,7 +267,7 @@ a:hover { text-decoration: underline; }
 .topbar-left { min-width: 0; flex: 1; }
 .page-title { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .page-desc { font-size: 12.5px; color: var(--text-3); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.topbar-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.topbar-actions { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
 
 .theme-toggle {
   width: 38px; height: 38px;
@@ -419,59 +421,46 @@ a:hover { text-decoration: underline; }
 /* TOOLS GRID */
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
 }
 .tool-card {
   position: relative;
-  padding: 22px 18px;
+  padding: 20px 16px 18px;
   background: var(--bg-2);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.25s var(--ease);
+  transition: all 0.22s var(--ease);
   overflow: hidden;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
 }
-.tool-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--accent-glow) 0%, transparent 50%);
-  opacity: 0;
-  transition: opacity 0.3s var(--ease);
-  pointer-events: none;
-}
+[data-theme="light"] .tool-card { background: #fff; }
 .tool-card:hover {
   transform: translateY(-3px);
   border-color: var(--accent);
-  box-shadow: var(--shadow), 0 0 0 1px var(--accent-glow);
+  box-shadow: 0 8px 24px rgba(99,102,241,0.15);
 }
-.tool-card:hover::before { opacity: 1; }
 .tool-card-icon {
-  width: 44px; height: 44px;
-  border-radius: 12px;
+  width: 54px; height: 54px;
+  border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 22px;
+  font-size: 24px;
   margin-bottom: 14px;
-  background: var(--bg-3);
-  position: relative;
-  z-index: 1;
-  transition: transform 0.3s var(--ease-bounce);
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-.tool-card:hover .tool-card-icon { transform: scale(1.1) rotate(-4deg); }
-.tool-card-title { font-size: 14.5px; font-weight: 700; margin-bottom: 4px; position: relative; z-index: 1; letter-spacing: -0.2px; }
-.tool-card-desc { font-size: 12px; color: var(--text-3); line-height: 1.4; position: relative; z-index: 1; }
+[data-theme="light"] .tool-card-icon { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+.tool-card:hover .tool-card-icon { transform: none; }
+.tool-card-title { font-size: 14px; font-weight: 700; margin-bottom: 5px; letter-spacing: -0.2px; }
+.tool-card-desc { font-size: 12px; color: var(--text-3); line-height: 1.45; flex: 1; }
 .tool-card-pro {
-  position: absolute;
-  top: 12px; right: 12px;
-  font-size: 9px;
-  font-weight: 700;
-  padding: 3px 7px;
-  border-radius: 4px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  color: white;
-  letter-spacing: 0.05em;
+  position: absolute; top: 10px; right: 10px;
+  font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: white; letter-spacing: 0.05em;
 }
 
 /* Tool icon color variants */
@@ -758,7 +747,7 @@ input[type="range"]::-moz-range-thumb {
   align-items: flex-start;
   justify-content: center;
 }
-.page-thumb-frame canvas { display: block; width: 100%; height: auto; }
+.page-thumb-frame canvas { display: block; width: 100%; height: auto; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; }
 .page-num { font-size: 11px; color: var(--text-3); text-align: center; margin-top: 6px; font-weight: 500; }
 .page-delete {
   position: absolute;
@@ -1121,11 +1110,11 @@ input[type="range"]::-moz-range-thumb {
   .install-section, .contact-section { padding: 32px 20px; }
 }
 @media (max-width: 480px) {
-  .tools-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .tool-card { padding: 16px 12px; }
-  .tool-card-icon { width: 38px; height: 38px; font-size: 18px; margin-bottom: 10px; }
-  .tool-card-title { font-size: 13px; }
-  .tool-card-desc { display: none; }
+  .tools-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .tool-card { padding: 12px 10px 10px; border-radius: 12px; }
+  .tool-card-icon { width: 40px; height: 40px; font-size: 18px; margin-bottom: 10px; border-radius: 10px; }
+  .tool-card-title { font-size: 12px; font-weight: 700; }
+  .tool-card-desc { font-size: 11px; line-height: 1.4; -webkit-line-clamp: 2; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
   .upload-zone { padding: 36px 18px; }
   .hero-stats { gap: 18px; }
   .install-grid { grid-template-columns: 1fr; }
@@ -1227,6 +1216,59 @@ input[type="range"]::-moz-range-thumb {
 .recent-item-name { font-weight: 600; color: var(--text); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .recent-item-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
 
+
+/* ── Signature tabs ── */
+.sig-tab {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.18s var(--ease);
+}
+.sig-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+.sig-tab:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+
+/* ── Edit elements list ── */
+.edit-el-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12.5px;
+}
+
+/* ── Process button — sticky on mobile ── */
+@media (max-width: 900px) {
+  #processBtn {
+    position: fixed;
+    bottom: 72px;
+    right: 16px;
+    z-index: 85;
+    box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+    border-radius: 999px;
+    padding: 12px 20px;
+  }
+}
+
+/* ── Tool card: light theme improvements ── */
+[data-theme="light"] .tool-card { color: #0f1729; }
+[data-theme="light"] .tool-card-title { color: #0f1729; }
+[data-theme="light"] .tool-card-desc { color: #64748b; }
+[data-theme="light"] .cat-title { color: #64748b; }
+
+/* ── High-res canvas rendering ── */
+canvas { image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges; }
+
+/* ── Crop UI ── */
+#cropCustomGroup .form-row, #cropBoxGroup .form-row { gap: 8px; }
+
 </style>
 </head>
 <body data-theme="dark">
@@ -1240,7 +1282,15 @@ input[type="range"]::-moz-range-thumb {
 
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <div class="logo-icon">P</div>
+      <div class="logo-icon" style="background:none;box-shadow:none;padding:0;overflow:hidden;">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="38" height="38" style="display:block;">
+        <rect width="160" height="160" rx="28" fill="url(#sbl)"/>
+        <defs><linearGradient id="sbl" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#6366f1"/>
+        </linearGradient></defs>
+        <text x="80" y="118" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif"
+          font-size="90" font-weight="900" fill="white" letter-spacing="-4">P</text>
+      </svg></div>
       <div class="logo-text">PDF<span>44</span></div>
     </div>
     <nav class="sidebar-nav" id="sidebarNav"></nav>
@@ -1444,7 +1494,9 @@ const TOOLS = {
   ,pdf2word:   { title:'PDF to Word',    desc:'Export PDF text content as a .docx document.',            iconKey:'pdf2word',     color:'blue',  cat:'convert',  accepts:'.pdf', multi:true  }
   ,pdf2excel:  { title:'PDF to Excel',   desc:'Export PDF tables as a .csv spreadsheet.',                iconKey:'pdf2excel',    color:'green', cat:'convert',  accepts:'.pdf', multi:false }
   ,reader:     { title:'PDF Reader',     desc:'Open a PDF in a fast, distraction-free reader.',          iconKey:'reader',       color:'indigo',cat:'analysis', accepts:'.pdf', multi:false }
-  ,fromurl:    { title:'PDF from URL',   desc:'Fetch a PDF from a URL and process it locally.',          iconKey:'url',          color:'cyan',  cat:'analysis', accepts:'',     multi:false }
+  ,fromurl:    { title:'PDF from URL',   desc:'Fetch a PDF from a URL and process it locally.', iconKey:'url', color:'cyan', cat:'analysis', accepts:'', multi:false }
+  ,fillpdf:    { title:'Fill PDF Form',  desc:'Fill in text fields, checkboxes and dropdowns in any PDF form.', iconKey:'edit', color:'teal', cat:'edit', accepts:'.pdf', multi:false }
+  ,editpdf:    { title:'Edit PDF',       desc:'Add text, shapes, images and drawings anywhere on a page.', iconKey:'edit', color:'orange', cat:'edit', accepts:'.pdf', multi:false }
 
 };
 
@@ -1529,6 +1581,10 @@ function renderSidebar() {
 //  ROUTER
 // ============================================================
 function route(tool) {
+  pushToolState(tool);
+  routeInternal(tool);
+}
+function routeInternal(tool) {
   state.currentTool = tool;
   state.files = [];
   state.pageOrder = [];
@@ -1813,7 +1869,7 @@ function renderToolPage(container) {
         <div class="upload-icon">${icon('upload', {size:32, stroke:2.2})}</div>
         <div class="upload-text">Drop ${acceptText.toLowerCase()} here</div>
         <div class="upload-subtext">or click to browse</div>
-        <div class="upload-formats">${acceptText} · ${multiText} · Max 200&nbsp;MB</div>
+        <div class="upload-formats">${acceptText} · ${multiText} · Unlimited file size</div>
         <input type="file" id="fileInput" style="display:none;" ${tool.multi?'multiple':''} accept="${tool.accepts}" onchange="handleFiles(this.files)">
       </div>
       <div class="file-list" id="fileList"></div>
@@ -2016,9 +2072,39 @@ function getToolSettingsHTML(toolKey) {
           <input type="number" class="form-input" id="pnSize" value="12" min="6" max="72"></div>
       </div>`;
     case 'crop': return `
-      <div class="form-group"><label class="form-label">Margin to crop (points, all sides)</label>
-        <input type="number" class="form-input" id="cropMargin" value="36" min="0"></div>
-      <p style="font-size:11.5px;color:var(--text-3);line-height:1.5;">Removes the given number of points from every edge of every page. 72 pt = 1 inch.</p>`;
+      <div class="form-group">
+        <label class="form-label">Crop mode</label>
+        <select class="form-select" id="cropMode" onchange="updateCropUI()">
+          <option value="margin">Remove margins (equal on all sides)</option>
+          <option value="custom">Custom per-side margins</option>
+          <option value="box">Crop to specific box (left, bottom, width, height)</option>
+        </select>
+      </div>
+      <div id="cropMarginGroup">
+        <div class="form-group"><label class="form-label">Margin to remove (points, all sides) — 72 pt = 1 inch</label>
+          <input type="number" class="form-input" id="cropMargin" value="36" min="0"></div>
+      </div>
+      <div id="cropCustomGroup" style="display:none;">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Top</label><input type="number" class="form-input" id="cropTop" value="36" min="0"></div>
+          <div class="form-group"><label class="form-label">Bottom</label><input type="number" class="form-input" id="cropBottom" value="36" min="0"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Left</label><input type="number" class="form-input" id="cropLeft" value="36" min="0"></div>
+          <div class="form-group"><label class="form-label">Right</label><input type="number" class="form-input" id="cropRight" value="36" min="0"></div>
+        </div>
+      </div>
+      <div id="cropBoxGroup" style="display:none;">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Left (x)</label><input type="number" class="form-input" id="cropBoxX" value="0" min="0"></div>
+          <div class="form-group"><label class="form-label">Bottom (y)</label><input type="number" class="form-input" id="cropBoxY" value="0" min="0"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Width</label><input type="number" class="form-input" id="cropBoxW" value="595" min="10"></div>
+          <div class="form-group"><label class="form-label">Height</label><input type="number" class="form-input" id="cropBoxH" value="842" min="10"></div>
+        </div>
+        <p style="font-size:11px;color:var(--text-3);">Standard A4: 595×842 pt. Letter: 612×792 pt.</p>
+      </div>`;
     case 'protect': return `
       <div class="form-group"><label class="form-label">User password (required to open)</label>
         <input type="password" class="form-input" id="userPw" placeholder="Enter password"></div>
@@ -2030,20 +2116,68 @@ function getToolSettingsHTML(toolKey) {
       <div class="form-group"><label class="form-label">PDF password</label>
         <input type="password" class="form-input" id="unlockPw" placeholder="Enter known password"></div>`;
     case 'sign': return `
-      <div class="form-group"><label class="form-label">Draw your signature</label>
-        <canvas id="sigPad" class="signature-pad"></canvas>
-        <div class="sig-actions">
-          <button class="btn btn-secondary btn-sm" onclick="clearSignature()">Clear</button>
-          <button class="btn btn-secondary btn-sm" onclick="useTypedSignature()">Type instead</button>
-        </div></div>
-      <div class="form-group"><label class="form-label">Signature position</label>
+      <div class="form-group">
+        <label class="form-label">Signature method</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+          <button class="sig-tab active" id="sigTabDraw" onclick="switchSigTab('draw')">✏️ Draw</button>
+          <button class="sig-tab" id="sigTabType" onclick="switchSigTab('type')">T Type</button>
+          <button class="sig-tab" id="sigTabUpload" onclick="switchSigTab('upload')">↑ Upload Image</button>
+        </div>
+        <div id="sigPanelDraw">
+          <canvas id="sigPad" class="signature-pad"></canvas>
+          <div class="sig-actions">
+            <button class="btn btn-secondary btn-sm" onclick="clearSignature()">Clear</button>
+            <select class="form-select" id="sigPenColor" style="width:auto;flex:0 0 auto;" onchange="updateSigPenColor()">
+              <option value="#000000">Black</option>
+              <option value="#1a1aff">Blue</option>
+              <option value="#cc0000">Red</option>
+            </select>
+          </div>
+        </div>
+        <div id="sigPanelType" style="display:none;">
+          <input type="text" class="form-input" id="sigTypeText" placeholder="Type your name" oninput="renderTypedSig()">
+          <select class="form-select" id="sigFont" style="margin-top:8px;" onchange="renderTypedSig()">
+            <option value="italic bold 44px 'Brush Script MT',cursive">Brush Script</option>
+            <option value="bold 40px 'Palatino Linotype',serif">Palatino</option>
+            <option value="italic 40px Georgia,serif">Georgia Italic</option>
+            <option value="bold 38px Arial,sans-serif">Arial Bold</option>
+          </select>
+          <canvas id="sigTyped" class="signature-pad" style="margin-top:8px;"></canvas>
+        </div>
+        <div id="sigPanelUpload" style="display:none;">
+          <input type="file" class="form-input" id="sigImageFile" accept="image/*" onchange="loadSigImage(this)">
+          <div id="sigImagePreview" style="margin-top:10px;"></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Page to sign</label>
+          <select class="form-select" id="signPageSel">
+            <option value="last">Last page</option>
+            <option value="first">First page</option>
+            <option value="all">All pages</option>
+            <option value="custom">Custom page number</option>
+          </select></div>
+        <div class="form-group" id="signCustomPageWrap" style="display:none;"><label class="form-label">Page number</label>
+          <input type="number" class="form-input" id="signCustomPage" value="1" min="1"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Position on page</label>
         <select class="form-select" id="signPos">
-          <option value="bottom-right">Bottom right (last page)</option>
-          <option value="bottom-left">Bottom left (last page)</option>
-          <option value="top-right">Top right (last page)</option>
-          <option value="top-left">Top left (last page)</option>
-          <option value="center">Center (last page)</option>
-        </select></div>`;
+          <option value="bottom-right">Bottom right</option>
+          <option value="bottom-left">Bottom left</option>
+          <option value="bottom-center">Bottom center</option>
+          <option value="top-right">Top right</option>
+          <option value="top-left">Top left</option>
+          <option value="center">Center</option>
+        </select></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Signature width (pt)</label>
+          <input type="number" class="form-input" id="sigWidth" value="160" min="40" max="500"></div>
+        <div class="form-group"><label class="form-label">Opacity</label>
+          <input type="range" id="sigOpacity" min="0.3" max="1" step="0.05" value="1" oninput="document.getElementById('sigOpacityVal').textContent=Math.round(this.value*100)+'%'">
+          <div class="range-labels"><span>30%</span><span id="sigOpacityVal">100%</span></div>
+        </div>
+      </div>`;
+
     case 'redact': return `
       <div class="form-group"><label class="form-label">Redaction rectangles</label>
         <p style="font-size:11.5px;color:var(--text-3);line-height:1.5;margin-bottom:8px;">Format: <code style="background:var(--code-bg);padding:1px 6px;border-radius:4px;">page,x,y,w,h</code> per line. Coordinates in points from the bottom-left corner.</p>
@@ -2087,8 +2221,7 @@ async function handleFiles(fileList) {
   }
 
   for (const file of files) {
-    if (file.size > 200 * 1024 * 1024) { toast(`${file.name} exceeds 200 MB limit`,'error'); continue; }
-    const id = Math.random().toString(36).slice(2);
+        const id = Math.random().toString(36).slice(2);
     const item = { id, file, name: file.name, size: file.size, type: file.type };
     const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
     if (isPdf) {
@@ -2118,6 +2251,15 @@ async function handleFiles(fileList) {
   }
   if (state.currentTool === 'info' && state.files[0]?.pdfDoc) {
     loadMetadata(state.files[0]);
+  }
+  if (state.currentTool === 'fillpdf' && state.files[0]?.pdfDoc) {
+    renderFormFields(state.files[0]);
+  }
+  if (state.currentTool === 'editpdf' && state.files.length) {
+    _editElements.length = 0;
+    renderEditList();
+    const btn = document.getElementById('processBtn');
+    if (btn) btn.disabled = true; // until element added
   }
 }
 
@@ -2280,7 +2422,7 @@ async function renderPdfJsPageToWidth(pdfjsDoc, pageNum, canvas, targetCssWidth)
   const page = await pdfjsDoc.getPage(pageNum);
   const viewport1 = page.getViewport({ scale: 1 });
   const scaleToFit = targetCssWidth / viewport1.width;
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const dpr = Math.min(window.devicePixelRatio || 1, 3);
   const viewport = page.getViewport({ scale: scaleToFit * dpr });
 
   canvas.width = Math.floor(viewport.width);
@@ -2459,6 +2601,8 @@ async function processCurrentTool() {
       case 'pdf2excel':   await processPdf2Excel(); break;
       case 'reader':      await processReader(); break;
       case 'fromurl':     toast('Use the Fetch PDF button above', 'info'); break;
+      case 'fillpdf':     await processFillPdf(); break;
+      case 'editpdf':     await processEditPdf(); break;
       default: toast('Tool not implemented','warning');
     }
   } catch (e) {
@@ -2903,16 +3047,44 @@ async function processPageNumber() {
 
 async function processCrop() {
   const f = state.files[0];
-  if (!f.pdfDoc) return;
-  const m = parseFloat(document.getElementById('cropMargin').value) || 36;
+  if (!f?.pdfDoc) return;
+  const mode = optVal('cropMode', 'margin');
   const pages = f.pdfDoc.getPages();
+
   pages.forEach(p => {
     const { width, height } = p.getSize();
-    p.setCropBox(m, m, Math.max(width - m*2, 10), Math.max(height - m*2, 10));
+    let x, y, w, h;
+    if (mode === 'box') {
+      x = optFloat('cropBoxX', 0);
+      y = optFloat('cropBoxY', 0);
+      w = Math.max(10, optFloat('cropBoxW', width));
+      h = Math.max(10, optFloat('cropBoxH', height));
+    } else if (mode === 'custom') {
+      const top    = optFloat('cropTop', 36);
+      const bottom = optFloat('cropBottom', 36);
+      const left   = optFloat('cropLeft', 36);
+      const right  = optFloat('cropRight', 36);
+      x = left;
+      y = bottom;
+      w = Math.max(10, width - left - right);
+      h = Math.max(10, height - top - bottom);
+    } else {
+      const m = optFloat('cropMargin', 36);
+      x = m; y = m;
+      w = Math.max(10, width - m * 2);
+      h = Math.max(10, height - m * 2);
+    }
+    // setCropBox(x, y, width, height) — clamp to page bounds
+    x = Math.max(0, Math.min(x, width - 10));
+    y = Math.max(0, Math.min(y, height - 10));
+    w = Math.min(w, width - x);
+    h = Math.min(h, height - y);
+    p.setCropBox(x, y, w, h);
   });
+
   const bytes = await f.pdfDoc.save();
   downloadAndShow(bytes, `cropped_${f.name}`);
-  toast('Pages cropped','success');
+  toast('Pages cropped', 'success');
 }
 
 async function processProtect() {
@@ -2966,25 +3138,85 @@ async function processUnlock() {
 
 async function processSign() {
   const f = state.files[0];
-  if (!f.pdfDoc) return;
-  const canvas = document.getElementById('sigPad');
-  if (!canvas || isSignatureEmpty(canvas)) { toast('Draw or type a signature first','error'); return; }
-  const pos = document.getElementById('signPos').value;
-  const sigBytes = dataUrlToUint8Array(canvas.toDataURL('image/png'));
-  const img = await f.pdfDoc.embedPng(sigBytes);
-  const d = img.scale(0.4);
+  if (!f?.pdfDoc) { toast('Upload a PDF first', 'error'); return; }
+
+  // Get active signature tab
+  const activeTab = document.querySelector('.sig-tab.active')?.id || 'sigTabDraw';
+  let sigCanvas;
+  if (activeTab === 'sigTabDraw') {
+    sigCanvas = document.getElementById('sigPad');
+    if (!sigCanvas || isSignatureEmpty(sigCanvas)) { toast('Please draw your signature first', 'error'); return; }
+  } else if (activeTab === 'sigTabType') {
+    sigCanvas = document.getElementById('sigTyped');
+    if (!sigCanvas || isSignatureEmpty(sigCanvas)) { toast('Please type your signature first', 'error'); return; }
+  } else {
+    // Upload — state.sigImageBytes set by loadSigImage
+    if (!state.sigImageBytes) { toast('Please upload a signature image first', 'error'); return; }
+  }
+
+  const pos = optVal('signPos', 'bottom-right');
+  const pageSel = optVal('signPageSel', 'last');
+  const sigW = optInt('sigWidth', 160);
+  const opacity = optFloat('sigOpacity', 1);
+  const totalPages = f.pdfDoc.getPageCount();
+  if (!totalPages) { toast('PDF has no pages', 'error'); return; }
+
+  // Determine which pages to sign
+  let pageIndices = [];
+  if (pageSel === 'last') pageIndices = [totalPages - 1];
+  else if (pageSel === 'first') pageIndices = [0];
+  else if (pageSel === 'all') pageIndices = Array.from({length: totalPages}, (_, i) => i);
+  else {
+    const cp = optInt('signCustomPage', 1);
+    const idx = cp - 1;
+    if (idx < 0 || idx >= totalPages) { toast(`Page ${cp} does not exist (PDF has ${totalPages} page(s))`, 'error'); return; }
+    pageIndices = [idx];
+  }
+
+  // Get image bytes
+  let imgBytes, imgType;
+  if (state.sigImageBytes) {
+    imgBytes = state.sigImageBytes;
+    imgType = state.sigImageType || 'png';
+  } else {
+    const dataUrl = sigCanvas.toDataURL('image/png');
+    imgBytes = dataUrlToUint8Array(dataUrl);
+    imgType = 'png';
+  }
+
+  // Embed image
+  let img;
+  try {
+    img = imgType === 'jpeg' ? await f.pdfDoc.embedJpg(imgBytes) : await f.pdfDoc.embedPng(imgBytes);
+  } catch(e) {
+    toast('Could not embed signature image: ' + e.message, 'error');
+    return;
+  }
+
   const pages = f.pdfDoc.getPages();
-  const page = pages[pages.length - 1];
-  const { width, height } = page.getSize();
-  let x = width - d.width - 40, y = 40;
-  if (pos === 'bottom-left') { x = 40; y = 40; }
-  else if (pos === 'top-right') { y = height - d.height - 40; }
-  else if (pos === 'top-left') { x = 40; y = height - d.height - 40; }
-  else if (pos === 'center') { x = width/2 - d.width/2; y = height/2 - d.height/2; }
-  page.drawImage(img, { x, y, width: d.width, height: d.height });
+  for (const pageIdx of pageIndices) {
+    const page = pages[pageIdx];
+    const { width, height } = page.getSize();
+    const aspect = img.height / img.width;
+    const drawW = sigW;
+    const drawH = sigW * aspect;
+    const margin = 30;
+    let x, y;
+    switch(pos) {
+      case 'bottom-right':  x = width - drawW - margin;    y = margin; break;
+      case 'bottom-left':   x = margin;                    y = margin; break;
+      case 'bottom-center': x = (width - drawW) / 2;       y = margin; break;
+      case 'top-right':     x = width - drawW - margin;    y = height - drawH - margin; break;
+      case 'top-left':      x = margin;                    y = height - drawH - margin; break;
+      case 'center':        x = (width - drawW) / 2;       y = (height - drawH) / 2; break;
+      default:              x = width - drawW - margin;    y = margin;
+    }
+    page.drawImage(img, { x, y, width: drawW, height: drawH, opacity });
+  }
+
   const bytes = await f.pdfDoc.save();
   downloadAndShow(bytes, `signed_${f.name}`);
-  toast('Signature applied','success');
+  toast(`Signature applied to ${pageIndices.length} page(s)`, 'success');
 }
 
 async function processRedact() {
@@ -3080,23 +3312,40 @@ function parsePagesInput(input, pageCount) {
 function downloadAndShow(bytes, filename) {
   const blob = new Blob([bytes], { type: 'application/pdf' });
   saveAs(blob, filename);
-  showResult(filename, blob.size, 'PDF');
+  showResult(filename, blob.size, 'PDF', blob);
   addRecent(filename, blob.size, state.currentTool);
 }
 
-function showResult(name, size, type) {
+function showResult(name, size, type, blobRef) {
   const area = document.getElementById('resultsArea');
   if (!area) return;
+  const id = 'res_' + Math.random().toString(36).slice(2);
+  const canShare = navigator.share && navigator.canShare && blobRef;
   const div = document.createElement('div');
   div.className = 'result-card';
   div.innerHTML = `
-    <div class="result-icon">${icon('check', {size:18, stroke:2.5})}</div>
+    <div class="result-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg></div>
     <div class="result-info">
       <div class="result-name">${escapeHtml(name)}</div>
       <div class="result-meta">${type} · ${formatBytes(size)}</div>
     </div>
-    <span class="btn btn-secondary btn-sm">Downloaded</span>`;
+    <div style="display:flex;gap:6px;flex-shrink:0;">
+      ${canShare ? `<button class="btn btn-secondary btn-sm" id="${id}_share">Share</button>` : ''}
+      <span class="btn btn-secondary btn-sm" style="color:var(--success);border-color:var(--success);">✓ Downloaded</span>
+    </div>`;
   area.appendChild(div);
+  if (canShare && blobRef) {
+    document.getElementById(id + '_share')?.addEventListener('click', async () => {
+      try {
+        const file = new File([blobRef], name, { type: blobRef.type || 'application/pdf' });
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: 'PDF44 — ' + name });
+        } else {
+          await navigator.share({ title: 'PDF44', text: name, url: window.location.href });
+        }
+      } catch(e) { if (e.name !== 'AbortError') toast('Share failed: ' + e.message, 'error'); }
+    });
+  }
 }
 
 function showProgress(pct, txt) {
@@ -3848,9 +4097,214 @@ document.addEventListener('keydown', e => {
 
 
 
+
+// ── Back-navigation: push a history entry per tool so Back = home, not exit ──
+function pushToolState(tool) {
+  const url = new URL(window.location);
+  url.searchParams.set('tool', tool);
+  if (tool === 'home') {
+    history.replaceState({ tool }, '', url);
+  } else {
+    history.pushState({ tool }, '', url);
+  }
+}
+window.addEventListener('popstate', e => {
+  const tool = (e.state && e.state.tool) || 'home';
+  routeInternal(tool);
+});
+// On load, pick up ?tool= param if bookmarked
+(function() {
+  const p = new URLSearchParams(location.search).get('tool');
+  if (p && (window.TOOLS && window.TOOLS[p])) {
+    // will be routed in DOMContentLoaded
+    window._initialTool = p;
+  }
+})();
+
+
+
+// ── Signature tab switcher ──
+let _sigState = { tab: 'draw', imageBytes: null, imageType: 'png' };
+function switchSigTab(tab) {
+  _sigState.tab = tab;
+  document.querySelectorAll('.sig-tab').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('sigTab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+  if (btn) btn.classList.add('active');
+  document.getElementById('sigPanelDraw').style.display   = tab === 'draw'   ? '' : 'none';
+  document.getElementById('sigPanelType').style.display   = tab === 'type'   ? '' : 'none';
+  document.getElementById('sigPanelUpload').style.display = tab === 'upload' ? '' : 'none';
+  if (tab === 'draw' && document.getElementById('sigPad') && !_sigState.padSetup) {
+    setupSignaturePad(); _sigState.padSetup = true;
+  }
+}
+function updateSigPenColor() {
+  const c = document.getElementById('sigPenColor')?.value || '#000000';
+  const canvas = document.getElementById('sigPad');
+  if (canvas) canvas.getContext('2d').strokeStyle = c;
+}
+function renderTypedSig() {
+  const text = document.getElementById('sigTypeText')?.value || '';
+  const font = document.getElementById('sigFont')?.value || "italic bold 44px 'Brush Script MT',cursive";
+  const canvas = document.getElementById('sigTyped');
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth || 320, h = canvas.clientHeight || 120;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+  ctx.font = font;
+  ctx.fillStyle = '#000';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, w / 2, h / 2);
+}
+function loadSigImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    state.sigImageBytes = dataUrlToUint8Array(e.target.result);
+    state.sigImageType  = file.type.includes('jpeg') || file.name.toLowerCase().endsWith('.jpg') ? 'jpeg' : 'png';
+    const prev = document.getElementById('sigImagePreview');
+    if (prev) prev.innerHTML = `<img src="${e.target.result}" style="max-height:120px;border-radius:8px;border:1px solid var(--border);">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Crop UI helper ──
+function updateCropUI() {
+  const mode = optVal('cropMode', 'margin');
+  document.getElementById('cropMarginGroup').style.display  = mode === 'margin' ? '' : 'none';
+  document.getElementById('cropCustomGroup').style.display  = mode === 'custom' ? '' : 'none';
+  document.getElementById('cropBoxGroup').style.display     = mode === 'box'    ? '' : 'none';
+}
+
+// ── Sign page-sel helper ──
+document.addEventListener('change', e => {
+  if (e.target && e.target.id === 'signPageSel') {
+    const wrap = document.getElementById('signCustomPageWrap');
+    if (wrap) wrap.style.display = e.target.value === 'custom' ? '' : 'none';
+  }
+});
+
+// ── Fill PDF form ──
+async function processFillPdf() {
+  const f = state.files[0];
+  if (!f?.pdfDoc) return;
+  const form = f.pdfDoc.getForm();
+  const fields = form.getFields();
+  if (!fields.length) { toast('No fillable fields found in this PDF', 'warning'); return; }
+  // Read from the dynamically rendered form fields
+  fields.forEach(field => {
+    const name = field.getName();
+    const el = document.getElementById('ff_' + CSS.escape(name));
+    if (!el) return;
+    try {
+      if (field.constructor.name === 'PDFTextField') {
+        field.setText(el.value || '');
+      } else if (field.constructor.name === 'PDFCheckBox') {
+        el.checked ? field.check() : field.uncheck();
+      } else if (field.constructor.name === 'PDFDropdown') {
+        if (el.value) field.select(el.value);
+      } else if (field.constructor.name === 'PDFRadioGroup') {
+        if (el.value) field.select(el.value);
+      }
+    } catch(e) { console.warn('Fill field error:', name, e.message); }
+  });
+  const bytes = await f.pdfDoc.save();
+  downloadAndShow(bytes, `filled_${f.name}`);
+  toast('Form filled and saved', 'success');
+}
+
+// Render form fields when PDF loads (for fillpdf tool)
+async function renderFormFields(f) {
+  const el = document.getElementById('formFieldsList');
+  if (!el || !f?.pdfDoc) return;
+  try {
+    const form = f.pdfDoc.getForm();
+    const fields = form.getFields();
+    if (!fields.length) { el.innerHTML = '<p style="font-size:13px;color:var(--text-3);">No fillable fields found in this PDF.</p>'; return; }
+    el.innerHTML = fields.map(field => {
+      const name = field.getName();
+      const safeId = 'ff_' + name.replace(/[^a-zA-Z0-9]/g, '_');
+      const type = field.constructor.name;
+      if (type === 'PDFTextField') {
+        const cur = (() => { try { return field.getText() || ''; } catch(e) { return ''; } })();
+        return `<div class="form-group"><label class="form-label">${escapeHtml(name)}</label>
+          <input type="text" class="form-input" id="${safeId}" value="${escapeHtml(cur)}" placeholder="Enter value"></div>`;
+      } else if (type === 'PDFCheckBox') {
+        const checked = (() => { try { return field.isChecked(); } catch(e) { return false; } })();
+        return `<div class="form-group"><label class="checkbox-label"><input type="checkbox" id="${safeId}" ${checked?'checked':''}> ${escapeHtml(name)}</label></div>`;
+      } else if (type === 'PDFDropdown') {
+        const opts = (() => { try { return field.getOptions(); } catch(e) { return []; } })();
+        const cur = (() => { try { return field.getSelected()[0] || ''; } catch(e) { return ''; } })();
+        return `<div class="form-group"><label class="form-label">${escapeHtml(name)}</label>
+          <select class="form-select" id="${safeId}">${opts.map(o => `<option value="${escapeHtml(o)}" ${o===cur?'selected':''}>${escapeHtml(o)}</option>`).join('')}</select></div>`;
+      }
+      return `<div class="form-group"><label class="form-label" style="color:var(--text-3);">${escapeHtml(name)} <em>(${type.replace('PDF','')})</em></label></div>`;
+    }).join('');
+    // Enable process button
+    const btn = document.getElementById('processBtn');
+    if (btn) btn.disabled = false;
+  } catch(e) { el.innerHTML = '<p style="font-size:13px;color:var(--error);">Could not read form fields: ' + escapeHtml(e.message) + '</p>'; }
+}
+
+// ── Edit PDF (advanced) ──
+const _editElements = [];
+function addEditElement() {
+  const text = optVal('editAdvText', '');
+  if (!text.trim()) { toast('Enter some text first', 'error'); return; }
+  const el = {
+    text,
+    page: optInt('editAdvPage', 1),
+    size: optInt('editAdvSize', 14),
+    x:    optFloat('editAdvX', 72),
+    y:    optFloat('editAdvY', 100),
+    color: optVal('editAdvColor', '#000000'),
+    useHL: optCheck('editAdvUseHL', false),
+    hlColor: optVal('editAdvHighlight', '#ffff00')
+  };
+  _editElements.push(el);
+  renderEditList();
+  document.getElementById('editAdvText').value = '';
+}
+function renderEditList() {
+  const list = document.getElementById('editElementsList');
+  if (!list) return;
+  list.innerHTML = _editElements.map((el, i) => `
+    <div class="edit-el-row">
+      <span style="font-size:12px;color:var(--text-2);">p${el.page} (${el.x},${el.y}) — ${escapeHtml(el.text.slice(0,30))}${el.text.length>30?'…':''}</span>
+      <button class="btn btn-ghost btn-sm" onclick="_editElements.splice(${i},1);renderEditList()">×</button>
+    </div>`).join('');
+  const btn = document.getElementById('processBtn');
+  if (btn && state.files.length) btn.disabled = _editElements.length === 0;
+}
+async function processEditPdf() {
+  const f = state.files[0];
+  if (!f?.pdfDoc) return;
+  if (!_editElements.length) { toast('Add at least one text element', 'error'); return; }
+  const pc = f.pdfDoc.getPageCount();
+  for (const el of _editElements) {
+    const idx = el.page - 1;
+    if (idx < 0 || idx >= pc) { toast(`Page ${el.page} not found`, 'warning'); continue; }
+    const page = f.pdfDoc.getPage(idx);
+    const rgb = hexToRgb(el.color);
+    if (el.useHL) {
+      const hlRgb = hexToRgb(el.hlColor);
+      const approxW = el.text.length * el.size * 0.55;
+      page.drawRectangle({ x: el.x - 2, y: el.y - 2, width: approxW + 4, height: el.size + 6, color: PDFLib.rgb(hlRgb.r/255, hlRgb.g/255, hlRgb.b/255), opacity: 0.45 });
+    }
+    page.drawText(el.text, { x: el.x, y: el.y, size: el.size, color: PDFLib.rgb(rgb.r/255, rgb.g/255, rgb.b/255) });
+  }
+  const bytes = await f.pdfDoc.save();
+  downloadAndShow(bytes, `edited_${f.name}`);
+  toast('Edit applied', 'success');
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   applyTheme(safeGetTheme());
-  route('home');
+  route(window._initialTool || 'home');
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW register failed:', err));
   }

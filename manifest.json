@@ -1,69 +1,46 @@
 {
   "name": "PDF44 — Every PDF Tool You Need",
   "short_name": "PDF44",
-  "description": "Merge, split, compress, convert, edit, sign and protect PDFs entirely in your browser. 100% client-side, private & fast.",
+  "description": "Merge, split, compress, convert, edit, sign and protect PDFs entirely in your browser. 100% private.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "browser"],
   "background_color": "#0a0a0f",
   "theme_color": "#6366f1",
   "orientation": "any",
-  "lang": "en",
-  "dir": "ltr",
-  "categories": ["productivity", "utilities", "business"],
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/4712/4712109.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
       "src": "https://cdn-icons-png.flaticon.com/512/4712/4712109.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "https://cdn-icons-png.flaticon.com/256/4712/4712109.png",
-      "sizes": "256x256",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "https://cdn-icons-png.flaticon.com/128/4712/4712109.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     }
   ],
   "shortcuts": [
     {
       "name": "Merge PDF",
       "short_name": "Merge",
-      "url": "/?tool=merge",
-      "description": "Combine multiple PDFs into one"
+      "url": "/?tool=merge"
     },
     {
       "name": "Split PDF",
       "short_name": "Split",
-      "url": "/?tool=split",
-      "description": "Separate pages from a PDF"
+      "url": "/?tool=split"
     },
     {
       "name": "Compress PDF",
       "short_name": "Compress",
-      "url": "/?tool=compress",
-      "description": "Shrink your PDF file size"
+      "url": "/?tool=compress"
     },
     {
-      "name": "Convert to JPG",
+      "name": "PDF to JPG",
       "short_name": "PDF→JPG",
-      "url": "/?tool=pdf2jpg",
-      "description": "Convert PDF pages to images"
+      "url": "/?tool=pdf2jpg"
     }
-  ],
-  "screenshots": [],
-  "prefer_related_applications": false
+  ]
 }
