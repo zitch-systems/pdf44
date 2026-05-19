@@ -1,7 +1,7 @@
 {
   "name": "PDF44 — Every PDF Tool You Need",
   "short_name": "PDF44",
-  "description": "Merge, split, compress, convert, edit, sign and protect PDFs entirely in your browser. 100% private.",
+  "description": "Free PDF tools in your browser. Private, fast, no uploads.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -24,23 +24,19 @@
   "shortcuts": [
     {
       "name": "Merge PDF",
-      "short_name": "Merge",
       "url": "/?tool=merge"
     },
     {
       "name": "Split PDF",
-      "short_name": "Split",
       "url": "/?tool=split"
     },
     {
       "name": "Compress PDF",
-      "short_name": "Compress",
       "url": "/?tool=compress"
     },
     {
-      "name": "PDF to JPG",
-      "short_name": "PDF→JPG",
-      "url": "/?tool=pdf2jpg"
+      "name": "Sign PDF",
+      "url": "/?tool=sign"
     }
   ]
 }
