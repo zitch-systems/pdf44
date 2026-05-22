@@ -369,7 +369,7 @@
 
 <!-- ══ Monetag Ads ══════════════════════════════════════════════ -->
 <meta name="monetag" content="a5f2ac517d66622a8409cbbbd127e584">
-<script src="https://quge5.com/88/tag.min.js" data-zone="241959" async data-cfasync="false"></script>
+<script src="https://quge5.com/88/tag.min.js" data-zone="241959" data-cfasync="false"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -5373,7 +5373,13 @@ window.addEventListener('DOMContentLoaded', () => {
   const _urlTool = new URLSearchParams(location.search).get('tool');
   route((_urlTool && typeof TOOLS !== 'undefined' && TOOLS[_urlTool]) ? _urlTool : 'home');
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(err => console.warn('SW register failed:', err));
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then(reg => {
+        // Force update so new Monetag push SW is picked up immediately
+        reg.update();
+        console.log('PDF44 SW registered, scope:', reg.scope);
+      })
+      .catch(err => console.warn('SW register failed:', err));
   }
 });
 </script>
