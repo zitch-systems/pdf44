@@ -33,7 +33,7 @@ const CDN_ASSETS = [
 
 // Domains to never intercept (ads, analytics, push)
 const AD_DOMAINS = [
-  'quge5.com', '3nbf4.com', 'monetag.com',
+  'quge5.com', '3nbf4.com', 'nap5k.com', 'monetag.com',
   'googlesyndication.com', 'doubleclick.net',
   'analytics.google.com', 'googletagmanager.com'
 ];
