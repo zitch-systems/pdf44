@@ -76,6 +76,11 @@
 /privacy                /index.html?tool=privacy      200
 /privacy-policy         /index.html?tool=privacy      200
 
+# ── Hub / programmatic SEO pages ─────────────────────────────
+/best-pdf-tools         /index.html?tool=best-pdf-tools           200
+/how-to-compress-pdf    /index.html?tool=how-to-compress-pdf      200
+/pdf-tools-for-students /index.html?tool=pdf-tools-for-students   200
+
 # ── Legacy / common typo redirects (301 = permanent) ─────────
 /pdftoword              /pdf-to-word                  301
 /pdftojpg               /pdf-to-jpg                   301
@@ -84,6 +89,9 @@
 /compresspdf            /compress-pdf                 301
 /signpdf                /sign-pdf                     301
 /protectpdf             /protect-pdf                  301
+
+# ── llms convention ──────────────────────────────────────────
+/llms-full.txt          /llms.txt                     200
 
 # ── SPA fallback (must be last) ──────────────────────────────
 /*                      /index.html                   200

@@ -75,6 +75,11 @@
   <url><loc>https://pdf44.com/contact</loc>                  <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://pdf44.com/privacy</loc>                  <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
 
+  <!-- ═══ Hub / programmatic SEO pages ══════════════════════ -->
+  <url><loc>https://pdf44.com/best-pdf-tools</loc>           <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/how-to-compress-pdf</loc>      <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/pdf-tools-for-students</loc>   <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+
   <!-- ═══ Legacy ?tool= URLs (kept for backwards-compat) ═════ -->
   <url><loc>https://pdf44.com/?tool=merge</loc>     <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://pdf44.com/?tool=split</loc>     <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>

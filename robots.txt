@@ -160,3 +160,7 @@ Disallow: /
 
 # ── Sitemaps ─────────────────────────────────────────────────
 Sitemap: https://pdf44.com/sitemap.xml
+
+# ── LLM agent guide (emerging convention) ────────────────────
+# https://pdf44.com/llms.txt
+# https://pdf44.com/llms-full.txt (alias of llms.txt; the long-form version)

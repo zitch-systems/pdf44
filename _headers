@@ -14,6 +14,10 @@
   X-DNS-Prefetch-Control: on
   X-UA-Compatible: IE=edge
   X-Robots-Tag: index, follow, max-image-preview:large, max-snippet:-1
+  # CSP in Report-Only — flip to enforcing once you've verified no Monetag/Adsense
+  # report violations for a few days. `'unsafe-inline'` is required because the
+  # SPA has a large inline <script> block; `'unsafe-eval'` is required by pdf.js.
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://quge5.com https://3nbf4.com https://nap5k.com https://*.monetag.com https://googlesyndication.com https://*.doubleclick.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: blob: data:; worker-src 'self' blob: https://cdnjs.cloudflare.com; child-src 'self' blob: https:; frame-src 'self' https:; manifest-src 'self'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'; upgrade-insecure-requests
 
 # HTML must always be revalidated so SEO/meta updates ship instantly.
 /
@@ -41,6 +45,17 @@
 /robots.txt
   Cache-Control: public, max-age=86400
   Content-Type: text/plain; charset=utf-8
+
+# llms.txt — emerging convention for what LLM agents should fetch.
+/llms.txt
+  Cache-Control: public, max-age=86400
+  Content-Type: text/plain; charset=utf-8
+  X-Robots-Tag: index, follow
+
+# Open-graph card.
+/og-image.svg
+  Cache-Control: public, max-age=604800, immutable
+  Content-Type: image/svg+xml; charset=utf-8
 
 # Icons / static assets — long cache, immutable.
 /*.svg
