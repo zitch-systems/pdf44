@@ -14,13 +14,15 @@
   X-DNS-Prefetch-Control: on
   X-UA-Compatible: IE=edge
   X-Robots-Tag: index, follow, max-image-preview:large, max-snippet:-1
-  # CSP — enforcing. Allowlist covers cdnjs (PDF libs), jsdelivr (Tesseract),
-  # Google Tag Manager / Analytics, and the Monetag ad domains. `'unsafe-inline'`
-  # is required because the SPA has a large inline <script> block;
-  # `'unsafe-eval'` is required by pdf.js worker code. If anything breaks after
-  # deploy, rename this header to `Content-Security-Policy-Report-Only` to
-  # downgrade to monitoring while you investigate.
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com https://quge5.com https://3nbf4.com https://nap5k.com https://*.monetag.com https://googlesyndication.com https://*.doubleclick.net https://*.googlesyndication.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: blob: data:; worker-src 'self' blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; child-src 'self' blob: https:; frame-src 'self' https:; manifest-src 'self'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'; upgrade-insecure-requests
+  # CSP in Report-Only mode. Monetag (5 active nap5k.com zones) serves ad
+  # creatives and sub-scripts from rotating domains that can't be fully
+  # enumerated, so we MONITOR rather than ENFORCE to avoid silently blocking
+  # ad revenue. Violations are still logged. To enforce later (once you've
+  # confirmed which ad domains actually appear in the reports), rename this
+  # header to `Content-Security-Policy` and add the observed domains to
+  # script-src. `'unsafe-inline'` is required by the inline SPA script;
+  # `'unsafe-eval'` is required by pdf.js.
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com https://nap5k.com https://3nbf4.com https://*.monetag.com https://googlesyndication.com https://*.doubleclick.net https://*.googlesyndication.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: blob: data:; worker-src 'self' blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; child-src 'self' blob: https:; frame-src 'self' https:; manifest-src 'self'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'; upgrade-insecure-requests
 
 # HTML must always be revalidated so SEO/meta updates ship instantly.
 /

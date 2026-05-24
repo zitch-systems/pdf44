@@ -459,21 +459,28 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-<!-- Monetag ad scripts: async so they never block the main thread. -->
-<script async src="https://quge5.com/88/tag.min.js" data-zone="241959" data-cfasync="false"></script>
+<!--
+  Monetag ad zones — all five served from nap5k.com. They are injected
+  after the page `load` event via requestIdleCallback so they never block
+  first paint / LCP. Every zone is still activated; it just happens off the
+  critical render path. (Replaces the old quge5.com tag + single nap5k tag.)
+-->
 <script>
-  // Inject the second Monetag tag after the page is interactive so it
-  // doesn't compete with critical render work.
-  window.addEventListener('load', function () {
-    requestIdleCallback ? requestIdleCallback(loadMonetag2) : setTimeout(loadMonetag2, 1500);
-    function loadMonetag2() {
-      var s = document.createElement('script');
-      s.dataset.zone = '11042476';
-      s.src = 'https://nap5k.com/tag.min.js';
-      s.async = true;
-      (document.body || document.documentElement).appendChild(s);
+  (function () {
+    var MONETAG_ZONES = ['11042476', '11052793', '11052794', '11052796', '11052797'];
+    function loadMonetagZones() {
+      MONETAG_ZONES.forEach(function (zone) {
+        var s = document.createElement('script');
+        s.dataset.zone = zone;
+        s.src = 'https://nap5k.com/tag.min.js';
+        s.async = true;
+        (document.body || document.documentElement).appendChild(s);
+      });
     }
-  });
+    var schedule = window.requestIdleCallback || function (f) { setTimeout(f, 1200); };
+    if (document.readyState === 'complete') schedule(loadMonetagZones);
+    else window.addEventListener('load', function () { schedule(loadMonetagZones); });
+  })();
 </script>
 
 <style>
