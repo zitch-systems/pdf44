@@ -1,23 +1,38 @@
+# ============================================================
+#  PDF44 — Cloudflare Pages _headers
+#  Security, caching, and Core-Web-Vitals friendly defaults.
+# ============================================================
+
 /*
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
-  X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=self, microphone=(), geolocation=()
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), interest-cohort=(), browsing-topics=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Cross-Origin-Embedder-Policy: unsafe-none
+  X-DNS-Prefetch-Control: on
+  X-UA-Compatible: IE=edge
+  X-Robots-Tag: index, follow, max-image-preview:large, max-snippet:-1
 
-/index.html
-  Cache-Control: no-cache, must-revalidate
+# HTML must always be revalidated so SEO/meta updates ship instantly.
+/
+  Cache-Control: public, max-age=0, must-revalidate
   Content-Type: text/html; charset=utf-8
 
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+  Content-Type: text/html; charset=utf-8
+
+# Service worker must never be cached at the edge — required for updates.
 /sw.js
-  Cache-Control: no-cache, must-revalidate
+  Cache-Control: no-cache, no-store, must-revalidate
   Content-Type: application/javascript; charset=utf-8
   Service-Worker-Allowed: /
 
 /manifest.json
   Cache-Control: public, max-age=3600
-  Content-Type: application/manifest+json
+  Content-Type: application/manifest+json; charset=utf-8
 
 /sitemap.xml
   Cache-Control: public, max-age=86400
@@ -27,6 +42,28 @@
   Cache-Control: public, max-age=86400
   Content-Type: text/plain; charset=utf-8
 
+# Icons / static assets — long cache, immutable.
 /*.svg
-  Cache-Control: public, max-age=604800
+  Cache-Control: public, max-age=604800, immutable
   Content-Type: image/svg+xml
+
+/*.png
+  Cache-Control: public, max-age=2592000, immutable
+
+/*.webp
+  Cache-Control: public, max-age=2592000, immutable
+
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+/*.css
+  Cache-Control: public, max-age=2592000, immutable
+
+/*.js
+  Cache-Control: public, max-age=2592000, immutable
+
+# JSON-LD / structured-data files (if added later)
+/*.jsonld
+  Cache-Control: public, max-age=86400
+  Content-Type: application/ld+json; charset=utf-8

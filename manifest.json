@@ -1,13 +1,27 @@
 {
-  "name": "PDF44 — Every PDF Tool You Need",
+  "id": "/?source=pwa",
+  "name": "PDF44 — Free Online PDF Tools",
   "short_name": "PDF44",
-  "description": "Free PDF tools in your browser. Private, fast, no uploads.",
-  "start_url": "/",
+  "description": "41+ free browser-based PDF tools. Merge, split, compress, convert, edit, sign, protect, fill forms and convert ebooks (EPUB/MOBI) to PDF — 100% private, no uploads, works offline.",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui", "browser"],
+  "orientation": "any",
   "background_color": "#0a0a0f",
   "theme_color": "#6366f1",
-  "orientation": "any",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["productivity", "utilities", "business", "education"],
+  "iarc_rating_id": "",
+  "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "edge_side_panel": {
+    "preferred_width": 480
+  },
+  "handle_links": "preferred",
   "icons": [
     {
       "src": "icon.svg",
@@ -18,25 +32,82 @@
     {
       "src": "https://cdn-icons-png.flaticon.com/512/4712/4712109.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "PDF44 — every PDF tool you need, free and private"
+    },
+    {
+      "src": "og-image.png",
+      "sizes": "1200x630",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "PDF44 — mobile PDF toolkit"
     }
   ],
   "shortcuts": [
     {
       "name": "Merge PDF",
-      "url": "/?tool=merge"
+      "short_name": "Merge",
+      "description": "Combine multiple PDFs into one file",
+      "url": "/merge-pdf?source=pwa",
+      "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
     },
     {
       "name": "Split PDF",
-      "url": "/?tool=split"
+      "short_name": "Split",
+      "description": "Split a PDF into multiple files",
+      "url": "/split-pdf?source=pwa",
+      "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
     },
     {
       "name": "Compress PDF",
-      "url": "/?tool=compress"
+      "short_name": "Compress",
+      "description": "Reduce PDF file size",
+      "url": "/compress-pdf?source=pwa",
+      "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "PDF to Word",
+      "short_name": "PDF→Word",
+      "description": "Convert PDF to editable Word document",
+      "url": "/pdf-to-word?source=pwa",
+      "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
     },
     {
       "name": "Sign PDF",
-      "url": "/?tool=sign"
+      "short_name": "Sign",
+      "description": "Sign a PDF document",
+      "url": "/sign-pdf?source=pwa",
+      "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
     }
-  ]
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  "file_handlers": [
+    {
+      "action": "/?tool=reader",
+      "accept": {
+        "application/pdf": [".pdf"]
+      },
+      "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }],
+      "launch_type": "single-client"
+    }
+  ],
+  "related_applications": []
 }

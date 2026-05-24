@@ -1,0 +1,89 @@
+# ============================================================
+#  PDF44 — Cloudflare Pages _redirects
+#  Clean SEO-friendly URLs rewritten to the SPA root (200 = rewrite).
+#  Each rewrite preserves the URL in the browser so canonical = clean URL.
+# ============================================================
+
+# ── Convert ──────────────────────────────────────────────────
+/pdf-to-word            /index.html?tool=pdf2word     200
+/pdf-to-jpg             /index.html?tool=pdf2jpg      200
+/pdf-to-png             /index.html?tool=pdf2png      200
+/pdf-to-excel           /index.html?tool=pdf2excel    200
+/pdf-to-text            /index.html?tool=pdf2text     200
+/jpg-to-pdf             /index.html?tool=jpg2pdf      200
+/image-to-pdf           /index.html?tool=jpg2pdf      200
+/html-to-pdf            /index.html?tool=html2pdf     200
+/text-to-pdf            /index.html?tool=text2pdf     200
+/epub-to-pdf            /index.html?tool=epub2pdf     200
+/epub-to-word           /index.html?tool=epub2word    200
+/mobi-to-pdf            /index.html?tool=mobi2pdf     200
+/kindle-to-pdf          /index.html?tool=mobi2pdf     200
+/zip-to-pdf             /index.html?tool=zip2pdf      200
+/scan-to-pdf            /index.html?tool=scan         200
+/pdf-from-url           /index.html?tool=fromurl      200
+
+# ── Organize ─────────────────────────────────────────────────
+/merge-pdf              /index.html?tool=merge        200
+/combine-pdf            /index.html?tool=merge        200
+/split-pdf              /index.html?tool=split        200
+/reorder-pdf-pages      /index.html?tool=organize     200
+/organize-pdf           /index.html?tool=organize     200
+/rotate-pdf             /index.html?tool=rotate       200
+/remove-pages-from-pdf  /index.html?tool=remove       200
+/delete-pdf-pages       /index.html?tool=remove       200
+/extract-pages-from-pdf /index.html?tool=extract      200
+/n-up-pdf               /index.html?tool=nup          200
+/insert-blank-page      /index.html?tool=insertblank  200
+
+# ── Optimize ─────────────────────────────────────────────────
+/compress-pdf           /index.html?tool=compress     200
+/reduce-pdf-size        /index.html?tool=compress     200
+/flatten-pdf            /index.html?tool=flatten      200
+/repair-pdf             /index.html?tool=repair       200
+/fix-pdf                /index.html?tool=repair       200
+
+# ── Edit ─────────────────────────────────────────────────────
+/edit-pdf               /index.html?tool=edit         200
+/annotate-pdf           /index.html?tool=editpdf      200
+/fill-pdf-form          /index.html?tool=fillpdf      200
+/fill-pdf               /index.html?tool=fillpdf      200
+/watermark-pdf          /index.html?tool=watermark    200
+/add-watermark-to-pdf   /index.html?tool=watermark    200
+/add-page-numbers       /index.html?tool=pagenumber   200
+/add-header-footer-pdf  /index.html?tool=header       200
+/crop-pdf               /index.html?tool=crop         200
+/pdf-background         /index.html?tool=background   200
+/bates-numbering        /index.html?tool=bates        200
+
+# ── Security ─────────────────────────────────────────────────
+/protect-pdf            /index.html?tool=protect      200
+/password-protect-pdf   /index.html?tool=protect      200
+/unlock-pdf             /index.html?tool=unlock       200
+/remove-pdf-password    /index.html?tool=unlock       200
+/sign-pdf               /index.html?tool=sign         200
+/esign-pdf              /index.html?tool=sign         200
+/redact-pdf             /index.html?tool=redact       200
+
+# ── Analysis ─────────────────────────────────────────────────
+/compare-pdf            /index.html?tool=compare      200
+/pdf-reader             /index.html?tool=reader       200
+/pdf-viewer             /index.html?tool=reader       200
+/pdf-metadata           /index.html?tool=info         200
+
+# ── Static pages ─────────────────────────────────────────────
+/install                /index.html?tool=install      200
+/contact                /index.html?tool=contact      200
+/privacy                /index.html?tool=privacy      200
+/privacy-policy         /index.html?tool=privacy      200
+
+# ── Legacy / common typo redirects (301 = permanent) ─────────
+/pdftoword              /pdf-to-word                  301
+/pdftojpg               /pdf-to-jpg                   301
+/mergepdf               /merge-pdf                    301
+/splitpdf               /split-pdf                    301
+/compresspdf            /compress-pdf                 301
+/signpdf                /sign-pdf                     301
+/protectpdf             /protect-pdf                  301
+
+# ── SPA fallback (must be last) ──────────────────────────────
+/*                      /index.html                   200
