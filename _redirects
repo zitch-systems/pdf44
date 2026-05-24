@@ -21,6 +21,9 @@
 /zip-to-pdf             /index.html?tool=zip2pdf      200
 /scan-to-pdf            /index.html?tool=scan         200
 /pdf-from-url           /index.html?tool=fromurl      200
+/ocr-pdf                /index.html?tool=ocr          200
+/ocr                    /index.html?tool=ocr          200
+/searchable-pdf         /index.html?tool=ocr          200
 
 # ── Organize ─────────────────────────────────────────────────
 /merge-pdf              /index.html?tool=merge        200
@@ -80,6 +83,11 @@
 /best-pdf-tools         /index.html?tool=best-pdf-tools           200
 /how-to-compress-pdf    /index.html?tool=how-to-compress-pdf      200
 /pdf-tools-for-students /index.html?tool=pdf-tools-for-students   200
+/pdf44-vs-ilovepdf      /index.html?tool=pdf44-vs-ilovepdf        200
+/pdf44-vs-i-love-pdf    /pdf44-vs-ilovepdf                        301
+/pdf-encryption-explained /index.html?tool=pdf-encryption-explained 200
+/convert-pdf-online-free /index.html?tool=convert-pdf-online-free 200
+/convert-pdf            /convert-pdf-online-free                  301
 
 # ── Legacy / common typo redirects (301 = permanent) ─────────
 /pdftoword              /pdf-to-word                  301

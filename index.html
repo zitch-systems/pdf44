@@ -63,6 +63,59 @@
 <link rel="apple-touch-icon" href="/icon.svg">
 <link rel="mask-icon" href="/icon.svg" color="#6366f1">
 
+<!--
+  ══ Search-engine + analytics verification ════════════════════
+  Replace each placeholder with your real token once you have it.
+  Each tag is harmless when left as a placeholder — it just won't
+  verify until the real value is in place.
+-->
+<meta name="google-site-verification" content="REPLACE_WITH_GSC_TOKEN">
+<meta name="msvalidate.01"            content="REPLACE_WITH_BING_WEBMASTER_TOKEN">
+<meta name="yandex-verification"      content="REPLACE_WITH_YANDEX_TOKEN">
+<meta name="p:domain_verify"          content="REPLACE_WITH_PINTEREST_TOKEN">
+
+<!--
+  ══ Analytics — privacy-aware, deferred, non-blocking ══════════
+  GA4 loads via `requestIdleCallback` after first paint so it never
+  competes with critical render. Replace G-XXXXXXXXXX with your real
+  Measurement ID. Set `window.PDF44_ANALYTICS = false` before this
+  script to disable entirely (e.g. for opt-out / DNT users).
+-->
+<script>
+(function () {
+  // Honour Do-Not-Track and the optional opt-out flag.
+  try {
+    if (navigator.doNotTrack === '1' || window.doNotTrack === '1') return;
+    if (window.PDF44_ANALYTICS === false) return;
+  } catch (e) { /* no-op */ }
+  const GA_ID = 'G-XXXXXXXXXX'; // ← replace with real GA4 Measurement ID
+  if (!GA_ID || GA_ID.indexOf('XXXX') !== -1) return; // skip while placeholder
+
+  function loadGa() {
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    window.gtag('config', GA_ID, {
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false
+    });
+  }
+
+  if (document.readyState === 'complete') {
+    (window.requestIdleCallback || setTimeout)(loadGa, 2000);
+  } else {
+    window.addEventListener('load', function () {
+      (window.requestIdleCallback || setTimeout)(loadGa, 2000);
+    });
+  }
+})();
+</script>
+
 <!-- ══ Performance — preconnect, preload, dns-prefetch ═════════ -->
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1924,6 +1977,10 @@ input[type="range"]::-moz-range-thumb {
         <a href="/best-pdf-tools" onclick="route('best-pdf-tools');return false;" title="Compare the best free PDF tools">Best PDF Tools</a>
         <a href="/how-to-compress-pdf" onclick="route('how-to-compress-pdf');return false;" title="Guide: how to compress a PDF">How to Compress PDF</a>
         <a href="/pdf-tools-for-students" onclick="route('pdf-tools-for-students');return false;" title="PDF tools for students">For Students</a>
+        <a href="/pdf44-vs-ilovepdf" onclick="route('pdf44-vs-ilovepdf');return false;" title="PDF44 vs iLovePDF comparison">PDF44 vs iLovePDF</a>
+        <a href="/convert-pdf-online-free" onclick="route('convert-pdf-online-free');return false;" title="Convert PDF online free">Convert Hub</a>
+        <a href="/pdf-encryption-explained" onclick="route('pdf-encryption-explained');return false;" title="PDF encryption explained">Encryption Guide</a>
+        <a href="/ocr-pdf" onclick="route('ocr');return false;" title="OCR PDF online free">OCR PDF</a>
         <a href="/install"        onclick="route('install');return false;"   title="Install PDF44 as a PWA">Install App</a>
         <a href="/privacy"        onclick="route('privacy');return false;"   title="PDF44 privacy policy">Privacy</a>
         <a href="/contact"        onclick="route('contact');return false;"   title="Contact PDF44 support">Contact</a>
@@ -2093,6 +2150,7 @@ const TOOLS = {
   zip2pdf:    { title:'ZIP to PDF',       desc:'Drop a ZIP of images and get one combined PDF.',          iconKey:'zip2pdf',    color:'yellow', cat:'convert', accepts:'.zip',                   multi:false },
   scan:       { title:'Scan to PDF',      desc:'Capture documents from your camera and save as PDF.',     iconKey:'scan',       color:'green',  cat:'convert', accepts:'',                       multi:false },
   fromurl:    { title:'PDF from URL',     desc:'Fetch a PDF from a web URL and process it locally.',      iconKey:'url',        color:'slate',  cat:'convert', accepts:'',                       multi:false },
+  ocr:        { title:'OCR PDF',          desc:'Recognise text in scanned PDFs — searchable PDF or .txt.', iconKey:'pdf2text',  color:'green',  cat:'convert', accepts:'.pdf,image/*',           multi:false },
 
   // ── ORGANISE ─────────────────────────────────────────────
   merge:      { title:'Merge PDF',        desc:'Combine multiple PDFs in any order into one file.',       iconKey:'merge',      color:'red',    cat:'organize', accepts:'.pdf',                  multi:true  },
@@ -2150,7 +2208,10 @@ const SPECIAL_PAGES = {
   // Hub / programmatic SEO landing pages.
   'best-pdf-tools':        { title:'Best free PDF tools (2026)',  desc:'Honest comparison of the top free online PDF tools', hideProcess:true },
   'how-to-compress-pdf':   { title:'How to compress a PDF',       desc:'Step-by-step guide with size targets & trade-offs',  hideProcess:true },
-  'pdf-tools-for-students':{ title:'PDF tools for students',      desc:'The best free PDF workflows for school & college',   hideProcess:true }
+  'pdf-tools-for-students':{ title:'PDF tools for students',      desc:'The best free PDF workflows for school & college',   hideProcess:true },
+  'pdf44-vs-ilovepdf':     { title:'PDF44 vs iLovePDF',           desc:'Honest side-by-side comparison',                     hideProcess:true },
+  'pdf-encryption-explained':{ title:'PDF encryption explained',  desc:'AES-128 vs AES-256, passwords & permissions',        hideProcess:true },
+  'convert-pdf-online-free':{ title:'Convert PDF online free',    desc:'Every conversion in one place',                      hideProcess:true }
 };
 
 // ============================================================
@@ -2234,12 +2295,15 @@ const TOOL_SLUGS = {
   redact:'redact-pdf', compare:'compare-pdf', reader:'pdf-reader',
   info:'pdf-metadata', nup:'n-up-pdf', insertblank:'insert-blank-page',
   flatten:'flatten-pdf', repair:'repair-pdf', scan:'scan-to-pdf',
-  zip2pdf:'zip-to-pdf', fromurl:'pdf-from-url',
+  zip2pdf:'zip-to-pdf', fromurl:'pdf-from-url', ocr:'ocr-pdf',
   install:'install', contact:'contact', privacy:'privacy', home:'',
   // Hub pages
   'best-pdf-tools':'best-pdf-tools',
   'how-to-compress-pdf':'how-to-compress-pdf',
-  'pdf-tools-for-students':'pdf-tools-for-students'
+  'pdf-tools-for-students':'pdf-tools-for-students',
+  'pdf44-vs-ilovepdf':'pdf44-vs-ilovepdf',
+  'pdf-encryption-explained':'pdf-encryption-explained',
+  'convert-pdf-online-free':'convert-pdf-online-free'
 };
 // Reverse map: slug → tool (for /pdf-to-word direct landings).
 const SLUG_TO_TOOL = (function () {
@@ -2299,6 +2363,7 @@ const SEO = {
   zip2pdf:    { title:'ZIP to PDF Free — Combine ZIP of Images into PDF | PDF44', desc:'Drop a ZIP archive of images and download a combined PDF free online. Private, no upload. PDF44.' },
   scan:       { title:'Scan to PDF Free — Use Your Camera to Scan Documents | PDF44', desc:'Capture documents with your phone or webcam and save as a multi-page PDF free online. Private, in-browser. PDF44.' },
   fromurl:    { title:'PDF from URL — Fetch a PDF by URL Free Online | PDF44', desc:'Fetch any PDF from a web URL and process it locally in your browser. Free and private. PDF44.' },
+  ocr:        { title:'OCR PDF Free — Make Scanned PDFs Searchable Online | PDF44', desc:'Run OCR on a scanned PDF or image, free and private — output as searchable PDF or plain text. 100+ languages. Runs in your browser via Tesseract.js. PDF44.' },
   flatten:    { title:'Flatten PDF Free — Bake In Annotations & Forms | PDF44', desc:'Flatten a PDF to permanently bake in annotations, comments and form fields. Free, private, in-browser. PDF44.' },
   repair:     { title:'Repair PDF Free — Recover a Corrupted PDF Online | PDF44', desc:'Try to repair a corrupted or unreadable PDF in your browser, free. No upload, full privacy. PDF44.' },
   edit:       { title:'Edit PDF Online Free — Add Text, Shapes & Images | PDF44', desc:'Edit a PDF in your browser free — add text, shapes, images. No upload, no watermark. Private and instant. PDF44.' },
@@ -2323,7 +2388,10 @@ const SEO = {
   // ── Hub / programmatic SEO landing pages ─────────────────────
   'best-pdf-tools':       { title:'Best Free Online PDF Tools in 2026 — Honest Comparison | PDF44', desc:'The best free online PDF tools in 2026 compared: PDF44 vs iLovePDF vs SmallPDF vs PDF24 vs Sejda. Privacy, speed, limits, features — full breakdown.' },
   'how-to-compress-pdf':  { title:'How to Compress a PDF in 2026 — Complete Step-by-Step Guide | PDF44', desc:'How to compress a PDF in 2026: complete guide covering size targets, quality trade-offs, image downsampling, font subsetting, and the privacy-first browser method.' },
-  'pdf-tools-for-students':{ title:'Best PDF Tools for Students 2026 — Free, Private, Mobile | PDF44', desc:'The best free PDF tools for students in 2026: merge research papers, compress for email, fill forms, sign documents, convert ebooks. Mobile-friendly, no signup.' }
+  'pdf-tools-for-students':{ title:'Best PDF Tools for Students 2026 — Free, Private, Mobile | PDF44', desc:'The best free PDF tools for students in 2026: merge research papers, compress for email, fill forms, sign documents, convert ebooks. Mobile-friendly, no signup.' },
+  'pdf44-vs-ilovepdf':    { title:'PDF44 vs iLovePDF — Honest Side-by-Side Comparison (2026) | PDF44', desc:'PDF44 vs iLovePDF: privacy model, free-tier limits, supported formats, watermarks, offline support, mobile UX. Honest side-by-side comparison with screenshots and data.' },
+  'pdf-encryption-explained':{ title:'PDF Encryption Explained — AES-128 vs AES-256, Passwords & Permissions | PDF44', desc:'How PDF encryption actually works: AES-128 vs AES-256, owner vs user passwords, permission flags (print, copy, edit), known weaknesses, and the privacy-first way to encrypt PDFs in your browser.' },
+  'convert-pdf-online-free':{ title:'Convert PDF Online Free — Every Conversion in One Place | PDF44', desc:'Convert PDF to Word, JPG, PNG, Excel, Text or back — free, online, in your browser. Plus EPUB, MOBI, HTML, ZIP and image conversions. No signup, no upload, no watermark.' }
 };
 
 function _setMeta(selector, attr, value) {
@@ -2412,7 +2480,7 @@ function updateSEO(tool) {
     if (oldFaq) oldFaq.remove();
   }
   // Remove hub-page Article/HowTo schema unless we're on a hub.
-  if (!/^(best-pdf-tools|how-to-compress-pdf|pdf-tools-for-students)$/.test(tool)) {
+  if (!/^(best-pdf-tools|how-to-compress-pdf|pdf-tools-for-students|pdf44-vs-ilovepdf|pdf-encryption-explained|convert-pdf-online-free)$/.test(tool)) {
     const oldArt = document.getElementById('ld-article');
     if (oldArt) oldArt.remove();
   }
@@ -2505,6 +2573,9 @@ function render() {
   if (state.currentTool === 'best-pdf-tools')        return renderHubBestTools(container);
   if (state.currentTool === 'how-to-compress-pdf')   return renderHubCompressGuide(container);
   if (state.currentTool === 'pdf-tools-for-students')return renderHubStudents(container);
+  if (state.currentTool === 'pdf44-vs-ilovepdf')     return renderHubVsIlovepdf(container);
+  if (state.currentTool === 'pdf-encryption-explained') return renderHubEncryption(container);
+  if (state.currentTool === 'convert-pdf-online-free') return renderHubConvertHub(container);
   return renderToolPage(container);
 }
 
@@ -3084,6 +3155,234 @@ function renderHubStudents(container) {
   });
 }
 
+// ---- Hub 4: PDF44 vs iLovePDF --------------------------------
+function renderHubVsIlovepdf(container) {
+  const published = '2026-04-02', updated = '2026-05-24';
+  container.innerHTML = `
+    <article class="seo-content" itemscope itemtype="https://schema.org/Article" style="max-width:920px;margin:0 auto;">
+      <div class="hero" style="padding-top:8px;">
+        <h1>PDF44 vs iLovePDF — <span>Honest Side-by-Side</span></h1>
+        <p>The two best-known free online PDF toolkits, compared on the metrics that actually decide which one you should use.</p>
+        <p style="font-size:12px;color:var(--text-3);margin-top:10px;">Published <time datetime="${published}" itemprop="datePublished">${published}</time> · Updated <time datetime="${updated}" itemprop="dateModified">${updated}</time></p>
+      </div>
+
+      <h2 class="seo-h2">TL;DR</h2>
+      <p class="seo-p"><strong>Pick PDF44</strong> if file privacy, offline use, or zero-signup matters. <strong>Pick iLovePDF</strong> if you want a polished desktop/mobile native app and don't mind your files being uploaded.</p>
+
+      <h2 class="seo-h2">The single biggest difference</h2>
+      <p class="seo-p"><strong>iLovePDF processes files on its servers.</strong> Your PDF is uploaded, processed, and then downloaded back. iLovePDF deletes files after 2 hours per their policy — but the file <em>does leave your device</em>, which is a different security model entirely.</p>
+      <p class="seo-p"><strong>PDF44 processes files in your browser.</strong> There is no backend. Your PDF never enters the network. You can verify this yourself: open DevTools → Network tab → drop a PDF → there is no outbound PDF traffic.</p>
+
+      <h2 class="seo-h2">Feature-by-feature table</h2>
+      <div style="overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin-top:12px;">
+      <table class="seo-table" style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="background:var(--bg-3);text-align:left;">
+          <th style="padding:10px 12px;">Feature</th>
+          <th style="padding:10px 12px;">PDF44</th>
+          <th style="padding:10px 12px;">iLovePDF</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:10px 12px;">Files leave your device</td><td style="padding:10px 12px;">No (client-side)</td><td style="padding:10px 12px;">Yes (uploaded)</td></tr>
+          <tr><td style="padding:10px 12px;">Account required</td><td style="padding:10px 12px;">No</td><td style="padding:10px 12px;">No on free tier</td></tr>
+          <tr><td style="padding:10px 12px;">Free-tier task limit</td><td style="padding:10px 12px;">None</td><td style="padding:10px 12px;">2 tasks/hour</td></tr>
+          <tr><td style="padding:10px 12px;">File size limit (free)</td><td style="padding:10px 12px;">None (browser RAM)</td><td style="padding:10px 12px;">15 MB on most tools</td></tr>
+          <tr><td style="padding:10px 12px;">Tool count</td><td style="padding:10px 12px;">41+ (incl. OCR, EPUB, MOBI)</td><td style="padding:10px 12px;">~25</td></tr>
+          <tr><td style="padding:10px 12px;">Watermarks on output</td><td style="padding:10px 12px;">No</td><td style="padding:10px 12px;">No on free tier</td></tr>
+          <tr><td style="padding:10px 12px;">Works offline</td><td style="padding:10px 12px;">Yes (PWA)</td><td style="padding:10px 12px;">Only via paid desktop app</td></tr>
+          <tr><td style="padding:10px 12px;">Native mobile app</td><td style="padding:10px 12px;">No (PWA install)</td><td style="padding:10px 12px;">Yes (iOS, Android)</td></tr>
+          <tr><td style="padding:10px 12px;">Native desktop app</td><td style="padding:10px 12px;">No (PWA install)</td><td style="padding:10px 12px;">Yes (paid)</td></tr>
+          <tr><td style="padding:10px 12px;">Pricing</td><td style="padding:10px 12px;">Free, no upsell</td><td style="padding:10px 12px;">Free + paid Premium</td></tr>
+          <tr><td style="padding:10px 12px;">EPUB / MOBI conversion</td><td style="padding:10px 12px;">Yes</td><td style="padding:10px 12px;">No</td></tr>
+          <tr><td style="padding:10px 12px;">OCR</td><td style="padding:10px 12px;">Yes (client-side Tesseract.js)</td><td style="padding:10px 12px;">Yes (server-side)</td></tr>
+          <tr><td style="padding:10px 12px;">Bates numbering</td><td style="padding:10px 12px;">Yes</td><td style="padding:10px 12px;">No</td></tr>
+          <tr><td style="padding:10px 12px;">Best-fit use case</td><td style="padding:10px 12px;">Sensitive docs, offline use</td><td style="padding:10px 12px;">Casual one-offs, mobile-app workflow</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h2 class="seo-h2">When iLovePDF is genuinely the better pick</h2>
+      <ul class="seo-list">
+        <li>You want a polished native mobile app and your IT team trusts iLovePDF's data-handling.</li>
+        <li>You're processing a 500 MB+ PDF on a low-spec phone — the server has more RAM than your browser.</li>
+        <li>Your team is already on the iLovePDF Premium plan and uses the desktop app daily.</li>
+      </ul>
+
+      <h2 class="seo-h2">When PDF44 is the better pick</h2>
+      <ul class="seo-list">
+        <li>You're handling contracts, tax documents, medical records, or anything where "file never leaves my device" is a hard requirement.</li>
+        <li>You hit iLovePDF's 2-task-per-hour cap and don't want to pay.</li>
+        <li>Your network is slow / unreliable — PDF44 works fully offline.</li>
+        <li>You need OCR or ebook conversion without giving the file to a third party.</li>
+      </ul>
+
+      <h2 class="seo-h2">Verdict</h2>
+      <p class="seo-p">Neither tool is wrong. They optimise for different things. If privacy and unlimited free use matter, ${_toolLink('home','use PDF44')}. If you want a polished native-app experience and don't mind a 2/hour cap, iLovePDF is a fine choice.</p>
+
+      <h2 class="seo-h2">Try the most-used tools</h2>
+      <div class="tools-grid" style="margin-top:14px;">
+        <a class="tool-card" href="${_toolHref('merge')}" onclick="route('merge');return false;"><div class="tool-card-icon ti-red" aria-hidden="true">${icon('merge', {size:22, stroke:2.2})}</div><div class="tool-card-title">Merge PDF</div><div class="tool-card-desc">No 2/hour cap</div></a>
+        <a class="tool-card" href="${_toolHref('compress')}" onclick="route('compress');return false;"><div class="tool-card-icon ti-cyan" aria-hidden="true">${icon('compress', {size:22, stroke:2.2})}</div><div class="tool-card-title">Compress PDF</div><div class="tool-card-desc">Stays on your device</div></a>
+        <a class="tool-card" href="${_toolHref('ocr')}" onclick="route('ocr');return false;"><div class="tool-card-icon ti-green" aria-hidden="true">${icon('pdf2text', {size:22, stroke:2.2})}</div><div class="tool-card-title">OCR PDF</div><div class="tool-card-desc">Client-side Tesseract.js</div></a>
+        <a class="tool-card" href="${_toolHref('sign')}" onclick="route('sign');return false;"><div class="tool-card-icon ti-blue" aria-hidden="true">${icon('sign', {size:22, stroke:2.2})}</div><div class="tool-card-title">Sign PDF</div><div class="tool-card-desc">No upload required</div></a>
+      </div>
+    </article>`;
+
+  _setJsonLd('ld-article', {
+    "@context":"https://schema.org","@type":"Article",
+    "headline":"PDF44 vs iLovePDF — Honest Side-by-Side Comparison (2026)",
+    "datePublished":published,"dateModified":updated,
+    "author":{"@id":"https://pdf44.com/#organization"},
+    "publisher":{"@id":"https://pdf44.com/#organization"},
+    "image":"https://pdf44.com/og-image.png",
+    "mainEntityOfPage":"https://pdf44.com/pdf44-vs-ilovepdf"
+  });
+}
+
+// ---- Hub 5: PDF encryption explained -------------------------
+function renderHubEncryption(container) {
+  const published = '2026-04-18', updated = '2026-05-24';
+  container.innerHTML = `
+    <article class="seo-content" itemscope itemtype="https://schema.org/Article" style="max-width:920px;margin:0 auto;">
+      <div class="hero" style="padding-top:8px;">
+        <h1><span>PDF Encryption</span> Explained</h1>
+        <p>AES-128 vs AES-256, owner vs user passwords, permission flags, known weaknesses, and the privacy-first way to encrypt PDFs in your browser.</p>
+        <p style="font-size:12px;color:var(--text-3);margin-top:10px;">Published <time datetime="${published}" itemprop="datePublished">${published}</time> · Updated <time datetime="${updated}" itemprop="dateModified">${updated}</time></p>
+      </div>
+
+      <h2 class="seo-h2">The 60-second summary</h2>
+      <ul class="seo-list">
+        <li><strong>AES-256</strong> is the strongest standard PDF encryption. Always pick it if your tool offers a choice.</li>
+        <li>The <strong>user password</strong> is required to <em>open</em> the file.</li>
+        <li>The <strong>owner password</strong> is required to <em>change permissions</em> (printing, copying, editing).</li>
+        <li>"Permission-only" encryption (owner password, no user password) is easy to bypass with any modern PDF reader — don't rely on it for security.</li>
+        <li>If you want true privacy, encrypt locally and never upload the file. ${_toolLink('protect','PDF44 Protect PDF')} encrypts entirely in your browser.</li>
+      </ul>
+
+      <h2 class="seo-h2">AES-128 vs AES-256</h2>
+      <p class="seo-p">Both use the Advanced Encryption Standard. AES-128 uses a 128-bit key; AES-256 uses 256-bit. Both are considered cryptographically secure against brute-force attacks today. AES-256 has more margin against future advances (including quantum) but is otherwise indistinguishable in practice. PDF 1.7 Extension Level 3 (Acrobat 9+) supports AES-256; Acrobat 7+ supports AES-128.</p>
+
+      <h2 class="seo-h2">The two passwords explained</h2>
+      <p class="seo-p">A PDF can hold two distinct passwords:</p>
+      <ul class="seo-list">
+        <li><strong>User password.</strong> Required to open the file at all. If set, the entire content stream is encrypted with a key derived from this password.</li>
+        <li><strong>Owner password.</strong> Required to <em>modify</em> permissions. The PDF can be opened by anyone (with the user password) but only the owner password lets you remove print/copy/edit restrictions.</li>
+      </ul>
+      <p class="seo-p">Setting <em>both</em> gives you graded access — staff can read but not extract; managers can do everything.</p>
+
+      <h2 class="seo-h2">Permission flags</h2>
+      <div style="overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin-top:12px;">
+      <table class="seo-table" style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="background:var(--bg-3);text-align:left;">
+          <th style="padding:10px 12px;">Flag</th>
+          <th style="padding:10px 12px;">What it controls</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:10px 12px;">printing</td><td style="padding:10px 12px;">Whether the document can be sent to a printer.</td></tr>
+          <tr><td style="padding:10px 12px;">modifying</td><td style="padding:10px 12px;">Whether annotations, page edits, or text changes are allowed.</td></tr>
+          <tr><td style="padding:10px 12px;">copying</td><td style="padding:10px 12px;">Whether text and graphics can be copied to the clipboard.</td></tr>
+          <tr><td style="padding:10px 12px;">documentAssembly</td><td style="padding:10px 12px;">Inserting/removing/rotating pages.</td></tr>
+          <tr><td style="padding:10px 12px;">fillingForms</td><td style="padding:10px 12px;">Filling in interactive form fields.</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h2 class="seo-h2">Known weaknesses</h2>
+      <ul class="seo-list">
+        <li><strong>Permission-only encryption is decorative.</strong> If a PDF has only an owner password and no user password, any modern PDF tool can ignore the permission flags. Use both passwords for real protection.</li>
+        <li><strong>Weak user passwords are brute-forceable.</strong> A 4-digit numeric "password" is broken in seconds. Use a passphrase of 12+ characters mixing words.</li>
+        <li><strong>PDF redaction ≠ encryption.</strong> Visually blacking out text with a rectangle doesn't remove it from the file. Use ${_toolLink('redact','true redaction')} which permanently deletes the underlying text.</li>
+      </ul>
+
+      <h2 class="seo-h2">The privacy-first encryption workflow</h2>
+      <ol class="seo-list">
+        <li>Open ${_toolLink('protect','PDF44 Protect PDF')} (it never uploads your file).</li>
+        <li>Set both a user password and an owner password — use a passphrase, not a PIN.</li>
+        <li>Pick AES-256 if your reader will be Acrobat 9+ or any modern app.</li>
+        <li>Untick any permission flags you want to deny (printing, copying, etc.).</li>
+        <li>Process — the encrypted PDF downloads to your device. Send it to recipients separately from the password (different channel).</li>
+      </ol>
+
+      <h2 class="seo-h2">Related tools</h2>
+      <div class="tools-grid" style="margin-top:14px;">
+        <a class="tool-card" href="${_toolHref('protect')}" onclick="route('protect');return false;"><div class="tool-card-icon ti-red" aria-hidden="true">${icon('protect', {size:22, stroke:2.2})}</div><div class="tool-card-title">Protect PDF</div><div class="tool-card-desc">Encrypt with AES-128/256</div></a>
+        <a class="tool-card" href="${_toolHref('unlock')}" onclick="route('unlock');return false;"><div class="tool-card-icon ti-green" aria-hidden="true">${icon('unlock', {size:22, stroke:2.2})}</div><div class="tool-card-title">Unlock PDF</div><div class="tool-card-desc">Remove a known password</div></a>
+        <a class="tool-card" href="${_toolHref('redact')}" onclick="route('redact');return false;"><div class="tool-card-icon ti-slate" aria-hidden="true">${icon('redact', {size:22, stroke:2.2})}</div><div class="tool-card-title">Redact PDF</div><div class="tool-card-desc">Permanently remove text</div></a>
+        <a class="tool-card" href="${_toolHref('sign')}" onclick="route('sign');return false;"><div class="tool-card-icon ti-blue" aria-hidden="true">${icon('sign', {size:22, stroke:2.2})}</div><div class="tool-card-title">Sign PDF</div><div class="tool-card-desc">Add e-signature</div></a>
+      </div>
+    </article>`;
+
+  _setJsonLd('ld-article', {
+    "@context":"https://schema.org","@type":"Article",
+    "headline":"PDF Encryption Explained — AES-128 vs AES-256, Passwords & Permissions",
+    "datePublished":published,"dateModified":updated,
+    "author":{"@id":"https://pdf44.com/#organization"},
+    "publisher":{"@id":"https://pdf44.com/#organization"},
+    "image":"https://pdf44.com/og-image.png",
+    "mainEntityOfPage":"https://pdf44.com/pdf-encryption-explained"
+  });
+}
+
+// ---- Hub 6: Convert PDF online free (broad hub) --------------
+function renderHubConvertHub(container) {
+  const published = '2026-04-25', updated = '2026-05-24';
+  const convertTools = ['pdf2word','pdf2jpg','pdf2png','pdf2excel','pdf2text','jpg2pdf','html2pdf','text2pdf','epub2pdf','epub2word','mobi2pdf','zip2pdf','scan','ocr','fromurl'];
+  container.innerHTML = `
+    <article class="seo-content" itemscope itemtype="https://schema.org/Article" style="max-width:920px;margin:0 auto;">
+      <div class="hero" style="padding-top:8px;">
+        <h1>Convert PDF Online <span>Free</span></h1>
+        <p>Every PDF conversion in one place — to and from Word, JPG, PNG, Excel, plain text, EPUB, MOBI, HTML, ZIP, and your camera. All free, all private, all in your browser.</p>
+        <p style="font-size:12px;color:var(--text-3);margin-top:10px;">Updated <time datetime="${updated}" itemprop="dateModified">${updated}</time></p>
+      </div>
+
+      <h2 class="seo-h2">Convert FROM PDF</h2>
+      <p class="seo-p">Turn a PDF into any of these editable / shareable formats:</p>
+      <div class="tools-grid" style="margin-top:14px;">
+        ${['pdf2word','pdf2jpg','pdf2png','pdf2excel','pdf2text'].map(function(k){
+          const t = TOOLS[k];
+          return '<a class="tool-card" href="' + _toolHref(k) + '" onclick="route(\''+k+'\');return false;"><div class="tool-card-icon ti-'+t.color+'" aria-hidden="true">'+icon(t.iconKey,{size:22,stroke:2.2})+'</div><div class="tool-card-title">'+t.title+'</div><div class="tool-card-desc">'+t.desc+'</div></a>';
+        }).join('')}
+      </div>
+
+      <h2 class="seo-h2" style="margin-top:32px;">Convert TO PDF</h2>
+      <p class="seo-p">Combine, capture or convert other formats into a PDF:</p>
+      <div class="tools-grid" style="margin-top:14px;">
+        ${['jpg2pdf','html2pdf','text2pdf','zip2pdf','scan','fromurl'].map(function(k){
+          const t = TOOLS[k];
+          return '<a class="tool-card" href="' + _toolHref(k) + '" onclick="route(\''+k+'\');return false;"><div class="tool-card-icon ti-'+t.color+'" aria-hidden="true">'+icon(t.iconKey,{size:22,stroke:2.2})+'</div><div class="tool-card-title">'+t.title+'</div><div class="tool-card-desc">'+t.desc+'</div></a>';
+        }).join('')}
+      </div>
+
+      <h2 class="seo-h2" style="margin-top:32px;">Ebook conversions</h2>
+      <p class="seo-p">Convert academic ebooks for accessibility or any-device reading:</p>
+      <div class="tools-grid" style="margin-top:14px;">
+        ${['epub2pdf','epub2word','mobi2pdf'].map(function(k){
+          const t = TOOLS[k];
+          return '<a class="tool-card" href="' + _toolHref(k) + '" onclick="route(\''+k+'\');return false;"><div class="tool-card-icon ti-'+t.color+'" aria-hidden="true">'+icon(t.iconKey,{size:22,stroke:2.2})+'</div><div class="tool-card-title">'+t.title+'</div><div class="tool-card-desc">'+t.desc+'</div></a>';
+        }).join('')}
+      </div>
+
+      <h2 class="seo-h2" style="margin-top:32px;">Make scanned PDFs searchable</h2>
+      <p class="seo-p">If your PDF is a scanned image, ${_toolLink('ocr','run OCR')} first so the text is selectable and indexable. PDF44's OCR runs client-side via Tesseract.js in 16 languages.</p>
+
+      <h2 class="seo-h2" style="margin-top:32px;">Why every PDF44 conversion is free, private and unlimited</h2>
+      <ul class="seo-list">
+        <li>No backend. Conversions run in your browser via <code>pdf-lib</code>, <code>pdf.js</code>, <code>jsPDF</code>, <code>Tesseract.js</code> and <code>html2canvas</code> — all open source.</li>
+        <li>Your file never leaves your device. Open DevTools → Network and verify zero PDF upload traffic.</li>
+        <li>No 2-task-per-hour limit. No file-size cap (browser RAM only).</li>
+        <li>No watermark on output. No signup. No paid tier.</li>
+      </ul>
+    </article>`;
+
+  _setJsonLd('ld-article', {
+    "@context":"https://schema.org","@type":"CollectionPage",
+    "name":"Convert PDF Online Free — Every Conversion in One Place",
+    "datePublished":published,"dateModified":updated,
+    "publisher":{"@id":"https://pdf44.com/#organization"},
+    "image":"https://pdf44.com/og-image.png",
+    "url":"https://pdf44.com/convert-pdf-online-free"
+  });
+}
+
 // ============================================================
 //  GENERIC TOOL PAGE
 // ============================================================
@@ -3368,7 +3667,37 @@ function getToolSettingsHTML(toolKey) {
         <div class="form-group"><label class="form-label">Page size</label>
           <select class="form-select" id="textPageSize"><option value="a4">A4</option><option value="letter">Letter</option></select></div>
       </div>`;
-    case 'pdf2text': return `<p style="font-size:13px;color:var(--text-2);line-height:1.6;">Extracts text from each page using pdf.js. For scanned PDFs without embedded text, results will be sparse — full OCR requires a server.</p>`;
+    case 'pdf2text': return `<p style="font-size:13px;color:var(--text-2);line-height:1.6;">Extracts text from each page using pdf.js. For scanned PDFs without embedded text, use the <a href="/ocr-pdf" onclick="route('ocr');return false;">OCR PDF tool</a> instead.</p>`;
+    case 'ocr': return `
+      <p style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:12px;">Runs Tesseract.js OCR fully in your browser — files never leave your device. Tesseract weighs ~1.5 MB and downloads only when you click <em>Process</em>. Expect ~3–8 seconds per page on a modern laptop.</p>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Language</label>
+          <select class="form-select" id="ocrLang">
+            <option value="eng">English</option>
+            <option value="spa">Spanish</option>
+            <option value="fra">French</option>
+            <option value="deu">German</option>
+            <option value="ita">Italian</option>
+            <option value="por">Portuguese</option>
+            <option value="nld">Dutch</option>
+            <option value="pol">Polish</option>
+            <option value="rus">Russian</option>
+            <option value="ara">Arabic</option>
+            <option value="chi_sim">Chinese (Simplified)</option>
+            <option value="chi_tra">Chinese (Traditional)</option>
+            <option value="jpn">Japanese</option>
+            <option value="kor">Korean</option>
+            <option value="hin">Hindi</option>
+            <option value="tur">Turkish</option>
+          </select></div>
+        <div class="form-group"><label class="form-label">Output</label>
+          <select class="form-select" id="ocrOutput">
+            <option value="searchable">Searchable PDF (text + image)</option>
+            <option value="text">Plain text (.txt)</option>
+          </select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Render DPI (higher = better OCR, slower)</label>
+        <select class="form-select" id="ocrDpi"><option value="150">150 DPI (fast)</option><option value="200" selected>200 DPI (recommended)</option><option value="300">300 DPI (max accuracy)</option></select></div>`;
     case 'edit': return `
       <div class="form-group"><label class="form-label">Text to add</label>
         <input type="text" class="form-input" id="editText" placeholder="Your text here"></div>
@@ -4135,6 +4464,7 @@ async function processCurrentTool() {
       case 'mobi2pdf':    await processMobi2Pdf(); break;
       case 'fillpdf':     await processFillPdf(); break;
       case 'editpdf':     await processEditPdf(); break;
+      case 'ocr':         await processOcr(); break;
       default: toast('Tool not implemented','warning');
     }
   } catch (e) {
@@ -4478,6 +4808,141 @@ async function processPdf2Text() {
   saveAs(blob, 'extracted-text.txt');
   showResult('extracted-text.txt', blob.size, 'TXT');
   toast('Text extracted','success');
+}
+
+// ============================================================
+//  OCR — lazy-loaded Tesseract.js worker (browser, fully client-side).
+//  We download Tesseract only when the user clicks Process so we never
+//  pay the ~1.5 MB cost for visitors who don't need OCR.
+// ============================================================
+function _loadScript(src) {
+  return new Promise(function (resolve, reject) {
+    if (document.querySelector('script[src="' + src + '"]')) return resolve();
+    const s = document.createElement('script');
+    s.src = src; s.async = true;
+    s.onload = function () { resolve(); };
+    s.onerror = function () { reject(new Error('Failed to load ' + src)); };
+    document.head.appendChild(s);
+  });
+}
+let _ocrWorkerCache = null;
+async function _getOcrWorker(lang) {
+  await _loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js');
+  if (typeof Tesseract === 'undefined') throw new Error('Tesseract.js failed to load');
+  // Cache the worker between runs only if the language matches.
+  if (_ocrWorkerCache && _ocrWorkerCache.lang === lang) return _ocrWorkerCache.worker;
+  if (_ocrWorkerCache) { try { await _ocrWorkerCache.worker.terminate(); } catch(e){} _ocrWorkerCache = null; }
+  showProgress(2, 'Downloading OCR engine (~1.5 MB)…');
+  const worker = await Tesseract.createWorker(lang, 1, {
+    logger: function (m) {
+      if (m && m.status === 'recognizing text' && typeof m.progress === 'number') {
+        showProgress(20 + m.progress * 75, 'Running OCR: ' + Math.round(m.progress * 100) + '%');
+      }
+    }
+  });
+  _ocrWorkerCache = { worker: worker, lang: lang };
+  return worker;
+}
+
+async function processOcr() {
+  if (!state.files.length) { toast('Add a PDF or image first', 'error'); return; }
+  const lang   = document.getElementById('ocrLang').value || 'eng';
+  const output = document.getElementById('ocrOutput').value || 'searchable';
+  const dpi    = parseInt(document.getElementById('ocrDpi').value || '200', 10);
+  const scale  = dpi / 72;                  // PDF default is 72 DPI
+
+  showProgress(2, 'Starting OCR…');
+  const worker = await _getOcrWorker(lang);
+
+  const f = state.files[0];
+  const isImage = !f.pdfDoc;                // image input falls through pdfjs
+
+  // ── Build list of {canvas, w, h} bitmaps to OCR ──
+  const pages = [];
+  if (isImage) {
+    // Single image
+    const img = await new Promise(function (res, rej) {
+      const i = new Image();
+      i.onload = function () { res(i); };
+      i.onerror = rej;
+      i.src = URL.createObjectURL(new Blob([f.arrayBuffer]));
+    });
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth; c.height = img.naturalHeight;
+    c.getContext('2d').drawImage(img, 0, 0);
+    pages.push({ canvas: c, w: img.naturalWidth, h: img.naturalHeight });
+  } else {
+    await loadPdfJs(f);
+    const pc = f.pdfjsDoc.numPages;
+    for (let i = 1; i <= pc; i++) {
+      showProgress(2 + (i / pc) * 12, 'Rendering page ' + i + ' of ' + pc + '…');
+      const page = await f.pdfjsDoc.getPage(i);
+      const viewport = page.getViewport({ scale: scale });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width; canvas.height = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport }).promise;
+      pages.push({ canvas: canvas, w: viewport.width / scale, h: viewport.height / scale });
+    }
+  }
+
+  // ── Run OCR on each page ──
+  const pageResults = [];
+  for (let i = 0; i < pages.length; i++) {
+    showProgress(15 + (i / pages.length) * 70, 'OCR page ' + (i + 1) + ' of ' + pages.length + '…');
+    const { data } = await worker.recognize(pages[i].canvas);
+    pageResults.push({ text: data.text, words: data.words || [], hocr: data.hocr || '' });
+  }
+
+  if (output === 'text') {
+    let all = '';
+    pageResults.forEach(function (p, i) { all += '\n--- Page ' + (i + 1) + ' ---\n' + p.text + '\n'; });
+    const blob = new Blob([all.trim() + '\n'], { type: 'text/plain;charset=utf-8' });
+    const name = (f.name || 'document').replace(/\.[^.]+$/, '') + '-ocr.txt';
+    saveAs(blob, name);
+    showResult(name, blob.size, 'TXT');
+    toast('OCR complete — text extracted', 'success');
+    return;
+  }
+
+  // ── Searchable PDF: embed page image and overlay invisible text layer ──
+  showProgress(90, 'Building searchable PDF…');
+  const out = await PDFLib.PDFDocument.create();
+  const font = await out.embedFont(PDFLib.StandardFonts.Helvetica);
+  for (let i = 0; i < pages.length; i++) {
+    const p = pages[i];
+    // Use the original page size in points (1pt = 1/72in).
+    const pageW = p.w;
+    const pageH = p.h;
+    const page = out.addPage([pageW, pageH]);
+    const pngData = await new Promise(function (res) { p.canvas.toBlob(function (b) { b.arrayBuffer().then(res); }, 'image/png'); });
+    const img = await out.embedPng(pngData);
+    page.drawImage(img, { x: 0, y: 0, width: pageW, height: pageH });
+    // Overlay invisible (alpha-0) text using bounding boxes from Tesseract.
+    // Tesseract word.bbox is in canvas pixels (scaled DPI) — convert back to PDF points.
+    const r = pageResults[i];
+    if (r.words && r.words.length) {
+      for (let w = 0; w < r.words.length; w++) {
+        const word = r.words[w];
+        if (!word.text || !word.bbox) continue;
+        const bx = word.bbox.x0 / scale, by = word.bbox.y0 / scale;
+        const bw = (word.bbox.x1 - word.bbox.x0) / scale;
+        const bh = (word.bbox.y1 - word.bbox.y0) / scale;
+        if (bw <= 0 || bh <= 0) continue;
+        // PDF Y is bottom-up; canvas Y is top-down.
+        const y = pageH - by - bh;
+        const fontSize = Math.max(2, bh * 0.85);
+        page.drawText(word.text, {
+          x: bx, y: y, size: fontSize, font: font,
+          color: PDFLib.rgb(0, 0, 0), opacity: 0
+        });
+      }
+    }
+    showProgress(90 + (i / pages.length) * 8, 'Writing page ' + (i + 1) + ' of ' + pages.length + '…');
+  }
+  const bytes = await out.save();
+  const outName = (f.name || 'document').replace(/\.[^.]+$/, '') + '-ocr.pdf';
+  downloadAndShow(bytes, outName);
+  toast('OCR complete — searchable PDF ready', 'success');
 }
 
 async function processEdit() {
