@@ -2494,17 +2494,25 @@ function updateSEO(tool) {
 
 // ============================================================
 //  ADSTERRA BANNER ADS
-//  Two formats: 728×90 leaderboard (desktop) · 320×50 banner (mobile)
-//  inject via createElement so scripts run after innerHTML is set.
+//  Three formats: 728×90 leaderboard (desktop banner slots) ·
+//  320×50 banner (mobile banner slots) · 300×250 rectangle
+//  (in-content slots). Injected via createElement so the scripts
+//  run after innerHTML is set.
 // ============================================================
 var _AD_DESK = { key: 'e7659e71460e94155aa12f1de3482b82', w: 728, h: 90 };
 var _AD_MOB  = { key: '6366b49cc04357ea126e44bac182d906', w: 320, h: 50 };
+var _AD_RECT = { key: '8468d7261d22406749b755f0d3f69f45', w: 300, h: 250 };
+
+// Slots that show the 300×250 rectangle on every viewport. Everything
+// else gets the responsive leaderboard/banner.
+var _AD_RECT_SLOTS = ['ad-home-mid', 'ad-home-bottom', 'ad-tool-bottom'];
 
 function _injectAd(id) {
   var el = document.getElementById(id);
   if (!el || el.dataset.adInit) return;
   el.dataset.adInit = '1';
-  var ad = (window.innerWidth >= 728) ? _AD_DESK : _AD_MOB;
+  var ad = (_AD_RECT_SLOTS.indexOf(id) !== -1) ? _AD_RECT
+         : (window.innerWidth >= 728) ? _AD_DESK : _AD_MOB;
   el.style.minHeight = ad.h + 'px';
   var opt = document.createElement('script');
   opt.textContent = "atOptions={'key':'" + ad.key + "','format':'iframe','height':" + ad.h + ",'width':" + ad.w + ",'params':{}};";
