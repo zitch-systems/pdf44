@@ -1,4 +1,4 @@
-// PDF44 + Monetag Service Worker — v3
+// PDF44 + Monetag Service Worker — v4
 // Combines offline/PWA caching with Monetag push notifications
 
 // ── Monetag push config (zone 11042361) ──────────────────────────
@@ -6,12 +6,12 @@ self.options = {
   "domain": "3nbf4.com",
   "zoneId": 11042361
 };
-self.lary = "";
+self.lary = "a5f2ac517d66622a8409cbbbd127e584";
 importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw');
 
 // ── PDF44 PWA caching ─────────────────────────────────────────────
-const CACHE_NAME    = 'pdf44-v3';
-const RUNTIME_CACHE = 'pdf44-runtime-v3';
+const CACHE_NAME    = 'pdf44-v4';
+const RUNTIME_CACHE = 'pdf44-runtime-v4';
 
 const APP_SHELL = [
   '/',

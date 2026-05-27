@@ -1,23 +1,47 @@
+# ============================================================
+#  PDF44 — Cloudflare Pages _headers
+#  Security, caching, and Core-Web-Vitals friendly defaults.
+# ============================================================
+
 /*
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
-  X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=self, microphone=(), geolocation=()
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), interest-cohort=(), browsing-topics=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Cross-Origin-Embedder-Policy: unsafe-none
+  X-DNS-Prefetch-Control: on
+  X-UA-Compatible: IE=edge
+  X-Robots-Tag: index, follow, max-image-preview:large, max-snippet:-1
+  # CSP in Report-Only mode. Monetag (5 active nap5k.com zones) serves ad
+  # creatives and sub-scripts from rotating domains that can't be fully
+  # enumerated, so we MONITOR rather than ENFORCE to avoid silently blocking
+  # ad revenue. Violations are still logged. To enforce later (once you've
+  # confirmed which ad domains actually appear in the reports), rename this
+  # header to `Content-Security-Policy` and add the observed domains to
+  # script-src. `'unsafe-inline'` is required by the inline SPA script;
+  # `'unsafe-eval'` is required by pdf.js.
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://www.google-analytics.com https://nap5k.com https://3nbf4.com https://*.monetag.com https://googlesyndication.com https://*.doubleclick.net https://*.googlesyndication.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: blob: data:; worker-src 'self' blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; child-src 'self' blob: https:; frame-src 'self' https:; manifest-src 'self'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'; upgrade-insecure-requests
 
-/index.html
-  Cache-Control: no-cache, must-revalidate
+# HTML must always be revalidated so SEO/meta updates ship instantly.
+/
+  Cache-Control: public, max-age=0, must-revalidate
   Content-Type: text/html; charset=utf-8
 
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+  Content-Type: text/html; charset=utf-8
+
+# Service worker must never be cached at the edge — required for updates.
 /sw.js
-  Cache-Control: no-cache, must-revalidate
+  Cache-Control: no-cache, no-store, must-revalidate
   Content-Type: application/javascript; charset=utf-8
   Service-Worker-Allowed: /
 
 /manifest.json
   Cache-Control: public, max-age=3600
-  Content-Type: application/manifest+json
+  Content-Type: application/manifest+json; charset=utf-8
 
 /sitemap.xml
   Cache-Control: public, max-age=86400
@@ -27,6 +51,39 @@
   Cache-Control: public, max-age=86400
   Content-Type: text/plain; charset=utf-8
 
+# llms.txt — emerging convention for what LLM agents should fetch.
+/llms.txt
+  Cache-Control: public, max-age=86400
+  Content-Type: text/plain; charset=utf-8
+  X-Robots-Tag: index, follow
+
+# Open-graph card.
+/og-image.svg
+  Cache-Control: public, max-age=604800, immutable
+  Content-Type: image/svg+xml; charset=utf-8
+
+# Icons / static assets — long cache, immutable.
 /*.svg
-  Cache-Control: public, max-age=604800
+  Cache-Control: public, max-age=604800, immutable
   Content-Type: image/svg+xml
+
+/*.png
+  Cache-Control: public, max-age=2592000, immutable
+
+/*.webp
+  Cache-Control: public, max-age=2592000, immutable
+
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+/*.css
+  Cache-Control: public, max-age=2592000, immutable
+
+/*.js
+  Cache-Control: public, max-age=2592000, immutable
+
+# JSON-LD / structured-data files (if added later)
+/*.jsonld
+  Cache-Control: public, max-age=86400
+  Content-Type: application/ld+json; charset=utf-8

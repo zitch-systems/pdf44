@@ -1,299 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
+  <!-- ═══ Homepage ═══════════════════════════════════════════ -->
   <url>
     <loc>https://pdf44.com/</loc>
-    <lastmod>2026-05-19</lastmod>
+    <lastmod>2026-05-24</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://pdf44.com/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://pdf44.com/"/>
+    <image:image>
+      <image:loc>https://pdf44.com/og-image.png</image:loc>
+      <image:title>PDF44 — Free Online PDF Tools</image:title>
+    </image:image>
   </url>
 
-  <url>
-    <loc>https://pdf44.com/?tool=merge</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- ═══ Convert tools ══════════════════════════════════════ -->
+  <url><loc>https://pdf44.com/pdf-to-word</loc>     <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://pdf44.com/pdf-to-jpg</loc>      <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://pdf44.com/pdf-to-png</loc>      <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pdf44.com/pdf-to-excel</loc>    <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pdf44.com/pdf-to-text</loc>     <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/jpg-to-pdf</loc>      <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://pdf44.com/image-to-pdf</loc>    <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pdf44.com/html-to-pdf</loc>     <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/text-to-pdf</loc>     <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdf44.com/epub-to-pdf</loc>     <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pdf44.com/epub-to-word</loc>    <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/mobi-to-pdf</loc>     <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/zip-to-pdf</loc>      <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdf44.com/scan-to-pdf</loc>     <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/pdf-from-url</loc>    <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdf44.com/ocr-pdf</loc>         <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.95</priority></url>
 
-  <url>
-    <loc>https://pdf44.com/?tool=split</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- ═══ Organize tools ═════════════════════════════════════ -->
+  <url><loc>https://pdf44.com/merge-pdf</loc>                <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.98</priority></url>
+  <url><loc>https://pdf44.com/split-pdf</loc>                <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://pdf44.com/reorder-pdf-pages</loc>        <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdf44.com/rotate-pdf</loc>               <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/remove-pages-from-pdf</loc>    <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/extract-pages-from-pdf</loc>   <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/n-up-pdf</loc>                 <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdf44.com/insert-blank-page</loc>        <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
-  <url>
-    <loc>https://pdf44.com/?tool=compress</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- ═══ Optimize tools ═════════════════════════════════════ -->
+  <url><loc>https://pdf44.com/compress-pdf</loc>             <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.98</priority></url>
+  <url><loc>https://pdf44.com/flatten-pdf</loc>              <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://pdf44.com/repair-pdf</loc>               <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
 
-  <url>
-    <loc>https://pdf44.com/?tool=rotate</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- ═══ Edit tools ═════════════════════════════════════════ -->
+  <url><loc>https://pdf44.com/edit-pdf</loc>                 <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pdf44.com/fill-pdf-form</loc>            <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pdf44.com/watermark-pdf</loc>            <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/add-page-numbers</loc>         <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdf44.com/add-header-footer-pdf</loc>    <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://pdf44.com/crop-pdf</loc>                 <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdf44.com/pdf-background</loc>           <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://pdf44.com/bates-numbering</loc>          <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
 
-  <url>
-    <loc>https://pdf44.com/?tool=remove</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- ═══ Security tools ═════════════════════════════════════ -->
+  <url><loc>https://pdf44.com/protect-pdf</loc>              <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pdf44.com/unlock-pdf</loc>               <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://pdf44.com/sign-pdf</loc>                 <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.95</priority></url>
+  <url><loc>https://pdf44.com/redact-pdf</loc>               <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
 
-  <url>
-    <loc>https://pdf44.com/?tool=extract</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- ═══ Analysis tools ═════════════════════════════════════ -->
+  <url><loc>https://pdf44.com/compare-pdf</loc>              <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://pdf44.com/pdf-reader</loc>               <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://pdf44.com/pdf-metadata</loc>             <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 
-  <url>
-    <loc>https://pdf44.com/?tool=organize</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- ═══ Static pages ═══════════════════════════════════════ -->
+  <url><loc>https://pdf44.com/install</loc>                  <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://pdf44.com/contact</loc>                  <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://pdf44.com/privacy</loc>                  <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
 
-  <url>
-    <loc>https://pdf44.com/?tool=pdf2jpg</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- ═══ Hub / programmatic SEO pages ══════════════════════ -->
+  <url><loc>https://pdf44.com/best-pdf-tools</loc>           <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/how-to-compress-pdf</loc>      <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/pdf-tools-for-students</loc>   <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdf44.com/pdf44-vs-ilovepdf</loc>        <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://pdf44.com/pdf-encryption-explained</loc> <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://pdf44.com/convert-pdf-online-free</loc>  <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
 
-  <url>
-    <loc>https://pdf44.com/?tool=pdf2png</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=jpg2pdf</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=html2pdf</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=text2pdf</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=pdf2text</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=pdf2word</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=pdf2excel</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=edit</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=editpdf</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=watermark</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=pagenumber</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=crop</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=fillpdf</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=protect</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=unlock</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=sign</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=redact</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=compare</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=info</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=nup</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=insertblank</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=flatten</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=header</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=background</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=bates</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=scan</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=zip2pdf</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=reader</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=fromurl</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=repair</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=epub2pdf</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=epub2word</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://pdf44.com/?tool=mobi2pdf</loc>
-    <lastmod>2026-05-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
+  <!-- ═══ Legacy ?tool= URLs (kept for backwards-compat) ═════ -->
+  <url><loc>https://pdf44.com/?tool=merge</loc>     <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://pdf44.com/?tool=split</loc>     <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://pdf44.com/?tool=compress</loc>  <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://pdf44.com/?tool=pdf2word</loc>  <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://pdf44.com/?tool=sign</loc>      <lastmod>2026-05-24</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
 
 </urlset>
