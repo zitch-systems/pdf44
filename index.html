@@ -441,11 +441,8 @@
 }
 </script>
 
-<!-- ══ Monetag verification ════════════════════════════════════ -->
-<meta name="monetag" content="a5f2ac517d66622a8409cbbbd127e584">
-
 <!--
-  ══ Heavy libraries (PDF processing + Monetag) ═══════════════
+  ══ Heavy libraries (PDF processing) ════════════════════════
   Loaded with `defer` so they no longer block first paint / LCP.
   `defer` preserves execution order, runs after HTML is parsed,
   before DOMContentLoaded. All app code below also uses defer
@@ -458,30 +455,6 @@
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
-<!--
-  Monetag ad zones — all five served from nap5k.com. They are injected
-  after the page `load` event via requestIdleCallback so they never block
-  first paint / LCP. Every zone is still activated; it just happens off the
-  critical render path. (Replaces the old quge5.com tag + single nap5k tag.)
--->
-<script>
-  (function () {
-    var MONETAG_ZONES = ['11042476', '11052793', '11052794', '11052796', '11052797'];
-    function loadMonetagZones() {
-      MONETAG_ZONES.forEach(function (zone) {
-        var s = document.createElement('script');
-        s.dataset.zone = zone;
-        s.src = 'https://nap5k.com/tag.min.js';
-        s.async = true;
-        (document.body || document.documentElement).appendChild(s);
-      });
-    }
-    var schedule = window.requestIdleCallback || function (f) { setTimeout(f, 1200); };
-    if (document.readyState === 'complete') schedule(loadMonetagZones);
-    else window.addEventListener('load', function () { schedule(loadMonetagZones); });
-  })();
-</script>
 
 <style>
 /* ============================================================
@@ -1496,19 +1469,30 @@ input[type="range"]::-moz-range-thumb {
    AD SLOTS
    ============================================================ */
 .ad-slot {
-  display: block;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
+  margin: 20px 0;
+  min-height: 50px;
 }
-.ad-banner { min-height: 64px; margin: 0; padding: 0; }
-.ad-rectangle { min-height: 90px; margin: 20px 0; }
+@media (min-width: 728px) {
+  .ad-slot { min-height: 90px; }
+}
 .ad-sticky {
   position: fixed;
   bottom: 0; left: var(--sidebar-w); right: 0;
   z-index: 80;
-  min-height: 60px;
+  min-height: 50px;
   background: var(--bg-2);
   border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+@media (min-width: 728px) {
+  .ad-sticky { min-height: 90px; }
 }
 
 /* ============================================================
@@ -2001,8 +1985,7 @@ input[type="range"]::-moz-range-thumb {
 </div>
 
 <!-- STICKY BOTTOM AD -->
-<!-- Monetag Sticky Bottom -->
-<div id="adSticky" class="ad-slot ad-sticky" style="text-align:center;"></div>
+<div id="adSticky" class="ad-slot ad-sticky"></div>
 
 <div class="modal-overlay" id="modal">
   <div class="modal">
@@ -2510,6 +2493,33 @@ function updateSEO(tool) {
 }
 
 // ============================================================
+//  ADSTERRA BANNER ADS
+//  Two formats: 728×90 leaderboard (desktop) · 320×50 banner (mobile)
+//  inject via createElement so scripts run after innerHTML is set.
+// ============================================================
+var _AD_DESK = { key: 'e7659e71460e94155aa12f1de3482b82', w: 728, h: 90 };
+var _AD_MOB  = { key: '6366b49cc04357ea126e44bac182d906', w: 320, h: 50 };
+
+function _injectAd(id) {
+  var el = document.getElementById(id);
+  if (!el || el.dataset.adInit) return;
+  el.dataset.adInit = '1';
+  var ad = (window.innerWidth >= 728) ? _AD_DESK : _AD_MOB;
+  el.style.minHeight = ad.h + 'px';
+  var opt = document.createElement('script');
+  opt.textContent = "atOptions={'key':'" + ad.key + "','format':'iframe','height':" + ad.h + ",'width':" + ad.w + ",'params':{}};";
+  el.appendChild(opt);
+  var inv = document.createElement('script');
+  inv.src = 'https://www.highperformanceformat.com/' + ad.key + '/invoke.js';
+  el.appendChild(inv);
+}
+
+function initAds() {
+  ['ad-home-top', 'ad-home-mid', 'ad-home-bottom',
+   'ad-tool-top', 'ad-tool-bottom', 'adSticky'].forEach(_injectAd);
+}
+
+// ============================================================
 //  ROUTER
 // ============================================================
 function route(tool) {
@@ -2551,6 +2561,7 @@ function route(tool) {
   }
 
   render();
+  try { initAds(); } catch(e) {}
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   // ── SEO: full dynamic metadata + JSON-LD update per route ──
@@ -2610,7 +2621,7 @@ function renderHome(container) {
         '</div>'
       ).join('') + '</div></div>';
   })()}
-  <!-- Monetag Rectangle --><div class="ad-slot ad-rectangle" style="text-align:center;min-height:90px;"></div>
+  <div id="ad-home-top" class="ad-slot"></div>
   `;
 
   CATEGORIES.forEach(cat => {
@@ -2633,6 +2644,8 @@ function renderHome(container) {
     });
     html += `</div></div>`;
   });
+
+  html += `<div id="ad-home-mid" class="ad-slot"></div>`;
 
   html += `
   <!-- SEO Rich Content Block -->
@@ -2727,6 +2740,7 @@ function renderHome(container) {
       </div>
     </div>
   </section>`;
+  html += `<div id="ad-home-bottom" class="ad-slot"></div>`;
   html += renderInstallSection();
   html += renderContactBlock();
   container.innerHTML = html;
@@ -3442,13 +3456,13 @@ function renderToolPage(container) {
     html += `<h1 class="tool-seo-h1">${toolForH1.title} — Free Online Tool</h1>
     <p class="tool-seo-desc">${toolForH1.desc} Free, private, no file upload needed.</p>`;
   }
+  html += `<div id="ad-tool-top" class="ad-slot"></div>`;
   html += `<div class="results-area" id="resultsArea"></div>`;
-
-  // Ad
-  html += `<!-- Monetag Rectangle --><div class="ad-slot ad-rectangle" style="text-align:center;min-height:90px;"></div>`;
 
   // ── Per-tool SEO + GEO content block (long-tail keywords, AI citation) ──
   html += renderToolSEOBlock(state.currentTool);
+
+  html += `<div id="ad-tool-bottom" class="ad-slot"></div>`;
 
   container.innerHTML = html;
   setupDragDrop();
@@ -6554,7 +6568,6 @@ window.addEventListener('DOMContentLoaded', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js', { scope: '/' })
       .then(reg => {
-        // Force update so new Monetag push SW is picked up immediately
         reg.update();
         console.log('PDF44 SW registered, scope:', reg.scope);
       })

@@ -1,17 +1,9 @@
-// PDF44 + Monetag Service Worker — v4
-// Combines offline/PWA caching with Monetag push notifications
-
-// ── Monetag push config (zone 11042361) ──────────────────────────
-self.options = {
-  "domain": "3nbf4.com",
-  "zoneId": 11042361
-};
-self.lary = "a5f2ac517d66622a8409cbbbd127e584";
-importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw');
+// PDF44 Service Worker — v5
+// PWA offline caching
 
 // ── PDF44 PWA caching ─────────────────────────────────────────────
-const CACHE_NAME    = 'pdf44-v4';
-const RUNTIME_CACHE = 'pdf44-runtime-v4';
+const CACHE_NAME    = 'pdf44-v5';
+const RUNTIME_CACHE = 'pdf44-runtime-v5';
 
 const APP_SHELL = [
   '/',
@@ -31,9 +23,9 @@ const CDN_ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
 ];
 
-// Domains to never intercept (ads, analytics, push)
+// Domains to never intercept (ads, analytics)
 const AD_DOMAINS = [
-  'quge5.com', '3nbf4.com', 'nap5k.com', 'monetag.com',
+  'highperformanceformat.com', 'adsterra.com',
   'googlesyndication.com', 'doubleclick.net',
   'analytics.google.com', 'googletagmanager.com'
 ];
