@@ -88,6 +88,19 @@
 /pdf-encryption-explained /index.html?tool=pdf-encryption-explained 200
 /convert-pdf-online-free /index.html?tool=convert-pdf-online-free 200
 /convert-pdf            /convert-pdf-online-free                  301
+/pdf44-vs-smallpdf      /index.html?tool=pdf44-vs-smallpdf        200
+/pdf44-vs-small-pdf     /pdf44-vs-smallpdf                        301
+/pdf-tools-for-lawyers  /index.html?tool=pdf-tools-for-lawyers    200
+/pdf-tools-for-legal    /pdf-tools-for-lawyers                    301
+
+# ── How-to guides ────────────────────────────────────────────
+/how-to-merge-pdf           /index.html?tool=how-to-merge-pdf            200
+/how-to-split-pdf           /index.html?tool=how-to-split-pdf            200
+/how-to-edit-pdf            /index.html?tool=how-to-edit-pdf             200
+/how-to-convert-pdf-to-word /index.html?tool=how-to-convert-pdf-to-word  200
+/how-to-sign-pdf            /index.html?tool=how-to-sign-pdf             200
+/how-to-password-protect-pdf /index.html?tool=how-to-password-protect-pdf 200
+/how-to-encrypt-pdf         /how-to-password-protect-pdf                 301
 
 # ── Legacy / common typo redirects (301 = permanent) ─────────
 /pdftoword              /pdf-to-word                  301

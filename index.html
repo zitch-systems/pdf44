@@ -1971,6 +1971,14 @@ input[type="range"]::-moz-range-thumb {
         <a href="/pdf44-vs-ilovepdf" onclick="route('pdf44-vs-ilovepdf');return false;" title="PDF44 vs iLovePDF comparison">PDF44 vs iLovePDF</a>
         <a href="/convert-pdf-online-free" onclick="route('convert-pdf-online-free');return false;" title="Convert PDF online free">Convert Hub</a>
         <a href="/pdf-encryption-explained" onclick="route('pdf-encryption-explained');return false;" title="PDF encryption explained">Encryption Guide</a>
+        <a href="/pdf44-vs-smallpdf" onclick="route('pdf44-vs-smallpdf');return false;" title="PDF44 vs SmallPDF comparison">PDF44 vs SmallPDF</a>
+        <a href="/pdf-tools-for-lawyers" onclick="route('pdf-tools-for-lawyers');return false;" title="PDF tools for lawyers and legal teams">For Lawyers</a>
+        <a href="/how-to-merge-pdf" onclick="route('how-to-merge-pdf');return false;" title="How to merge PDF files">How to Merge PDF</a>
+        <a href="/how-to-split-pdf" onclick="route('how-to-split-pdf');return false;" title="How to split a PDF">How to Split PDF</a>
+        <a href="/how-to-edit-pdf" onclick="route('how-to-edit-pdf');return false;" title="How to edit a PDF">How to Edit PDF</a>
+        <a href="/how-to-convert-pdf-to-word" onclick="route('how-to-convert-pdf-to-word');return false;" title="How to convert PDF to Word">How to Convert PDF to Word</a>
+        <a href="/how-to-sign-pdf" onclick="route('how-to-sign-pdf');return false;" title="How to sign a PDF">How to Sign PDF</a>
+        <a href="/how-to-password-protect-pdf" onclick="route('how-to-password-protect-pdf');return false;" title="How to password-protect a PDF">How to Protect PDF</a>
         <a href="/ocr-pdf" onclick="route('ocr');return false;" title="OCR PDF online free">OCR PDF</a>
         <a href="/install"        onclick="route('install');return false;"   title="Install PDF44 as a PWA">Install App</a>
         <a href="/privacy"        onclick="route('privacy');return false;"   title="PDF44 privacy policy">Privacy</a>
@@ -2201,7 +2209,15 @@ const SPECIAL_PAGES = {
   'pdf-tools-for-students':{ title:'PDF tools for students',      desc:'The best free PDF workflows for school & college',   hideProcess:true },
   'pdf44-vs-ilovepdf':     { title:'PDF44 vs iLovePDF',           desc:'Honest side-by-side comparison',                     hideProcess:true },
   'pdf-encryption-explained':{ title:'PDF encryption explained',  desc:'AES-128 vs AES-256, passwords & permissions',        hideProcess:true },
-  'convert-pdf-online-free':{ title:'Convert PDF online free',    desc:'Every conversion in one place',                      hideProcess:true }
+  'convert-pdf-online-free':{ title:'Convert PDF online free',    desc:'Every conversion in one place',                      hideProcess:true },
+  'pdf44-vs-smallpdf':     { title:'PDF44 vs SmallPDF',           desc:'Honest side-by-side comparison',                     hideProcess:true },
+  'pdf-tools-for-lawyers': { title:'PDF tools for lawyers',       desc:'Private, court-ready PDF workflows for legal teams',  hideProcess:true },
+  'how-to-merge-pdf':      { title:'How to merge PDF files',      desc:'Combine PDFs free in your browser',                  hideProcess:true },
+  'how-to-split-pdf':      { title:'How to split a PDF',          desc:'Separate pages or page ranges',                      hideProcess:true },
+  'how-to-edit-pdf':       { title:'How to edit a PDF',           desc:'Add text, images and shapes',                        hideProcess:true },
+  'how-to-convert-pdf-to-word':{ title:'How to convert PDF to Word', desc:'Export an editable .docx',                       hideProcess:true },
+  'how-to-sign-pdf':       { title:'How to sign a PDF',           desc:'Draw, type or upload a signature',                   hideProcess:true },
+  'how-to-password-protect-pdf':{ title:'How to password-protect a PDF', desc:'AES-encrypt a PDF in your browser',         hideProcess:true }
 };
 
 // ============================================================
@@ -2293,7 +2309,15 @@ const TOOL_SLUGS = {
   'pdf-tools-for-students':'pdf-tools-for-students',
   'pdf44-vs-ilovepdf':'pdf44-vs-ilovepdf',
   'pdf-encryption-explained':'pdf-encryption-explained',
-  'convert-pdf-online-free':'convert-pdf-online-free'
+  'convert-pdf-online-free':'convert-pdf-online-free',
+  'pdf44-vs-smallpdf':'pdf44-vs-smallpdf',
+  'pdf-tools-for-lawyers':'pdf-tools-for-lawyers',
+  'how-to-merge-pdf':'how-to-merge-pdf',
+  'how-to-split-pdf':'how-to-split-pdf',
+  'how-to-edit-pdf':'how-to-edit-pdf',
+  'how-to-convert-pdf-to-word':'how-to-convert-pdf-to-word',
+  'how-to-sign-pdf':'how-to-sign-pdf',
+  'how-to-password-protect-pdf':'how-to-password-protect-pdf'
 };
 // Reverse map: slug → tool (for /pdf-to-word direct landings).
 const SLUG_TO_TOOL = (function () {
@@ -2381,7 +2405,15 @@ const SEO = {
   'pdf-tools-for-students':{ title:'Best PDF Tools for Students 2026 — Free, Private, Mobile | PDF44', desc:'The best free PDF tools for students in 2026: merge research papers, compress for email, fill forms, sign documents, convert ebooks. Mobile-friendly, no signup.' },
   'pdf44-vs-ilovepdf':    { title:'PDF44 vs iLovePDF — Honest Side-by-Side Comparison (2026) | PDF44', desc:'PDF44 vs iLovePDF: privacy model, free-tier limits, supported formats, watermarks, offline support, mobile UX. Honest side-by-side comparison with screenshots and data.' },
   'pdf-encryption-explained':{ title:'PDF Encryption Explained — AES-128 vs AES-256, Passwords & Permissions | PDF44', desc:'How PDF encryption actually works: AES-128 vs AES-256, owner vs user passwords, permission flags (print, copy, edit), known weaknesses, and the privacy-first way to encrypt PDFs in your browser.' },
-  'convert-pdf-online-free':{ title:'Convert PDF Online Free — Every Conversion in One Place | PDF44', desc:'Convert PDF to Word, JPG, PNG, Excel, Text or back — free, online, in your browser. Plus EPUB, MOBI, HTML, ZIP and image conversions. No signup, no upload, no watermark.' }
+  'convert-pdf-online-free':{ title:'Convert PDF Online Free — Every Conversion in One Place | PDF44', desc:'Convert PDF to Word, JPG, PNG, Excel, Text or back — free, online, in your browser. Plus EPUB, MOBI, HTML, ZIP and image conversions. No signup, no upload, no watermark.' },
+  'pdf44-vs-smallpdf':    { title:'PDF44 vs SmallPDF — Free, Private Alternative Compared (2026) | PDF44', desc:'PDF44 vs SmallPDF: privacy model, free-tier limits, pricing, watermarks and offline support compared. A free, client-side alternative to SmallPDF — no signup, no upload.' },
+  'pdf-tools-for-lawyers':{ title:'PDF Tools for Lawyers — Private Bates, Redaction & E-Sign | PDF44', desc:'Free, confidential PDF tools for legal teams: Bates numbering, permanent redaction, e-signatures, AES encryption and exhibit assembly — all client-side, nothing uploaded.' },
+  'how-to-merge-pdf':     { title:'How to Merge PDF Files Free — Combine PDFs in Your Browser | PDF44', desc:'How to merge PDF files free in 4 steps: open Merge PDF, add files, drag to reorder, download. 100% private, in-browser, no upload, no watermark, no signup.' },
+  'how-to-split-pdf':     { title:'How to Split a PDF Free — Separate Pages or Ranges | PDF44', desc:'How to split a PDF free: one PDF per page, every N pages, or custom ranges. Runs entirely in your browser — no upload, no limit, no watermark. Step-by-step guide.' },
+  'how-to-edit-pdf':      { title:'How to Edit a PDF Free — Add Text, Images & Shapes | PDF44', desc:'How to edit a PDF for free without Acrobat: add text, images, highlights and shapes in your browser. Private, no upload, no signup. Step-by-step guide.' },
+  'how-to-convert-pdf-to-word':{ title:'How to Convert PDF to Word Free — Editable .docx | PDF44', desc:'How to convert a PDF to an editable Word .docx free and privately: open the tool, upload, convert, edit in Word. In-browser, no upload, no watermark. Full guide.' },
+  'how-to-sign-pdf':      { title:'How to Sign a PDF Free — Draw, Type or Upload a Signature | PDF44', desc:'How to add an e-signature to a PDF free: draw, type or upload your signature and place it anywhere. 100% private, in-browser, legally usable. Step-by-step guide.' },
+  'how-to-password-protect-pdf':{ title:'How to Password-Protect a PDF Free — AES Encryption | PDF44', desc:'How to password-protect a PDF free with AES encryption, entirely in your browser. Your file and password never reach a server. Step-by-step guide with FAQ.' }
 };
 
 function _setMeta(selector, attr, value) {
@@ -2470,7 +2502,7 @@ function updateSEO(tool) {
     if (oldFaq) oldFaq.remove();
   }
   // Remove hub-page Article/HowTo schema unless we're on a hub.
-  if (!/^(best-pdf-tools|how-to-compress-pdf|pdf-tools-for-students|pdf44-vs-ilovepdf|pdf-encryption-explained|convert-pdf-online-free)$/.test(tool)) {
+  if (!/^(best-pdf-tools|how-to-compress-pdf|pdf-tools-for-students|pdf44-vs-ilovepdf|pdf-encryption-explained|convert-pdf-online-free|pdf44-vs-smallpdf|pdf-tools-for-lawyers|how-to-merge-pdf|how-to-split-pdf|how-to-edit-pdf|how-to-convert-pdf-to-word|how-to-sign-pdf|how-to-password-protect-pdf)$/.test(tool)) {
     const oldArt = document.getElementById('ld-article');
     if (oldArt) oldArt.remove();
   }
@@ -2611,6 +2643,9 @@ function render() {
   if (state.currentTool === 'pdf44-vs-ilovepdf')     return renderHubVsIlovepdf(container);
   if (state.currentTool === 'pdf-encryption-explained') return renderHubEncryption(container);
   if (state.currentTool === 'convert-pdf-online-free') return renderHubConvertHub(container);
+  if (state.currentTool === 'pdf44-vs-smallpdf')     return renderHubVsSmallpdf(container);
+  if (state.currentTool === 'pdf-tools-for-lawyers') return renderHubForLawyers(container);
+  if (HOWTO_GUIDES[state.currentTool])               return renderHowToGuide(container, state.currentTool);
   return renderToolPage(container);
 }
 
@@ -3419,6 +3454,337 @@ function renderHubConvertHub(container) {
     "publisher":{"@id":"https://pdf44.com/#organization"},
     "image":"https://pdf44.com/og-image.png",
     "url":"https://pdf44.com/convert-pdf-online-free"
+  });
+}
+
+// ============================================================
+//  HOW-TO GUIDES (data-driven, schema.org/HowTo + FAQPage)
+// ============================================================
+// Each guide ranks for a high-volume "how to …" query and links into
+// the matching client-side tool. One generic renderer keeps every guide
+// visually consistent and emits a HowTo + FAQPage JSON-LD @graph under a
+// single id (ld-article) so it is cleaned up correctly between routes.
+const HOWTO_GUIDES = {
+  'how-to-merge-pdf': {
+    primary: 'merge',
+    h1: ['How to Merge PDF Files', 'Free & Private'],
+    intro: 'Combining several PDFs into one document takes about ten seconds and never requires uploading your files. Here is the fastest free way to merge PDFs in any browser.',
+    published: '2026-03-05', updated: '2026-05-27',
+    steps: [
+      ['Open the Merge PDF tool', 'Go to {primary}. Nothing installs and no account is needed — the tool loads instantly in your browser.'],
+      ['Add two or more PDFs', 'Drag your PDF files onto the upload zone, or click to browse. There is no limit on the number of files or their size beyond your device memory.'],
+      ['Drag to set the order', 'Reorder the files by dragging the thumbnails. The final PDF follows this top-to-bottom order.'],
+      ['Click Process and download', 'Press Process. PDF44 stitches the documents together in your browser and the combined PDF downloads immediately — the originals never leave your device.']
+    ],
+    closing: 'Because the merge happens entirely client-side, even confidential contracts or medical records stay private. Open DevTools → Network and you will see zero PDF upload traffic.',
+    faqs: [
+      ['Is merging PDFs online safe?', 'With PDF44 it is, because nothing is uploaded. The merge runs in your browser using the open-source pdf-lib library, so your files never touch a server.'],
+      ['Can I merge more than two PDFs at once?', 'Yes. Add as many PDF files as you like, reorder them, and merge them all into a single document in one step.'],
+      ['Is there a file-size limit when merging?', 'No fixed limit. The only constraint is your device memory — desktop browsers comfortably handle several hundred megabytes.'],
+      ['Does the merged PDF have a watermark?', 'Never. PDF44 adds no watermark, no signup wall, and no page limit.']
+    ],
+    related: ['split', 'compress', 'organize', 'extract']
+  },
+  'how-to-split-pdf': {
+    primary: 'split',
+    h1: ['How to Split a PDF', 'Page Ranges or One-Per-Page'],
+    intro: 'Splitting a PDF lets you pull out a single chapter, separate every page, or break a long document into fixed chunks. Do it free and privately in your browser.',
+    published: '2026-03-12', updated: '2026-05-27',
+    steps: [
+      ['Open the Split PDF tool', 'Launch {primary}. It loads instantly — no install, no login.'],
+      ['Upload your PDF', 'Drag the PDF in or click to browse. The file is read locally; it is never sent anywhere.'],
+      ['Choose how to split', 'Pick a mode: one PDF per page, every N pages, or custom page ranges such as 1-3, 5, 8-10.'],
+      ['Process and download', 'Click Process. PDF44 produces the split files in your browser and packages them for download — instantly and privately.']
+    ],
+    closing: 'All splitting is performed client-side with pdf-lib, so sensitive pages never leave your computer.',
+    faqs: [
+      ['How do I extract just one page from a PDF?', 'Use custom-range mode and enter the single page number, or use the dedicated Extract Pages tool. Both run entirely in your browser.'],
+      ['Can I split a PDF into equal parts?', 'Yes. Choose "every N pages" and PDF44 breaks the document into equal chunks of the size you specify.'],
+      ['Will splitting reduce the quality of my PDF?', 'No. Splitting copies the original page data byte-for-byte, so text, images and fonts are untouched.'],
+      ['Is the split PDF tool really free?', 'Yes — unlimited splits, no watermark, no account, no file-size cap.']
+    ],
+    related: ['merge', 'extract', 'remove', 'organize']
+  },
+  'how-to-edit-pdf': {
+    primary: 'edit',
+    h1: ['How to Edit a PDF', 'Add Text, Images & Shapes'],
+    intro: 'You do not need Acrobat to edit a PDF. PDF44 lets you add text, images, highlights and shapes to any PDF for free, with every change applied in your browser.',
+    published: '2026-03-20', updated: '2026-05-27',
+    steps: [
+      ['Open the Edit PDF tool', 'Go to {primary}. The editor opens in your browser with no signup.'],
+      ['Upload the PDF you want to change', 'Drag your file in. It is rendered locally with Mozilla\'s pdf.js — nothing is uploaded.'],
+      ['Add your edits', 'Insert text boxes, images, freehand drawings, highlights, rectangles or lines. Drag to position and resize anything.'],
+      ['Save the edited PDF', 'Click Process to flatten your edits into a new PDF and download it. The original file stays private on your device.']
+    ],
+    closing: 'For form fields specifically, use the Fill PDF Form tool; for blacking out sensitive content permanently, use Redact PDF.',
+    faqs: [
+      ['Can I edit existing text in a PDF for free?', 'PDF44 lets you overlay new text and cover old text. True in-line re-typing of embedded text is limited in every browser tool because PDFs store text as positioned glyphs, not editable paragraphs.'],
+      ['Do I need to install anything to edit a PDF?', 'No. PDF44 runs in any modern browser and can also be installed as an offline app (PWA), but no desktop software is required.'],
+      ['Are my edits private?', 'Yes. Editing happens entirely client-side, so your document is never transmitted to a server.'],
+      ['Can I add an image or logo to a PDF?', 'Yes. Upload a JPG or PNG, drop it onto the page, then drag to position and scale it before saving.']
+    ],
+    related: ['fillpdf', 'sign', 'watermark', 'redact']
+  },
+  'how-to-convert-pdf-to-word': {
+    primary: 'pdf2word',
+    h1: ['How to Convert PDF to Word', 'Editable .docx, Free'],
+    intro: 'Turn a PDF into an editable Word document without uploading it to a stranger\'s server. PDF44 extracts the text and builds a .docx file directly in your browser.',
+    published: '2026-04-02', updated: '2026-05-27',
+    steps: [
+      ['Open the PDF to Word tool', 'Go to {primary}. It loads instantly with no account.'],
+      ['Upload your PDF', 'Drag the PDF onto the page. It is parsed locally with pdf.js — your content never leaves the device.'],
+      ['Convert to .docx', 'Click Process. PDF44 extracts the text and assembles a Word-compatible .docx in your browser.'],
+      ['Open and edit in Word', 'Download the .docx and open it in Microsoft Word, Google Docs, or LibreOffice to keep editing.']
+    ],
+    closing: 'Because conversion is text-based, scanned (image-only) PDFs should be run through OCR PDF first so their text becomes selectable.',
+    faqs: [
+      ['Is the PDF to Word converter free?', 'Yes, completely — no signup, no watermark, no page limit.'],
+      ['Will the formatting be preserved exactly?', 'Text content transfers reliably. Complex multi-column layouts and exact styling may need minor cleanup, which is normal for every PDF-to-Word converter.'],
+      ['Can I convert a scanned PDF to Word?', 'Run OCR PDF first to recognise the text, then convert the searchable PDF to Word.'],
+      ['Is my document uploaded during conversion?', 'No. Everything runs client-side, so your file is never sent to a server.']
+    ],
+    related: ['pdf2text', 'pdf2excel', 'ocr', 'pdf2jpg']
+  },
+  'how-to-sign-pdf': {
+    primary: 'sign',
+    h1: ['How to Sign a PDF', 'Draw, Type or Upload'],
+    intro: 'Adding a legally usable e-signature to a PDF is free and takes under a minute. PDF44 lets you draw, type, or upload a signature and places it exactly where you need it — all in your browser.',
+    published: '2026-04-10', updated: '2026-05-27',
+    steps: [
+      ['Open the Sign PDF tool', 'Go to {primary}. No account or app install is required.'],
+      ['Upload the document to sign', 'Drag your PDF in. It is rendered locally, so the contract never leaves your device.'],
+      ['Create your signature', 'Draw with your mouse or finger, type your name in a signature font, or upload a photo of your handwritten signature.'],
+      ['Place it and download', 'Drag the signature to the right spot, resize it, then click Process to download the signed PDF.']
+    ],
+    closing: 'Since signing is client-side, sensitive agreements stay confidential — ideal for contracts, NDAs and offer letters.',
+    faqs: [
+      ['Is an electronic signature from PDF44 legally valid?', 'In most jurisdictions (e.g. under the US ESIGN Act and EU eIDAS) a clearly applied e-signature is legally binding for ordinary agreements. For high-assurance needs, a qualified digital certificate may be required.'],
+      ['Can I sign a PDF on my phone?', 'Yes. PDF44 works in mobile browsers and you can draw your signature with your finger.'],
+      ['Is my signed contract uploaded anywhere?', 'No. The PDF and your signature are processed entirely in your browser.'],
+      ['Can I add a date or initials too?', 'Yes — add text fields for the date and place initials on additional pages before saving.']
+    ],
+    related: ['fillpdf', 'protect', 'edit', 'flatten']
+  },
+  'how-to-password-protect-pdf': {
+    primary: 'protect',
+    h1: ['How to Password-Protect a PDF', 'AES Encryption, Free'],
+    intro: 'Encrypting a PDF with a password keeps it readable only by people you share the password with. PDF44 applies strong AES encryption in your browser — the file and password never reach a server.',
+    published: '2026-04-18', updated: '2026-05-27',
+    steps: [
+      ['Open the Protect PDF tool', 'Go to {primary}. It runs in your browser with no signup.'],
+      ['Upload the PDF to encrypt', 'Drag your file in. It is processed locally for full confidentiality.'],
+      ['Set a strong password', 'Enter a password you will remember. A long passphrase with mixed characters is far harder to crack.'],
+      ['Encrypt and download', 'Click Process. PDF44 encrypts the document in your browser and downloads the protected PDF, which now prompts for the password on open.']
+    ],
+    closing: 'To remove a password you already know, use the Unlock PDF tool. Keep your password safe — encrypted PDFs cannot be recovered without it.',
+    faqs: [
+      ['What encryption does PDF44 use?', 'PDF44 applies AES encryption to the document so it cannot be opened without the correct password.'],
+      ['Is the password sent to a server?', 'No. Encryption happens entirely in your browser, so neither the file nor the password is ever transmitted.'],
+      ['Can I remove a PDF password later?', 'Yes — if you know the password, use the Unlock PDF tool to produce an unprotected copy.'],
+      ['What if I forget the password?', 'There is no backdoor. A correctly encrypted PDF cannot be opened without its password, so store it somewhere safe.']
+    ],
+    related: ['unlock', 'redact', 'sign', 'flatten']
+  }
+};
+
+function renderHowToGuide(container, slug) {
+  const g = HOWTO_GUIDES[slug];
+  if (!g) return renderHome(container);
+  const canonical = 'https://pdf44.com/' + slug;
+  const sub = function (s) { return s.replace('{primary}', _toolLink(g.primary, TOOLS[g.primary].title)); };
+
+  let stepsHtml = '';
+  g.steps.forEach(function (st, i) {
+    stepsHtml += '<li><strong>' + escapeHtml(st[0]) + '</strong><br>' + sub(st[1]) + '</li>';
+  });
+
+  let faqHtml = '';
+  g.faqs.forEach(function (qa, i) {
+    faqHtml += '<details class="seo-faq-item"' + (i === 0 ? ' open' : '') + '><summary class="seo-faq-q">' +
+      escapeHtml(qa[0]) + '</summary><p class="seo-faq-a">' + escapeHtml(qa[1]) + '</p></details>';
+  });
+
+  let relatedHtml = '';
+  g.related.forEach(function (k) {
+    const t = TOOLS[k]; if (!t) return;
+    relatedHtml += '<a class="tool-card" href="' + _toolHref(k) + '" onclick="route(\'' + k + '\');return false;" aria-label="' + t.title + '">' +
+      '<div class="tool-card-icon ti-' + t.color + '" aria-hidden="true">' + icon(t.iconKey, {size:22, stroke:2.2}) + '</div>' +
+      '<div class="tool-card-title">' + t.title + '</div><div class="tool-card-desc">' + t.desc + '</div></a>';
+  });
+
+  container.innerHTML =
+    '<article class="seo-content" itemscope itemtype="https://schema.org/HowTo" style="max-width:920px;margin:0 auto;">' +
+      '<div class="hero" style="padding-top:8px;">' +
+        '<h1>' + escapeHtml(g.h1[0]) + ' — <span>' + escapeHtml(g.h1[1]) + '</span></h1>' +
+        '<p>' + escapeHtml(g.intro) + '</p>' +
+        '<p style="font-size:12px;color:var(--text-3);margin-top:10px;">Published <time datetime="' + g.published + '" itemprop="datePublished">' + g.published + '</time> · Last updated <time datetime="' + g.updated + '" itemprop="dateModified">' + g.updated + '</time> · By <span itemprop="author" itemscope itemtype="https://schema.org/Organization"><span itemprop="name">PDF44</span></span></p>' +
+      '</div>' +
+      '<div id="ad-home-top" class="ad-slot"></div>' +
+      '<h2 class="seo-h2">Step-by-step</h2>' +
+      '<ol class="seo-list" style="line-height:1.7;">' + stepsHtml + '</ol>' +
+      '<p class="seo-p">' + sub(g.closing) + '</p>' +
+      '<div class="tools-grid" style="margin-top:14px;">' +
+        '<a class="tool-card" href="' + _toolHref(g.primary) + '" onclick="route(\'' + g.primary + '\');return false;"><div class="tool-card-icon ti-' + TOOLS[g.primary].color + '" aria-hidden="true">' + icon(TOOLS[g.primary].iconKey, {size:22, stroke:2.2}) + '</div><div class="tool-card-title">Open ' + TOOLS[g.primary].title + '</div><div class="tool-card-desc">' + TOOLS[g.primary].desc + '</div></a>' +
+      '</div>' +
+      '<div id="ad-home-mid" class="ad-slot"></div>' +
+      '<h2 class="seo-h2" style="margin-top:32px;">Frequently asked questions</h2>' +
+      '<div class="seo-faq-grid">' + faqHtml + '</div>' +
+      '<h2 class="seo-h2" style="margin-top:32px;">Related PDF tools</h2>' +
+      '<div class="tools-grid" style="margin-top:14px;">' + relatedHtml + '</div>' +
+      '<div id="ad-home-bottom" class="ad-slot"></div>' +
+    '</article>';
+
+  _setJsonLd('ld-article', {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "HowTo",
+        "name": g.h1[0],
+        "description": g.intro,
+        "datePublished": g.published,
+        "dateModified": g.updated,
+        "image": "https://pdf44.com/og-image.png",
+        "totalTime": "PT1M",
+        "estimatedCost": { "@type": "MonetaryAmount", "currency": "USD", "value": "0" },
+        "supply": { "@type": "HowToSupply", "name": "A PDF file" },
+        "tool": { "@type": "HowToTool", "name": "PDF44 (" + TOOLS[g.primary].title + ")" },
+        "step": g.steps.map(function (st, i) {
+          return {
+            "@type": "HowToStep",
+            "position": i + 1,
+            "name": st[0],
+            "text": st[1].replace('{primary}', TOOLS[g.primary].title),
+            "url": canonical + "#step" + (i + 1)
+          };
+        }),
+        "publisher": { "@id": "https://pdf44.com/#organization" },
+        "mainEntityOfPage": canonical
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": g.faqs.map(function (qa) {
+          return { "@type": "Question", "name": qa[0], "acceptedAnswer": { "@type": "Answer", "text": qa[1] } };
+        })
+      }
+    ]
+  });
+}
+
+// ---- Hub: PDF44 vs SmallPDF comparison ----------------------
+function renderHubVsSmallpdf(container) {
+  const published = '2026-05-02', updated = '2026-05-27';
+  container.innerHTML = `
+    <article class="seo-content" itemscope itemtype="https://schema.org/Article" style="max-width:920px;margin:0 auto;">
+      <div class="hero" style="padding-top:8px;">
+        <h1>PDF44 vs SmallPDF — <span>Honest Comparison</span></h1>
+        <p>SmallPDF is a polished, well-known PDF suite. PDF44 is a free, privacy-first alternative. Here is how they actually differ on the things that matter: privacy, limits, price and offline use.</p>
+        <p style="font-size:12px;color:var(--text-3);margin-top:10px;">Published <time datetime="${published}" itemprop="datePublished">${published}</time> · Last updated <time datetime="${updated}" itemprop="dateModified">${updated}</time> · By <span itemprop="author" itemscope itemtype="https://schema.org/Organization"><span itemprop="name">PDF44</span></span></p>
+      </div>
+      <div id="ad-home-top" class="ad-slot"></div>
+
+      <h2 class="seo-h2">TL;DR</h2>
+      <p class="seo-p">Choose <strong>SmallPDF</strong> if you want a single paid subscription covering OCR, e-sign workflows and team features and you are comfortable uploading files to a server. Choose <strong>${_toolLink('home','PDF44')}</strong> if you want every tool free, no signup, no daily limit, and files that never leave your device.</p>
+
+      <h2 class="seo-h2">Side-by-side</h2>
+      <div style="overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin-top:12px;">
+      <table class="seo-table" style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="background:var(--bg-3);text-align:left;">
+          <th style="padding:10px 12px;">Feature</th><th style="padding:10px 12px;">PDF44</th><th style="padding:10px 12px;">SmallPDF</th>
+        </tr></thead>
+        <tbody>
+          <tr><td style="padding:10px 12px;">Files leave your device</td><td style="padding:10px 12px;">No — 100% in-browser</td><td style="padding:10px 12px;">Yes — uploaded to servers</td></tr>
+          <tr><td style="padding:10px 12px;">Free-tier limit</td><td style="padding:10px 12px;">None</td><td style="padding:10px 12px;">~2 documents/day</td></tr>
+          <tr><td style="padding:10px 12px;">Account required</td><td style="padding:10px 12px;">No</td><td style="padding:10px 12px;">Pushed for most actions</td></tr>
+          <tr><td style="padding:10px 12px;">Price for full access</td><td style="padding:10px 12px;">Free forever</td><td style="padding:10px 12px;">~$9–12/month</td></tr>
+          <tr><td style="padding:10px 12px;">Works offline</td><td style="padding:10px 12px;">Yes (installable PWA)</td><td style="padding:10px 12px;">No</td></tr>
+          <tr><td style="padding:10px 12px;">Watermark on output</td><td style="padding:10px 12px;">Never</td><td style="padding:10px 12px;">No (free tier limited instead)</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <h2 class="seo-h2">Where SmallPDF is stronger</h2>
+      <ul class="seo-list">
+        <li><strong>OCR with layout recovery</strong> — SmallPDF's paid OCR preserves complex formatting better than most free tools.</li>
+        <li><strong>Team & cloud workflows</strong> — Shared folders, Dropbox/Drive integration and request-signature flows are built in.</li>
+      </ul>
+
+      <h2 class="seo-h2">Where PDF44 wins</h2>
+      <ul class="seo-list">
+        <li><strong>Privacy</strong> — ${_toolLink('compress','Compress')}, ${_toolLink('merge','Merge')}, ${_toolLink('protect','Protect')} and every other tool run client-side; verify in DevTools.</li>
+        <li><strong>No limits, no cost</strong> — Unlimited tasks, no daily cap, no subscription.</li>
+        <li><strong>Offline</strong> — Install PDF44 once and the tools keep working without internet.</li>
+      </ul>
+
+      <h2 class="seo-h2" style="margin-top:32px;">Frequently asked questions</h2>
+      <div class="seo-faq-grid">
+        <details class="seo-faq-item" open><summary class="seo-faq-q">Is PDF44 a free alternative to SmallPDF?</summary><p class="seo-faq-a">Yes. PDF44 offers merge, split, compress, convert, sign, protect and 35+ other tools for free with no daily limit and no signup.</p></details>
+        <details class="seo-faq-item"><summary class="seo-faq-q">Which is more private?</summary><p class="seo-faq-a">PDF44. It processes files entirely in your browser, while SmallPDF uploads your documents to its servers.</p></details>
+        <details class="seo-faq-item"><summary class="seo-faq-q">Does PDF44 add a watermark like some free tools?</summary><p class="seo-faq-a">No. PDF44 never watermarks output and never caps the number of pages.</p></details>
+      </div>
+      <div id="ad-home-bottom" class="ad-slot"></div>
+    </article>`;
+
+  _setJsonLd('ld-article', {
+    "@context":"https://schema.org","@type":"Article",
+    "headline":"PDF44 vs SmallPDF — Honest Comparison",
+    "datePublished":published,"dateModified":updated,
+    "author":{"@id":"https://pdf44.com/#organization"},
+    "publisher":{"@id":"https://pdf44.com/#organization"},
+    "image":"https://pdf44.com/og-image.png",
+    "mainEntityOfPage":"https://pdf44.com/pdf44-vs-smallpdf"
+  });
+}
+
+// ---- Hub: PDF tools for lawyers / legal teams ---------------
+function renderHubForLawyers(container) {
+  const published = '2026-05-10', updated = '2026-05-27';
+  container.innerHTML = `
+    <article class="seo-content" itemscope itemtype="https://schema.org/Article" style="max-width:920px;margin:0 auto;">
+      <div class="hero" style="padding-top:8px;">
+        <h1>PDF Tools for <span>Lawyers & Legal Teams</span></h1>
+        <p>Legal work demands confidentiality. Because PDF44 processes every file in your browser, privileged documents never leave your control — no upload, no third-party server, no retention.</p>
+        <p style="font-size:12px;color:var(--text-3);margin-top:10px;">Updated <time datetime="${updated}" itemprop="dateModified">${updated}</time></p>
+      </div>
+      <div id="ad-home-top" class="ad-slot"></div>
+
+      <h2 class="seo-h2">Why client-side matters for legal documents</h2>
+      <p class="seo-p">Uploading a privileged document to a third-party PDF service can raise confidentiality and data-retention concerns. PDF44 sidesteps this entirely: files are read and written in the browser, so there is no copy on anyone's server to subpoena, leak or retain. You can verify it in DevTools → Network.</p>
+
+      <h2 class="seo-h2">Core legal workflows</h2>
+      <ul class="seo-list">
+        <li><strong>Bates numbering</strong> — Apply court-ready sequential identifiers with ${_toolLink('bates','Bates Numbering')}.</li>
+        <li><strong>Redaction</strong> — Permanently black out privileged or PII content with ${_toolLink('redact','Redact PDF')}.</li>
+        <li><strong>E-signatures</strong> — Sign engagement letters and agreements via ${_toolLink('sign','Sign PDF')}.</li>
+        <li><strong>Encryption</strong> — Password-protect sensitive filings with ${_toolLink('protect','Protect PDF')} (AES).</li>
+        <li><strong>Assembly</strong> — Combine exhibits with ${_toolLink('merge','Merge PDF')} and pull pages with ${_toolLink('extract','Extract Pages')}.</li>
+      </ul>
+
+      <h2 class="seo-h2">Building a court filing bundle</h2>
+      <ol class="seo-list">
+        <li>${_toolLink('merge','Merge')} the brief, exhibits and declarations in order.</li>
+        <li>Add ${_toolLink('bates','Bates numbers')} across the full bundle.</li>
+        <li>${_toolLink('redact','Redact')} any privileged or personal data.</li>
+        <li>${_toolLink('compress','Compress')} to meet the court's e-filing size cap.</li>
+        <li>${_toolLink('protect','Encrypt')} before emailing to opposing counsel if required.</li>
+      </ol>
+
+      <h2 class="seo-h2" style="margin-top:32px;">Frequently asked questions</h2>
+      <div class="seo-faq-grid">
+        <details class="seo-faq-item" open><summary class="seo-faq-q">Is PDF44 safe for confidential legal documents?</summary><p class="seo-faq-a">Yes. All processing is client-side, so privileged documents are never uploaded to or stored on any server.</p></details>
+        <details class="seo-faq-item"><summary class="seo-faq-q">Does PDF44 support Bates numbering for discovery?</summary><p class="seo-faq-a">Yes. The Bates Numbering tool applies consistent sequential identifiers across a document set, with configurable prefixes and digits.</p></details>
+        <details class="seo-faq-item"><summary class="seo-faq-q">Is redaction in PDF44 permanent?</summary><p class="seo-faq-a">Yes. The Redact tool removes the underlying content, not just a visual overlay, so the text cannot be recovered.</p></details>
+      </div>
+      <div id="ad-home-bottom" class="ad-slot"></div>
+    </article>`;
+
+  _setJsonLd('ld-article', {
+    "@context":"https://schema.org","@type":"Article",
+    "headline":"PDF Tools for Lawyers & Legal Teams",
+    "datePublished":published,"dateModified":updated,
+    "author":{"@id":"https://pdf44.com/#organization"},
+    "publisher":{"@id":"https://pdf44.com/#organization"},
+    "image":"https://pdf44.com/og-image.png",
+    "mainEntityOfPage":"https://pdf44.com/pdf-tools-for-lawyers"
   });
 }
 

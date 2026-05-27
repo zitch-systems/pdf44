@@ -114,6 +114,17 @@ operation matter.
 - [PDF44 vs iLovePDF](https://pdf44.com/pdf44-vs-ilovepdf) — Honest side-by-side feature comparison.
 - [PDF Encryption Explained](https://pdf44.com/pdf-encryption-explained) — AES-128 vs AES-256, owner/user passwords, permission flags.
 - [Convert PDF Online Free](https://pdf44.com/convert-pdf-online-free) — Every PDF conversion in one place.
+- [PDF44 vs SmallPDF](https://pdf44.com/pdf44-vs-smallpdf) — Free, private, client-side alternative to SmallPDF compared.
+- [PDF Tools for Lawyers](https://pdf44.com/pdf-tools-for-lawyers) — Confidential Bates numbering, redaction, e-sign and exhibit assembly.
+
+## How-to guides
+
+- [How to Merge PDF Files](https://pdf44.com/how-to-merge-pdf) — 4-step guide to combining PDFs in the browser.
+- [How to Split a PDF](https://pdf44.com/how-to-split-pdf) — Per-page, every-N-pages, or custom ranges.
+- [How to Edit a PDF](https://pdf44.com/how-to-edit-pdf) — Add text, images, highlights and shapes.
+- [How to Convert PDF to Word](https://pdf44.com/how-to-convert-pdf-to-word) — Export an editable .docx.
+- [How to Sign a PDF](https://pdf44.com/how-to-sign-pdf) — Draw, type or upload a signature.
+- [How to Password-Protect a PDF](https://pdf44.com/how-to-password-protect-pdf) — AES encryption in the browser.
 
 ## Sitemap
 
