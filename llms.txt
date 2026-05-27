@@ -114,6 +114,75 @@ operation matter.
 - [PDF44 vs iLovePDF](https://pdf44.com/pdf44-vs-ilovepdf) — Honest side-by-side feature comparison.
 - [PDF Encryption Explained](https://pdf44.com/pdf-encryption-explained) — AES-128 vs AES-256, owner/user passwords, permission flags.
 - [Convert PDF Online Free](https://pdf44.com/convert-pdf-online-free) — Every PDF conversion in one place.
+- [PDF44 vs SmallPDF](https://pdf44.com/pdf44-vs-smallpdf) — Free, private, client-side alternative to SmallPDF compared.
+- [PDF Tools for Lawyers](https://pdf44.com/pdf-tools-for-lawyers) — Confidential Bates numbering, redaction, e-sign and exhibit assembly.
+
+## Audience hub pages
+
+- [PDF Tools for Business](https://pdf44.com/pdf-tools-for-business) — Workflows for teams, contracts, reports and presentations.
+- [PDF Tools for Teachers](https://pdf44.com/pdf-tools-for-teachers) — Create worksheets, mark-up submissions, and share materials.
+- [PDF Tools for Accountants](https://pdf44.com/pdf-tools-for-accountants) — Secure financial document handling, no cloud upload.
+- [PDF Tools for HR Teams](https://pdf44.com/pdf-tools-for-hr-teams) — Onboarding forms, offer letters, policy documents.
+- [PDF Tools for Freelancers](https://pdf44.com/pdf-tools-for-freelancers) — Invoices, contracts, proposals and client deliverables.
+- [PDF Tools for Healthcare](https://pdf44.com/pdf-tools-for-healthcare) — HIPAA-friendly (no upload) patient forms and records.
+- [PDF Tools for Real Estate](https://pdf44.com/pdf-tools-for-real-estate) — Contracts, disclosures, floor plans and listings.
+- [PDF Tools for Researchers](https://pdf44.com/pdf-tools-for-researchers) — Papers, citations, datasets and academic publishing.
+- [PDF Tools for Small Business](https://pdf44.com/pdf-tools-for-small-business) — Quotes, invoices and business documents, free.
+- [PDF Tools for Remote Workers](https://pdf44.com/pdf-tools-for-remote-workers) — Sign, annotate and share PDFs from anywhere.
+- [PDF Tools for Government](https://pdf44.com/pdf-tools-for-government) — Secure form processing and document redaction.
+- [PDF Tools for Nonprofits](https://pdf44.com/pdf-tools-for-nonprofits) — Grant applications, reports, donation forms.
+- [PDF Tools for Architects](https://pdf44.com/pdf-tools-for-architects) — CAD/PDF workflows, blueprints and specifications.
+
+## Competitor comparisons
+
+- [PDF44 vs Adobe Acrobat](https://pdf44.com/pdf44-vs-adobe-acrobat) — Free vs paid, privacy vs cloud.
+- [PDF44 vs PDF24](https://pdf44.com/pdf44-vs-pdf24) — Feature comparison of two free PDF toolkits.
+- [PDF44 vs Sejda](https://pdf44.com/pdf44-vs-sejda) — Honest side-by-side.
+- [PDF44 vs PDFCandy](https://pdf44.com/pdf44-vs-pdfcandy) — Honest side-by-side.
+- [PDF44 vs Foxit](https://pdf44.com/pdf44-vs-foxit) — Free alternative to Foxit PDF Editor.
+- [PDF44 vs Xodo](https://pdf44.com/pdf44-vs-xodo) — Browser-based vs Xodo app.
+- [PDF44 vs Nitro PDF](https://pdf44.com/pdf44-vs-nitro-pdf) — Free vs enterprise pricing.
+- [PDF44 vs PDFescape](https://pdf44.com/pdf44-vs-pdfescape) — Honest comparison.
+- [Best Free PDF Editor 2026](https://pdf44.com/best-free-pdf-editor) — Ranked list of top free PDF editors.
+- [Best PDF Compressor 2026](https://pdf44.com/best-pdf-compressor) — Ranked list of top free PDF compressors.
+
+## How-to guides
+
+- [How to Merge PDF Files](https://pdf44.com/how-to-merge-pdf) — 4-step guide to combining PDFs in the browser.
+- [How to Split a PDF](https://pdf44.com/how-to-split-pdf) — Per-page, every-N-pages, or custom ranges.
+- [How to Edit a PDF](https://pdf44.com/how-to-edit-pdf) — Add text, images, highlights and shapes.
+- [How to Convert PDF to Word](https://pdf44.com/how-to-convert-pdf-to-word) — Export an editable .docx.
+- [How to Sign a PDF](https://pdf44.com/how-to-sign-pdf) — Draw, type or upload a signature.
+- [How to Password-Protect a PDF](https://pdf44.com/how-to-password-protect-pdf) — AES encryption in the browser.
+- [How to Compress a PDF File](https://pdf44.com/how-to-compress-pdf-file) — Step-by-step size reduction guide.
+- [How to Rotate a PDF](https://pdf44.com/how-to-rotate-pdf) — Fix landscape/portrait orientation.
+- [How to Remove PDF Pages](https://pdf44.com/how-to-remove-pdf-pages) — Delete unwanted pages free.
+- [How to Extract PDF Pages](https://pdf44.com/how-to-extract-pdf-pages) — Save a page range as a new PDF.
+- [How to Reorder PDF Pages](https://pdf44.com/how-to-reorder-pdf-pages) — Drag-and-drop organiser.
+- [How to Convert PDF to JPG](https://pdf44.com/how-to-convert-pdf-to-jpg) — Each page as a high-res JPG.
+- [How to Convert PDF to PNG](https://pdf44.com/how-to-convert-pdf-to-png) — Lossless transparent PNG pages.
+- [How to Convert PDF to Excel](https://pdf44.com/how-to-convert-pdf-to-excel) — Tables extracted to CSV.
+- [How to Convert PDF to Text](https://pdf44.com/how-to-convert-pdf-to-text) — Plain text extraction.
+- [How to Convert JPG to PDF](https://pdf44.com/how-to-convert-jpg-to-pdf) — Combine images into PDF.
+- [How to Convert HTML to PDF](https://pdf44.com/how-to-convert-html-to-pdf) — Turn web pages into PDF.
+- [How to Convert Text to PDF](https://pdf44.com/how-to-convert-text-to-pdf) — Plain text or Markdown to PDF.
+- [How to Convert EPUB to PDF](https://pdf44.com/how-to-convert-epub-to-pdf) — Ebook to PDF free.
+- [How to Convert EPUB to Word](https://pdf44.com/how-to-convert-epub-to-word) — Editable .docx from ebook.
+- [How to Convert MOBI to PDF](https://pdf44.com/how-to-convert-mobi-to-pdf) — Kindle ebook to PDF.
+- [How to OCR a PDF](https://pdf44.com/how-to-ocr-pdf) — Make scanned PDFs searchable.
+- [How to Fill a PDF Form](https://pdf44.com/how-to-fill-pdf-form) — Text fields, checkboxes, dropdowns.
+- [How to Watermark a PDF](https://pdf44.com/how-to-watermark-pdf) — Text or image stamp on every page.
+- [How to Add Page Numbers](https://pdf44.com/how-to-add-page-numbers-to-pdf) — Custom position and format.
+- [How to Crop a PDF](https://pdf44.com/how-to-crop-pdf) — Trim margins or remove borders.
+- [How to Redact a PDF](https://pdf44.com/how-to-redact-pdf) — Permanently black out sensitive text.
+- [How to Unlock a PDF](https://pdf44.com/how-to-unlock-pdf) — Remove a known password.
+- [How to Compare PDF Files](https://pdf44.com/how-to-compare-pdf-files) — Side-by-side difference viewer.
+- [How to Flatten a PDF](https://pdf44.com/how-to-flatten-pdf) — Bake in annotations and form data.
+- [How to Repair a PDF](https://pdf44.com/how-to-repair-pdf) — Recover corrupted PDFs.
+- [How to Add Header & Footer](https://pdf44.com/how-to-add-header-footer-to-pdf) — Custom text on every page.
+- [How to Bates Number a PDF](https://pdf44.com/how-to-bates-number-pdf) — Legal discovery stamping.
+- [How to Make an N-up PDF](https://pdf44.com/how-to-n-up-pdf) — 2, 4, 6 or 9 pages per sheet.
+- [How to Scan to PDF](https://pdf44.com/how-to-scan-to-pdf) — Use your phone camera.
 
 ## Sitemap
 
