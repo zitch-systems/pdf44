@@ -1556,15 +1556,20 @@ input[type="range"]::-moz-range-thumb {
   :root { --sidebar-w: 240px; }
 }
 @media (max-width: 900px) {
-  .sidebar { transform: translateX(-100%); width: 280px; }
+  .sidebar { transform: translateX(-100%); width: min(86vw, 320px); }
   .sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
   .main { margin-left: 0; width: 100%; }
   .ad-sticky { left: 0; }
-  .mobile-toggle { display: flex; }
-  .topbar { padding: 0 16px; gap: 10px; }
+  .mobile-toggle { display: flex; order: -1; }
+  .topbar { padding: 0 12px; gap: 10px; }
+  .topbar-actions { gap: 6px; }
   .content { padding: 18px 16px 80px; }
   .ad-banner { margin: 0 16px 12px; }
   .install-section, .contact-section { padding: 32px 20px; }
+  /* Footer must clear the fixed bottom ad bar + floating Process button. */
+  .app-footer { padding-bottom: 80px; }
+  /* Prevent the page scrolling behind the open drawer. */
+  body.sidebar-open { overflow: hidden; }
 }
 @media (max-width: 480px) {
   .tools-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
@@ -1575,6 +1580,9 @@ input[type="range"]::-moz-range-thumb {
   .upload-zone { padding: 36px 18px; }
   .hero-stats { gap: 18px; }
   .install-grid { grid-template-columns: 1fr; }
+  /* Reclaim width for the page title; the subtitle is non-essential here. */
+  .page-desc { display: none; }
+  .page-title { font-size: 16px; }
 }
 
 
@@ -1907,7 +1915,6 @@ input[type="range"]::-moz-range-thumb {
 <div id="adBanner" style="text-align:center;min-height:64px;background:var(--bg-2);border-bottom:1px solid var(--border);padding:4px 0;"></div>
 
 <div class="app">
-  <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
   <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
@@ -1929,7 +1936,7 @@ input[type="range"]::-moz-range-thumb {
 
   <main class="main" id="main-content" role="main" aria-label="PDF44 — Online PDF Tools">
     <header class="topbar" role="banner" aria-label="PDF44 toolbar">
-      <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Menu" style="display:none;">☰</button>
+      <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">☰</button>
       <div class="topbar-left">
         <div class="page-title" id="pageTitle">PDF44</div>
         <div class="page-desc" id="pageDesc">Every PDF tool you need</div>
@@ -3198,6 +3205,8 @@ function route(tool) {
   if (window.innerWidth < 901) {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.remove('active');
+    document.body.classList.remove('sidebar-open');
+    document.querySelectorAll('.mobile-toggle').forEach(b => b.setAttribute('aria-expanded', 'false'));
   }
 
   render();
@@ -3215,8 +3224,10 @@ window.addEventListener('popstate', function () {
 });
 
 function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('active');
+  const open = document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('active', open);
+  document.body.classList.toggle('sidebar-open', open);
+  document.querySelectorAll('.mobile-toggle').forEach(b => b.setAttribute('aria-expanded', String(open)));
 }
 
 // ============================================================
