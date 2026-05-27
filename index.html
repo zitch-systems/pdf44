@@ -2507,12 +2507,21 @@ var _AD_RECT = { key: '8468d7261d22406749b755f0d3f69f45', w: 300, h: 250 };
 // else gets the responsive leaderboard/banner.
 var _AD_RECT_SLOTS = ['ad-home-mid', 'ad-home-bottom', 'ad-tool-bottom'];
 
+// Mobile-only slots — skipped entirely on desktop (≥ 728px) so they
+// never leave an empty gap on wide screens.
+var _AD_MOBILE_ONLY = ['ad-mobile-1', 'ad-mobile-2'];
+
 function _injectAd(id) {
   var el = document.getElementById(id);
   if (!el || el.dataset.adInit) return;
+  var isMobile = window.innerWidth < 728;
+  if (_AD_MOBILE_ONLY.indexOf(id) !== -1 && !isMobile) {
+    el.style.display = 'none';
+    return;
+  }
   el.dataset.adInit = '1';
   var ad = (_AD_RECT_SLOTS.indexOf(id) !== -1) ? _AD_RECT
-         : (window.innerWidth >= 728) ? _AD_DESK : _AD_MOB;
+         : isMobile ? _AD_MOB : _AD_DESK;
   el.style.minHeight = ad.h + 'px';
   var opt = document.createElement('script');
   opt.textContent = "atOptions={'key':'" + ad.key + "','format':'iframe','height':" + ad.h + ",'width':" + ad.w + ",'params':{}};";
@@ -2523,8 +2532,8 @@ function _injectAd(id) {
 }
 
 function initAds() {
-  ['ad-home-top', 'ad-home-mid', 'ad-home-bottom',
-   'ad-tool-top', 'ad-tool-bottom', 'adSticky'].forEach(_injectAd);
+  ['ad-home-top', 'ad-home-mid', 'ad-home-bottom', 'ad-mobile-1',
+   'ad-tool-top', 'ad-tool-bottom', 'ad-mobile-2', 'adSticky'].forEach(_injectAd);
 }
 
 // ============================================================
@@ -2654,6 +2663,7 @@ function renderHome(container) {
   });
 
   html += `<div id="ad-home-mid" class="ad-slot"></div>`;
+  html += `<div id="ad-mobile-1" class="ad-slot"></div>`;
 
   html += `
   <!-- SEO Rich Content Block -->
@@ -3466,6 +3476,7 @@ function renderToolPage(container) {
   }
   html += `<div id="ad-tool-top" class="ad-slot"></div>`;
   html += `<div class="results-area" id="resultsArea"></div>`;
+  html += `<div id="ad-mobile-2" class="ad-slot"></div>`;
 
   // ── Per-tool SEO + GEO content block (long-tail keywords, AI citation) ──
   html += renderToolSEOBlock(state.currentTool);
