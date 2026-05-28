@@ -23,11 +23,10 @@ const CDN_ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
 ];
 
-// Domains to never intercept (ads, analytics)
+// Domains to never intercept (ads)
 const AD_DOMAINS = [
   'highperformanceformat.com', 'adsterra.com',
-  'googlesyndication.com', 'doubleclick.net',
-  'analytics.google.com', 'googletagmanager.com'
+  'googlesyndication.com', 'doubleclick.net'
 ];
 
 self.addEventListener('install', (event) => {

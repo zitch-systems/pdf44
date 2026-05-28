@@ -74,47 +74,6 @@
 <meta name="yandex-verification"      content="REPLACE_WITH_YANDEX_TOKEN">
 <meta name="p:domain_verify"          content="REPLACE_WITH_PINTEREST_TOKEN">
 
-<!--
-  ══ Analytics — privacy-aware, deferred, non-blocking ══════════
-  GA4 loads via `requestIdleCallback` after first paint so it never
-  competes with critical render. Replace G-XXXXXXXXXX with your real
-  Measurement ID. Set `window.PDF44_ANALYTICS = false` before this
-  script to disable entirely (e.g. for opt-out / DNT users).
--->
-<script>
-(function () {
-  // Honour Do-Not-Track and the optional opt-out flag.
-  try {
-    if (navigator.doNotTrack === '1' || window.doNotTrack === '1') return;
-    if (window.PDF44_ANALYTICS === false) return;
-  } catch (e) { /* no-op */ }
-  const GA_ID = 'G-XXXXXXXXXX'; // ← replace with real GA4 Measurement ID
-  if (!GA_ID || GA_ID.indexOf('XXXX') !== -1) return; // skip while placeholder
-
-  function loadGa() {
-    const s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-    document.head.appendChild(s);
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { window.dataLayer.push(arguments); };
-    window.gtag('js', new Date());
-    window.gtag('config', GA_ID, {
-      anonymize_ip: true,
-      allow_google_signals: false,
-      allow_ad_personalization_signals: false
-    });
-  }
-
-  if (document.readyState === 'complete') {
-    (window.requestIdleCallback || setTimeout)(loadGa, 2000);
-  } else {
-    window.addEventListener('load', function () {
-      (window.requestIdleCallback || setTimeout)(loadGa, 2000);
-    });
-  }
-})();
-</script>
 
 <script>
 window.addEventListener('error', function(e) {
