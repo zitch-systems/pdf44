@@ -1935,10 +1935,6 @@ input[type="range"]::-moz-range-thumb {
 </div>
 </noscript>
 
-<!-- TOP BANNER AD -->
-<!-- Monetag Top Banner -->
-<div id="adBanner" style="text-align:center;min-height:64px;background:var(--bg-2);border-bottom:1px solid var(--border);padding:4px 0;"></div>
-
 <div class="app">
   <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -3175,7 +3171,7 @@ var _AD_RECT = { key: '8468d7261d22406749b755f0d3f69f45', w: 300, h: 250 };
 
 // Slots that show the 300×250 rectangle on every viewport. Everything
 // else gets the responsive leaderboard/banner.
-var _AD_RECT_SLOTS = ['ad-home-mid', 'ad-home-bottom', 'ad-tool-bottom', 'ad-home-after-cats', 'ad-home-seo-mid', 'ad-tool-mid'];
+var _AD_RECT_SLOTS = ['ad-home-mid', 'ad-home-bottom', 'ad-tool-bottom', 'ad-home-after-cats', 'ad-home-seo-mid', 'ad-tool-mid', 'ad-home-hero-top', 'ad-tool-hero-top'];
 
 // Mobile-only slots — skipped entirely on desktop (≥ 728px) so they
 // never leave an empty gap on wide screens.
@@ -3193,17 +3189,32 @@ function _injectAd(id) {
   var ad = (_AD_RECT_SLOTS.indexOf(id) !== -1) ? _AD_RECT
          : isMobile ? _AD_MOB : _AD_DESK;
   el.style.minHeight = ad.h + 'px';
-  var opt = document.createElement('script');
-  opt.textContent = "atOptions={'key':'" + ad.key + "','format':'iframe','height':" + ad.h + ",'width':" + ad.w + ",'params':{}};";
-  el.appendChild(opt);
-  var inv = document.createElement('script');
-  inv.src = 'https://www.highperformanceformat.com/' + ad.key + '/invoke.js';
-  el.appendChild(inv);
+  // Adsterra's invoke.js reads a GLOBAL window.atOptions synchronously when
+  // it executes. Multiple ad slots on the same page would clobber each
+  // other (only the last atOptions would win), so each slot is isolated
+  // inside its own srcdoc iframe — every iframe gets its own atOptions.
+  var ifr = document.createElement('iframe');
+  ifr.width = ad.w;
+  ifr.height = ad.h;
+  ifr.scrolling = 'no';
+  ifr.frameBorder = '0';
+  ifr.setAttribute('allow', '');
+  ifr.style.cssText = 'border:0;display:block;margin:0 auto;background:transparent;';
+  var doc =
+    '<!doctype html><html><head><meta charset="utf-8">' +
+    '<style>html,body{margin:0;padding:0;background:transparent;overflow:hidden;}</style>' +
+    '</head><body>' +
+    '<script>atOptions={"key":"' + ad.key + '","format":"iframe","height":' + ad.h + ',"width":' + ad.w + ',"params":{}};<\/script>' +
+    '<script src="https://www.highperformanceformat.com/' + ad.key + '/invoke.js"><\/script>' +
+    '</body></html>';
+  ifr.srcdoc = doc;
+  el.appendChild(ifr);
 }
 
 function initAds() {
-  ['ad-home-top', 'ad-home-mid', 'ad-home-bottom', 'ad-home-after-cats', 'ad-home-seo-mid',
-   'ad-mobile-1', 'ad-tool-top', 'ad-tool-mid', 'ad-tool-bottom', 'ad-mobile-2',
+  ['ad-home-hero-top', 'ad-home-top', 'ad-home-mid', 'ad-home-bottom',
+   'ad-home-after-cats', 'ad-home-seo-mid', 'ad-mobile-1',
+   'ad-tool-hero-top', 'ad-tool-top', 'ad-tool-mid', 'ad-tool-bottom', 'ad-mobile-2',
    'adSticky'].forEach(_injectAd);
 }
 
@@ -3313,6 +3324,7 @@ function render() {
 
 function renderHome(container) {
   let html = `
+    <div id="ad-home-hero-top" class="ad-slot" style="margin:8px 0 18px;"></div>
     <section class="hero" aria-label="PDF44 — Free Online PDF Tools">
       <div class="hero-badge" role="note">41+ free PDF tools · 100% private · No upload needed</div>
       <h1>Free Online PDF Tools — <span>No Upload Required</span></h1>
@@ -6492,6 +6504,7 @@ function renderToolPage(container) {
   const multiText = tool.multi ? (tool.maxFiles ? `Up to ${tool.maxFiles} files` : 'Multiple files') : 'Single file';
 
   let html = '';
+  html += '<div id="ad-tool-hero-top" class="ad-slot" style="margin:0 0 16px;"></div>';
 
   // Show upload zone unless tool needs no file input
   if (tool.accepts !== '') {
