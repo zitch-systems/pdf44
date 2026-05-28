@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  lint-and-validate:
+    name: Lint & Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # ── Extract and syntax-check both inline script blocks ────────────
+      - name: Check JavaScript syntax
+        run: |
+          node - <<'EOF'
+          const fs = require('fs');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const re = /<script(\b[^>]*)>([\s\S]*?)<\/script>/gi;
+          let m, i = 0, errs = 0;
+          while ((m = re.exec(html)) !== null) {
+            const attrs = m[1] || '';
+            if (/src=/.test(attrs) || /application\/ld\+json/.test(attrs)) continue;
+            i++;
+            try { new Function(m[2]); }
+            catch (e) { errs++; console.error(`Script #${i} FAILED: ${e.message}`); }
+          }
+          if (errs) { console.error(`\n${errs} script block(s) failed syntax check`); process.exit(1); }
+          console.log(`✓ ${i} script block(s) passed syntax check`);
+          EOF
+
+      # ── Validate HTML structure ────────────────────────────────────────
+      - name: Check HTML (basic structure)
+        run: |
+          node - <<'EOF'
+          const fs = require('fs');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const checks = [
+            [/<html[^>]+lang=/,          'lang attribute on <html>'],
+            [/<meta charset=/i,           '<meta charset>'],
+            [/<title>[^<]+<\/title>/,     '<title> not empty'],
+            [/<link rel="canonical"/,     'canonical link'],
+            [/<meta name="description"/, 'meta description'],
+            [/<div.*id="content"/,        '#content div'],
+          ];
+          let failed = 0;
+          for (const [re, label] of checks) {
+            if (!re.test(html)) { console.error(`MISSING: ${label}`); failed++; }
+          }
+          if (failed) process.exit(1);
+          console.log(`✓ HTML structure OK`);
+          EOF
+
+      # ── Verify sitemap URL count matches expectation ───────────────────
+      - name: Sitemap URL count
+        run: |
+          COUNT=$(grep -c '<loc>' sitemap.xml)
+          echo "Sitemap has $COUNT URLs"
+          if [ "$COUNT" -lt 50 ]; then
+            echo "ERROR: Sitemap has fewer than 50 URLs — possible truncation"
+            exit 1
+          fi
+
+      # ── Build prerender (if build.js exists) ──────────────────────────
+      - name: Prerender (build.js)
+        run: |
+          if [ -f build.js ]; then
+            npm ci --prefer-offline
+            node build.js
+            echo "dist/ contains $(find dist -name '*.html' | wc -l) HTML files"
+          else
+            echo "build.js not found — skipping prerender"
+          fi
+
+      # ── Smoke-test a sample of generated routes ───────────────────────
+      - name: Smoke-test prerendered routes
+        run: |
+          if [ -d dist ]; then
+            node - <<'EOF'
+          const fs = require('fs');
+          const checks = ['merge-pdf','split-pdf','compress-pdf','ocr-pdf','sign-pdf'];
+          let failed = 0;
+          for (const slug of checks) {
+            const f = `dist/${slug}/index.html`;
+            if (!fs.existsSync(f)) { console.error(`MISSING: ${f}`); failed++; continue; }
+            const html = fs.readFileSync(f, 'utf8');
+            if (html.includes('<title>PDF44 — Free Online PDF Tools')) {
+              console.error(`WRONG TITLE in ${f} (still homepage title)`); failed++;
+            } else {
+              console.log(`✓ ${slug}`);
+            }
+          }
+          if (failed) process.exit(1);
+          EOF
+          fi

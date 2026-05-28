@@ -74,46 +74,19 @@
 <meta name="yandex-verification"      content="REPLACE_WITH_YANDEX_TOKEN">
 <meta name="p:domain_verify"          content="REPLACE_WITH_PINTEREST_TOKEN">
 
-<!--
-  ══ Analytics — privacy-aware, deferred, non-blocking ══════════
-  GA4 loads via `requestIdleCallback` after first paint so it never
-  competes with critical render. Replace G-XXXXXXXXXX with your real
-  Measurement ID. Set `window.PDF44_ANALYTICS = false` before this
-  script to disable entirely (e.g. for opt-out / DNT users).
--->
+
 <script>
-(function () {
-  // Honour Do-Not-Track and the optional opt-out flag.
+window.addEventListener('error', function(e) {
   try {
-    if (navigator.doNotTrack === '1' || window.doNotTrack === '1') return;
-    if (window.PDF44_ANALYTICS === false) return;
-  } catch (e) { /* no-op */ }
-  const GA_ID = 'G-XXXXXXXXXX'; // ← replace with real GA4 Measurement ID
-  if (!GA_ID || GA_ID.indexOf('XXXX') !== -1) return; // skip while placeholder
-
-  function loadGa() {
-    const s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-    document.head.appendChild(s);
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () { window.dataLayer.push(arguments); };
-    window.gtag('js', new Date());
-    window.gtag('config', GA_ID, {
-      anonymize_ip: true,
-      allow_google_signals: false,
-      allow_ad_personalization_signals: false
-    });
-  }
-
-  if (document.readyState === 'complete') {
-    (window.requestIdleCallback || setTimeout)(loadGa, 2000);
-  } else {
-    window.addEventListener('load', function () {
-      (window.requestIdleCallback || setTimeout)(loadGa, 2000);
-    });
-  }
-})();
+    var rec = { msg: e.message, src: e.filename, line: e.lineno, col: e.colno, url: location.href.slice(0, 200), ts: Date.now() };
+    var prev = JSON.parse(localStorage.getItem('pdf44_errors') || '[]');
+    prev.push(rec);
+    localStorage.setItem('pdf44_errors', JSON.stringify(prev.slice(-20)));
+  } catch(_) {}
+});
+window.addEventListener('unhandledrejection', function(e) {
+  try { console.error('[PDF44 unhandled]', e.reason); } catch(_) {}
+});
 </script>
 
 <!-- ══ Performance — preconnect, preload, dns-prefetch ═════════ -->
@@ -449,12 +422,12 @@
   so the order is: HTML render → libs load → app boots.
   This is the single biggest Core-Web-Vitals improvement.
 -->
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js" integrity="sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" integrity="sha384-PlRSzpewlarQuj5alIadXwjNUX+2eNMKwr0f07ShWYLy8B6TjEbm7ZlcN/ScSbwy" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H" crossorigin="anonymous"></script>
 
 <style>
 /* ============================================================
@@ -469,7 +442,7 @@
   --bg-glass-hover: rgba(255,255,255,0.07);
   --text:          #ffffff;
   --text-2:        #b8b8c8;
-  --text-3:        #7a7a90;
+  --text-3:        #a0a0b8;
   --accent:        #6366f1;
   --accent-2:      #8b5cf6;
   --accent-3:      #a855f7;
@@ -497,7 +470,7 @@
   --bg-glass-hover: rgba(0,0,0,0.05);
   --text:          #0f1729;
   --text-2:        #475569;
-  --text-3:        #94a3b8;
+  --text-3:        #64748b;
   --accent:        #6366f1;
   --accent-2:      #8b5cf6;
   --accent-3:      #a855f7;
@@ -519,6 +492,7 @@
 :root {
   --sidebar-w:   272px;
   --topbar-h:    64px;
+  --ad-h:        50px;  /* matches .ad-sticky min-height; updated at >=728px below */
   --radius:      16px;
   --radius-sm:   10px;
   --radius-xs:   6px;
@@ -527,6 +501,7 @@
   --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   --max-w:       1440px;
 }
+@media (min-width: 728px) { :root { --ad-h: 90px; } }
 
 /* ============================================================
    RESET & BASE
@@ -691,6 +666,17 @@ a:hover { text-decoration: underline; }
 .page-desc { font-size: 12.5px; color: var(--text-3); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .topbar-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
 
+.share-btn {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+.share-btn:hover { color: var(--accent); border-color: var(--accent); transform: translateY(-1px); }
 .theme-toggle {
   width: 38px; height: 38px;
   border-radius: 10px;
@@ -765,7 +751,7 @@ a:hover { text-decoration: underline; }
    CONTENT
    ============================================================ */
 .content {
-  padding: 28px;
+  padding: 28px 28px calc(var(--ad-h) + 28px);
   flex: 1;
   max-width: var(--max-w);
   width: 100%;
@@ -1259,7 +1245,7 @@ input[type="range"]::-moz-range-thumb {
 
 .toast-container {
   position: fixed;
-  bottom: 24px;
+  bottom: calc(var(--ad-h) + 16px);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -1439,7 +1425,7 @@ input[type="range"]::-moz-range-thumb {
 
 .app-footer {
   margin-top: 40px;
-  padding: 24px 28px;
+  padding: 24px 28px calc(var(--ad-h) + 24px);
   border-top: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
@@ -1454,7 +1440,7 @@ input[type="range"]::-moz-range-thumb {
 @media (max-width: 900px) {
   #processBtn {
     position: fixed;
-    bottom: 68px;
+    bottom: calc(var(--ad-h) + 14px);
     right: 16px;
     z-index: 85;
     box-shadow: 0 4px 20px rgba(99,102,241,0.4);
@@ -1483,16 +1469,13 @@ input[type="range"]::-moz-range-thumb {
   position: fixed;
   bottom: 0; left: var(--sidebar-w); right: 0;
   z-index: 80;
-  min-height: 50px;
+  min-height: var(--ad-h);
   background: var(--bg-2);
   border-top: 1px solid var(--border);
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 0;
-}
-@media (min-width: 728px) {
-  .ad-sticky { min-height: 90px; }
 }
 
 /* ============================================================
@@ -1556,13 +1539,14 @@ input[type="range"]::-moz-range-thumb {
   :root { --sidebar-w: 240px; }
 }
 @media (max-width: 900px) {
-  .sidebar { transform: translateX(-100%); width: 280px; }
+  .sidebar { transform: translateX(-100%); width: min(86vw, 320px); }
   .sidebar.open { transform: translateX(0); box-shadow: var(--shadow-lg); }
   .main { margin-left: 0; width: 100%; }
   .ad-sticky { left: 0; }
-  .mobile-toggle { display: flex; }
-  .topbar { padding: 0 16px; gap: 10px; }
-  .content { padding: 18px 16px 80px; }
+  .mobile-toggle { display: flex; order: -1; }
+  .topbar { padding: 0 12px; gap: 10px; }
+  .topbar-actions { gap: 6px; }
+  .content { padding: 18px 16px calc(var(--ad-h) + 80px); }
   .ad-banner { margin: 0 16px 12px; }
   .install-section, .contact-section { padding: 32px 20px; }
 }
@@ -1575,6 +1559,9 @@ input[type="range"]::-moz-range-thumb {
   .upload-zone { padding: 36px 18px; }
   .hero-stats { gap: 18px; }
   .install-grid { grid-template-columns: 1fr; }
+  /* Reclaim width for the page title; the subtitle is non-essential here. */
+  .page-desc { display: none; }
+  .page-title { font-size: 16px; }
 }
 
 
@@ -1907,7 +1894,6 @@ input[type="range"]::-moz-range-thumb {
 <div id="adBanner" style="text-align:center;min-height:64px;background:var(--bg-2);border-bottom:1px solid var(--border);padding:4px 0;"></div>
 
 <div class="app">
-  <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
   <a href="#main-content" class="skip-link" aria-label="Skip to main content">Skip to main content</a>
   <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
@@ -1929,12 +1915,15 @@ input[type="range"]::-moz-range-thumb {
 
   <main class="main" id="main-content" role="main" aria-label="PDF44 — Online PDF Tools">
     <header class="topbar" role="banner" aria-label="PDF44 toolbar">
-      <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Menu" style="display:none;">☰</button>
+      <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       <div class="topbar-left">
         <div class="page-title" id="pageTitle">PDF44</div>
         <div class="page-desc" id="pageDesc">Every PDF tool you need</div>
       </div>
       <div class="topbar-actions">
+        <button class="share-btn" id="shareBtn" onclick="shareTool()" aria-label="Copy link to this tool" title="Copy link" style="display:none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
         <button class="theme-toggle" onclick="openCommandPalette()" aria-label="Search tools" title="Search tools (Ctrl/Cmd+K)" style="margin-right:0;">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-4.3-4.3"/></svg>
       </button>
@@ -2412,6 +2401,18 @@ function renderSidebar() {
         <span class="nav-icon">${icon('home', {size:17})}</span><span>Home</span>
       </div>
     </div>`;
+  const recents = loadRecentTools().filter(k => TOOLS[k]);
+  if (recents.length) {
+    html += '<div class="nav-section"><div class="nav-label">Recently Used</div>';
+    recents.forEach(key => {
+      const t = TOOLS[key];
+      html += `
+        <div class="nav-item ${state.currentTool===key?'active':''}" onclick="route('${key}')">
+          <span class="nav-icon">${icon('history', {size:17, stroke:2})}</span><span>${t.title}</span>
+        </div>`;
+    });
+    html += '</div>';
+  }
   const favs = loadFavs().filter(k => TOOLS[k]);
   if (favs.length) {
     html += '<div class="nav-section"><div class="nav-label">Favorites</div>';
@@ -3178,6 +3179,10 @@ function route(tool) {
   state.pageRotations = {};
   state.watermarkImage = null;
 
+  if (TOOLS[tool]) trackRecent(tool);
+  const shareBtn = document.getElementById('shareBtn');
+  if (shareBtn) shareBtn.style.display = TOOLS[tool] ? 'flex' : 'none';
+
   renderSidebar();
   const meta = SPECIAL_PAGES[tool] || TOOLS[tool];
   if (meta) {
@@ -3198,6 +3203,11 @@ function route(tool) {
   if (window.innerWidth < 901) {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sidebarOverlay').classList.remove('active');
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    document.querySelectorAll('.mobile-toggle').forEach(b => b.setAttribute('aria-expanded', 'false'));
   }
 
   render();
@@ -3215,8 +3225,19 @@ window.addEventListener('popstate', function () {
 });
 
 function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sidebarOverlay').classList.toggle('active');
+  const open = document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('active', open);
+  if (open) {
+    window.__scrollY = window.scrollY;
+    document.body.style.cssText += ';position:fixed;top:-' + window.__scrollY + 'px;width:100%;overflow:hidden;';
+  } else {
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    window.scrollTo(0, window.__scrollY || 0);
+  }
+  document.querySelectorAll('.mobile-toggle').forEach(b => b.setAttribute('aria-expanded', String(open)));
 }
 
 // ============================================================
@@ -8516,9 +8537,34 @@ function openModal(title, body, footer='') {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalBody').innerHTML = body;
   document.getElementById('modalFooter').innerHTML = footer;
-  document.getElementById('modal').classList.add('active');
+  const overlay = document.getElementById('modal');
+  overlay.classList.add('active');
+  overlay.setAttribute('aria-hidden', 'false');
+  // Trap focus inside modal
+  requestAnimationFrame(() => {
+    const FOCUSABLE = 'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])';
+    const getFocusable = () => Array.from(overlay.querySelectorAll(FOCUSABLE)).filter(el => !el.disabled);
+    (getFocusable()[0] || overlay).focus();
+    overlay._trap = function(e) {
+      if (e.key !== 'Tab') return;
+      const els = getFocusable();
+      if (!els.length) return;
+      const first = els[0], last = els[els.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+    overlay._esc = function(e) { if (e.key === 'Escape') closeModal(); };
+    overlay.addEventListener('keydown', overlay._trap);
+    document.addEventListener('keydown', overlay._esc);
+  });
 }
-function closeModal() { document.getElementById('modal').classList.remove('active'); }
+function closeModal() {
+  const overlay = document.getElementById('modal');
+  overlay.classList.remove('active');
+  overlay.setAttribute('aria-hidden', 'true');
+  if (overlay._trap) { overlay.removeEventListener('keydown', overlay._trap); delete overlay._trap; }
+  if (overlay._esc)  { document.removeEventListener('keydown', overlay._esc);  delete overlay._esc; }
+}
 
 // ============================================================
 //  PWA INSTALL EVENT
@@ -9025,11 +9071,33 @@ function addRecent(filename, size, tool) {
 // ============================================================
 //  FAVORITES (pinned tools)
 // ============================================================
-const FAV_KEY = 'pdf44-favs';
+const FAV_KEY          = 'pdf44-favs';
+const RECENT_TOOLS_KEY = 'pdf44-recent-tools';
 function loadFavs() {
   try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch(e) { return []; }
 }
 function saveFavs(list) { try { localStorage.setItem(FAV_KEY, JSON.stringify(list)); } catch(e){} }
+function loadRecentTools() {
+  try { return JSON.parse(localStorage.getItem(RECENT_TOOLS_KEY) || '[]'); } catch(e) { return []; }
+}
+function trackRecent(toolKey) {
+  if (!TOOLS[toolKey]) return;
+  try {
+    const list = loadRecentTools().filter(k => k !== toolKey);
+    list.unshift(toolKey);
+    localStorage.setItem(RECENT_TOOLS_KEY, JSON.stringify(list.slice(0, 5)));
+  } catch(e) {}
+}
+function shareTool() {
+  const url = location.href;
+  if (navigator.share && /Mobi/i.test(navigator.userAgent)) {
+    navigator.share({ title: document.title, url }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(url).then(() => toast('Link copied!', 'success')).catch(() => {
+      prompt('Copy this link:', url);
+    });
+  }
+}
 function toggleFav(toolKey, ev) {
   if (ev) { ev.stopPropagation(); ev.preventDefault(); }
   const favs = loadFavs();
