@@ -3171,9 +3171,8 @@ function _injectAd(id) {
 }
 
 function initAds() {
-  // Limit to 3 slots: sticky bar + one in-tool + one on home.
-  // Fewer slots = better page quality signals + lower redirect-creative risk.
-  ['adSticky', 'ad-tool-top', 'ad-home-top'].forEach(_injectAd);
+  ['ad-home-top', 'ad-home-mid', 'ad-home-bottom', 'ad-mobile-1',
+   'ad-tool-top', 'ad-tool-bottom', 'ad-mobile-2', 'adSticky'].forEach(_injectAd);
 }
 
 // ============================================================
