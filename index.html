@@ -813,6 +813,52 @@ a:hover { text-decoration: underline; }
 
 /* CATEGORY HEADING */
 .cat-block { margin-bottom: 36px; }
+
+/* QUICK TOOLS ROW */
+.quick-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 20px 0 28px;
+}
+.quick-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: 99px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s var(--ease);
+  text-decoration: none;
+}
+.quick-tool-btn:hover { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); text-decoration: none; transform: translateY(-1px); }
+.quick-tool-btn svg { flex-shrink: 0; }
+
+/* TRUST BAR */
+.trust-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  justify-content: center;
+  margin: 16px 0 28px;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+.trust-item svg { color: var(--success); flex-shrink: 0; }
+
+
 .cat-title {
   font-size: 11px;
   font-weight: 700;
@@ -3129,7 +3175,7 @@ var _AD_RECT = { key: '8468d7261d22406749b755f0d3f69f45', w: 300, h: 250 };
 
 // Slots that show the 300×250 rectangle on every viewport. Everything
 // else gets the responsive leaderboard/banner.
-var _AD_RECT_SLOTS = ['ad-home-mid', 'ad-home-bottom', 'ad-tool-bottom'];
+var _AD_RECT_SLOTS = ['ad-home-mid', 'ad-home-bottom', 'ad-tool-bottom', 'ad-home-after-cats', 'ad-home-seo-mid', 'ad-tool-mid'];
 
 // Mobile-only slots — skipped entirely on desktop (≥ 728px) so they
 // never leave an empty gap on wide screens.
@@ -3156,8 +3202,9 @@ function _injectAd(id) {
 }
 
 function initAds() {
-  ['ad-home-top', 'ad-home-mid', 'ad-home-bottom', 'ad-mobile-1',
-   'ad-tool-top', 'ad-tool-bottom', 'ad-mobile-2', 'adSticky'].forEach(_injectAd);
+  ['ad-home-top', 'ad-home-mid', 'ad-home-bottom', 'ad-home-after-cats', 'ad-home-seo-mid',
+   'ad-mobile-1', 'ad-tool-top', 'ad-tool-mid', 'ad-tool-bottom', 'ad-mobile-2',
+   'adSticky'].forEach(_injectAd);
 }
 
 // ============================================================
@@ -3267,7 +3314,7 @@ function render() {
 function renderHome(container) {
   let html = `
     <section class="hero" aria-label="PDF44 — Free Online PDF Tools">
-      <div class="hero-badge" role="note">All-in-one PDF toolkit · 38+ tools · 100% free</div>
+      <div class="hero-badge" role="note">41+ free PDF tools · 100% private · No upload needed</div>
       <h1>Free Online PDF Tools — <span>No Upload Required</span></h1>
       <p>Merge, split, compress, convert, edit, sign and protect PDFs <strong>entirely in your browser</strong> — <strong>no file uploads, no registration, no watermarks, free forever</strong>. PDF44 has <strong>41 free PDF tools</strong> including PDF to Word, PDF to JPG, EPUB to PDF, fill PDF forms, e-signatures, and password protection. Your files never leave your device.</p>
       <div class="hero-stats" role="list" aria-label="PDF44 key facts">
@@ -3277,6 +3324,20 @@ function renderHome(container) {
         <div class="hero-stat" role="listitem"><div class="hero-stat-num">Free</div><div class="hero-stat-label">Forever</div></div>
       </div>
     </section>
+    <nav class="quick-tools" aria-label="Popular tools">
+      ${[['merge','Merge PDF'],['compress','Compress PDF'],['pdf2word','PDF to Word'],['sign','Sign PDF'],['split','Split PDF'],['pdf2jpg','PDF to JPG'],['protect','Protect PDF'],['rotate','Rotate PDF']].map(([key,label])=>{
+        const t = TOOLS[key];
+        const slug = TOOL_SLUGS[key] || '';
+        const href = slug ? '/' + slug : '/?tool=' + key;
+        return `<a class="quick-tool-btn" href="${href}" onclick="route('${key}');return false;" aria-label="${label}">${icon(t.iconKey,{size:15,stroke:2.2})} ${label}</a>`;
+      }).join('')}
+    </nav>
+    <div class="trust-bar" aria-label="Trust signals">
+      <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 2 4 5v7c0 4.5 3.5 8.5 8 9 4.5-.5 8-4.5 8-9V5z"/><path d="m9 12 2 2 4-4"/></svg> Files never leave your device</div>
+      <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg> No sign-up required</div>
+      <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg> Works offline as a PWA</div>
+      <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> No file size limit</div>
+    </div>
     ${(() => {
     const recent = safeLoadRecent();
     if (!recent.length) return '';
@@ -3312,6 +3373,7 @@ function renderHome(container) {
     html += `</div></div>`;
   });
 
+  html += `<div id="ad-home-after-cats" class="ad-slot"></div>`;
   html += `<div id="ad-home-mid" class="ad-slot"></div>`;
   html += `<div id="ad-mobile-1" class="ad-slot"></div>`;
 
@@ -3336,7 +3398,8 @@ function renderHome(container) {
       </div>
     </div>
 
-    <div class="seo-grid" style="margin-top:32px;">
+    <div id="ad-home-seo-mid" class="ad-slot" style="margin:32px 0 8px;"></div>
+    <div class="seo-grid" style="margin-top:24px;">
       <div class="seo-col">
         <h2 class="seo-h2">How to Merge PDF Files Free</h2>
         <p class="seo-p">To merge PDFs on PDF44: click <em>Merge PDF</em> in the sidebar → upload 2 or more PDF files → drag to reorder → click <em>Process</em>. Your merged PDF downloads immediately. No email required. No size limit.</p>
@@ -6565,6 +6628,9 @@ function renderToolSEOBlock(toolKey) {
   steps.forEach(function (s) { h += '<li>' + s + '</li>'; });
   h += '</ol>';
   h += '</div></div>';
+
+  // Mid-content ad between how-to steps and FAQ
+  h += '<div id="ad-tool-mid" class="ad-slot" style="margin:24px 0;"></div>';
 
   // FAQ block (also feeds FAQPage schema below).
   h += '<div class="seo-faq" aria-label="' + title + ' FAQ"><h2 class="seo-h2" style="text-align:center;margin-bottom:18px;">' + title + ' — Frequently Asked Questions</h2><div class="seo-faq-grid">';
