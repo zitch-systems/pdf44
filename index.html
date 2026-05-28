@@ -116,6 +116,20 @@
 })();
 </script>
 
+<script>
+window.addEventListener('error', function(e) {
+  try {
+    var rec = { msg: e.message, src: e.filename, line: e.lineno, col: e.colno, url: location.href.slice(0, 200), ts: Date.now() };
+    var prev = JSON.parse(localStorage.getItem('pdf44_errors') || '[]');
+    prev.push(rec);
+    localStorage.setItem('pdf44_errors', JSON.stringify(prev.slice(-20)));
+  } catch(_) {}
+});
+window.addEventListener('unhandledrejection', function(e) {
+  try { console.error('[PDF44 unhandled]', e.reason); } catch(_) {}
+});
+</script>
+
 <!-- ══ Performance — preconnect, preload, dns-prefetch ═════════ -->
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -449,12 +463,12 @@
   so the order is: HTML render → libs load → app boots.
   This is the single biggest Core-Web-Vitals improvement.
 -->
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js" integrity="sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" integrity="sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" integrity="sha384-PlRSzpewlarQuj5alIadXwjNUX+2eNMKwr0f07ShWYLy8B6TjEbm7ZlcN/ScSbwy" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H" crossorigin="anonymous"></script>
 
 <style>
 /* ============================================================
@@ -469,7 +483,7 @@
   --bg-glass-hover: rgba(255,255,255,0.07);
   --text:          #ffffff;
   --text-2:        #b8b8c8;
-  --text-3:        #7a7a90;
+  --text-3:        #a0a0b8;
   --accent:        #6366f1;
   --accent-2:      #8b5cf6;
   --accent-3:      #a855f7;
@@ -497,7 +511,7 @@
   --bg-glass-hover: rgba(0,0,0,0.05);
   --text:          #0f1729;
   --text-2:        #475569;
-  --text-3:        #94a3b8;
+  --text-3:        #64748b;
   --accent:        #6366f1;
   --accent-2:      #8b5cf6;
   --accent-3:      #a855f7;
@@ -1931,7 +1945,7 @@ input[type="range"]::-moz-range-thumb {
 
   <main class="main" id="main-content" role="main" aria-label="PDF44 — Online PDF Tools">
     <header class="topbar" role="banner" aria-label="PDF44 toolbar">
-      <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar">☰</button>
+      <button class="mobile-toggle" onclick="toggleSidebar()" aria-label="Open menu" aria-expanded="false" aria-controls="sidebar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       <div class="topbar-left">
         <div class="page-title" id="pageTitle">PDF44</div>
         <div class="page-desc" id="pageDesc">Every PDF tool you need</div>
@@ -3157,8 +3171,9 @@ function _injectAd(id) {
 }
 
 function initAds() {
-  ['ad-home-top', 'ad-home-mid', 'ad-home-bottom', 'ad-mobile-1',
-   'ad-tool-top', 'ad-tool-bottom', 'ad-mobile-2', 'adSticky'].forEach(_injectAd);
+  // Limit to 3 slots: sticky bar + one in-tool + one on home.
+  // Fewer slots = better page quality signals + lower redirect-creative risk.
+  ['adSticky', 'ad-tool-top', 'ad-home-top'].forEach(_injectAd);
 }
 
 // ============================================================
@@ -8534,9 +8549,34 @@ function openModal(title, body, footer='') {
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalBody').innerHTML = body;
   document.getElementById('modalFooter').innerHTML = footer;
-  document.getElementById('modal').classList.add('active');
+  const overlay = document.getElementById('modal');
+  overlay.classList.add('active');
+  overlay.setAttribute('aria-hidden', 'false');
+  // Trap focus inside modal
+  requestAnimationFrame(() => {
+    const FOCUSABLE = 'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])';
+    const getFocusable = () => Array.from(overlay.querySelectorAll(FOCUSABLE)).filter(el => !el.disabled);
+    (getFocusable()[0] || overlay).focus();
+    overlay._trap = function(e) {
+      if (e.key !== 'Tab') return;
+      const els = getFocusable();
+      if (!els.length) return;
+      const first = els[0], last = els[els.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+    overlay._esc = function(e) { if (e.key === 'Escape') closeModal(); };
+    overlay.addEventListener('keydown', overlay._trap);
+    document.addEventListener('keydown', overlay._esc);
+  });
 }
-function closeModal() { document.getElementById('modal').classList.remove('active'); }
+function closeModal() {
+  const overlay = document.getElementById('modal');
+  overlay.classList.remove('active');
+  overlay.setAttribute('aria-hidden', 'true');
+  if (overlay._trap) { overlay.removeEventListener('keydown', overlay._trap); delete overlay._trap; }
+  if (overlay._esc)  { document.removeEventListener('keydown', overlay._esc);  delete overlay._esc; }
+}
 
 // ============================================================
 //  PWA INSTALL EVENT
