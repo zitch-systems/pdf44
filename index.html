@@ -1523,6 +1523,16 @@ input[type="range"]::-moz-range-thumb {
   align-items: center;
   margin: 0;
 }
+/* Sidebar skyscraper rail — sits between the nav and the sidebar footer
+   on desktop. Hidden on phones where the sidebar is a slide-out drawer. */
+.ad-rail {
+  margin: 10px auto 4px;
+  padding: 6px 0;
+  flex: 0 0 auto;
+}
+@media (max-width: 900px) {
+  .ad-rail { display: none !important; }
+}
 
 /* ============================================================
    SIGNATURE PAD
@@ -1945,6 +1955,7 @@ input[type="range"]::-moz-range-thumb {
       <div class="logo-text">PDF<span>44</span></div>
     </div>
     <nav class="sidebar-nav" id="sidebarNav" role="navigation" aria-label="PDF tools navigation"></nav>
+    <div id="ad-sidebar" class="ad-slot ad-rail" aria-label="Advertisement"></div>
     <div class="sidebar-footer">
       <div class="sidebar-footer-note"><span class="privacy-dot"></span> 100% client-side · Private</div>
       <div class="sidebar-footer-links">
@@ -1979,6 +1990,8 @@ input[type="range"]::-moz-range-thumb {
     </header>
 
     <div class="content" id="content"></div>
+
+    <div id="ad-footer" class="ad-slot" aria-label="Advertisement" style="margin:8px 0 0;"></div>
 
     <footer class="app-footer" role="contentinfo" aria-label="PDF44 footer">
       <div class="footer-brand">
@@ -3165,39 +3178,84 @@ function updateSEO(tool) {
 //  (in-content slots). Injected via createElement so the scripts
 //  run after innerHTML is set.
 // ============================================================
-var _AD_DESK = { key: 'e7659e71460e94155aa12f1de3482b82', w: 728, h: 90 };
-var _AD_MOB  = { key: '6366b49cc04357ea126e44bac182d906', w: 320, h: 50 };
-var _AD_RECT = { key: '8468d7261d22406749b755f0d3f69f45', w: 300, h: 250 };
+var _AD_DESK   = { key: 'e7659e71460e94155aa12f1de3482b82', w: 728, h: 90 };  // leaderboard
+var _AD_MOB    = { key: '6366b49cc04357ea126e44bac182d906', w: 320, h: 50 };  // mobile banner
+var _AD_RECT   = { key: '8468d7261d22406749b755f0d3f69f45', w: 300, h: 250 }; // medium rectangle
+var _AD_SKY    = { key: '80af7d3329c0334da5b929e1f157d6e0', w: 160, h: 600 }; // wide skyscraper
+var _AD_SKY_SM = { key: '8eec23166fa508ed3cecc4e6a6a2271d', w: 160, h: 300 }; // half skyscraper
+var _AD_BANNER = { key: '6c1add11f428c8f61ea10839b653a586', w: 468, h: 60 };  // compact banner
 
 // Slots that show the 300×250 rectangle on every viewport. Everything
 // else gets the responsive leaderboard/banner.
 var _AD_RECT_SLOTS = ['ad-home-mid', 'ad-home-bottom', 'ad-tool-bottom', 'ad-home-after-cats', 'ad-home-seo-mid', 'ad-tool-mid', 'ad-home-hero-top', 'ad-tool-hero-top'];
 
+// Fixed-unit slots — always render this exact format regardless of viewport
+// (with a graceful phone fallback applied in _pickAd when the unit is too
+// wide for the screen).
+var _AD_FIXED = {
+  'ad-sidebar':           _AD_SKY,    // sticky desktop side-rail skyscraper
+  'ad-footer':            _AD_SKY_SM, // half-skyscraper above the footer
+  'ad-home-quick':        _AD_BANNER, // compact banner under the quick-tools row
+  'ad-tool-after-upload': _AD_BANNER  // compact banner under the upload zone
+};
+
 // Mobile-only slots — skipped entirely on desktop (≥ 728px) so they
 // never leave an empty gap on wide screens.
 var _AD_MOBILE_ONLY = ['ad-mobile-1', 'ad-mobile-2'];
 
-function _injectAd(id) {
+// Desktop-only slots — skipped on phones (< 728px) so narrow/tall units
+// (e.g. the side-rail skyscraper) never disrupt the mobile feed.
+var _AD_DESKTOP_ONLY = ['ad-sidebar'];
+
+// Slots in (or near) the first viewport — loaded eagerly. Everything else is
+// lazy-loaded as it scrolls into view for faster first paint + higher
+// viewability.
+var _AD_EAGER = ['ad-home-hero-top', 'ad-tool-hero-top', 'ad-sidebar', 'adSticky'];
+
+// Pick the right ad unit for a slot, falling back to a fitting format on
+// phones when a fixed unit would overflow the viewport width.
+function _pickAd(id, isMobile) {
+  var fixed = _AD_FIXED[id];
+  if (fixed) {
+    if (isMobile && fixed.w > window.innerWidth - 24) return _AD_MOB;
+    return fixed;
+  }
+  if (_AD_RECT_SLOTS.indexOf(id) !== -1) return _AD_RECT;
+  return isMobile ? _AD_MOB : _AD_DESK;
+}
+
+// Lazy-load observer — injects an ad only when its slot nears the viewport.
+var _adObserver = null;
+function _ensureAdObserver() {
+  if (_adObserver || !('IntersectionObserver' in window)) return;
+  _adObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        _adObserver.unobserve(e.target);
+        _renderAd(e.target.id);
+      }
+    });
+  }, { rootMargin: '600px 0px' });
+}
+
+// Actually build the ad iframe. Adsterra's invoke.js reads a GLOBAL
+// window.atOptions synchronously when it executes. Multiple ad slots on the
+// same page would clobber each other (only the last atOptions would win), so
+// each slot is isolated inside its own srcdoc iframe — every iframe gets its
+// own atOptions.
+function _renderAd(id) {
   var el = document.getElementById(id);
   if (!el || el.dataset.adInit) return;
-  var isMobile = window.innerWidth < 728;
-  if (_AD_MOBILE_ONLY.indexOf(id) !== -1 && !isMobile) {
-    el.style.display = 'none';
-    return;
-  }
   el.dataset.adInit = '1';
-  var ad = (_AD_RECT_SLOTS.indexOf(id) !== -1) ? _AD_RECT
-         : isMobile ? _AD_MOB : _AD_DESK;
+  var isMobile = window.innerWidth < 728;
+  var ad = _pickAd(id, isMobile);
   el.style.minHeight = ad.h + 'px';
-  // Adsterra's invoke.js reads a GLOBAL window.atOptions synchronously when
-  // it executes. Multiple ad slots on the same page would clobber each
-  // other (only the last atOptions would win), so each slot is isolated
-  // inside its own srcdoc iframe — every iframe gets its own atOptions.
   var ifr = document.createElement('iframe');
   ifr.width = ad.w;
   ifr.height = ad.h;
   ifr.scrolling = 'no';
   ifr.frameBorder = '0';
+  ifr.loading = 'lazy';
   ifr.setAttribute('allow', '');
   ifr.style.cssText = 'border:0;display:block;margin:0 auto;background:transparent;';
   var doc =
@@ -3211,11 +3269,34 @@ function _injectAd(id) {
   el.appendChild(ifr);
 }
 
+// Register a slot: gate by viewport, reserve height to avoid layout shift,
+// then either render now (eager) or defer until it scrolls near (lazy).
+function _injectAd(id) {
+  var el = document.getElementById(id);
+  if (!el || el.dataset.adReg) return;
+  var isMobile = window.innerWidth < 728;
+  if (_AD_MOBILE_ONLY.indexOf(id) !== -1 && !isMobile) { el.style.display = 'none'; return; }
+  // The side-rail lives in the sidebar, which collapses to a drawer < 901px;
+  // skip it there so it never loads an unviewable (hidden) impression.
+  if (id === 'ad-sidebar' && window.innerWidth < 901) { el.style.display = 'none'; return; }
+  if (_AD_DESKTOP_ONLY.indexOf(id) !== -1 && isMobile)  { el.style.display = 'none'; return; }
+  el.dataset.adReg = '1';
+  // Reserve the unit's height up front so the ad doesn't push content (CLS).
+  el.style.minHeight = _pickAd(id, isMobile).h + 'px';
+  if (_AD_EAGER.indexOf(id) !== -1 || !('IntersectionObserver' in window)) {
+    _renderAd(id);
+  } else {
+    _ensureAdObserver();
+    _adObserver.observe(el);
+  }
+}
+
 function initAds() {
-  ['ad-home-hero-top', 'ad-home-top', 'ad-home-mid', 'ad-home-bottom',
-   'ad-home-after-cats', 'ad-home-seo-mid', 'ad-mobile-1',
-   'ad-tool-hero-top', 'ad-tool-top', 'ad-tool-mid', 'ad-tool-bottom', 'ad-mobile-2',
-   'adSticky'].forEach(_injectAd);
+  ['ad-home-hero-top', 'ad-home-quick', 'ad-home-top', 'ad-home-after-cats',
+   'ad-home-mid', 'ad-home-seo-mid', 'ad-home-bottom', 'ad-mobile-1',
+   'ad-tool-hero-top', 'ad-tool-after-upload', 'ad-tool-top', 'ad-tool-mid',
+   'ad-tool-bottom', 'ad-mobile-2',
+   'ad-sidebar', 'ad-footer', 'adSticky'].forEach(_injectAd);
 }
 
 // ============================================================
@@ -3350,6 +3431,7 @@ function renderHome(container) {
       <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg> Works offline as a PWA</div>
       <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> No file size limit</div>
     </div>
+    <div id="ad-home-quick" class="ad-slot" style="margin:14px 0;"></div>
     ${(() => {
     const recent = safeLoadRecent();
     if (!recent.length) return '';
@@ -6518,6 +6600,7 @@ function renderToolPage(container) {
       </div>
       <div class="file-list" id="fileList"></div>
     `;
+    html += '<div id="ad-tool-after-upload" class="ad-slot" style="margin:8px 0 16px;"></div>';
   }
 
   // Settings (tool-specific)
