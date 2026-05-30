@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>PDF44 — Ad Diagnostic</title>
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; max-width: 1100px; margin: 0 auto; padding: 24px; background:#0b0f1a; color:#e6e9f2; }
+  h1 { font-size: 20px; }
+  h2 { font-size: 15px; margin-top: 32px; border-bottom: 1px solid #2a3147; padding-bottom: 6px; }
+  p { color:#9aa3b8; }
+  code { background:#1a2030; padding:1px 5px; border-radius:4px; }
+  .grid { display:flex; flex-wrap:wrap; gap:18px; }
+  .cell { border:1px dashed #3a4256; border-radius:8px; padding:10px; background:#101626; }
+  .cell h3 { margin:0 0 8px; font-size:12px; color:#cbd2e6; }
+  .box { min-height:60px; display:flex; align-items:center; justify-content:center; background:#0b0f1a; border-radius:6px; }
+  .tag { font-size:11px; color:#6b7488; }
+  .ok { color:#4ade80; } .bad { color:#f87171; }
+  #log { background:#000; color:#7CFC00; font:12px/1.4 monospace; padding:12px; border-radius:8px; white-space:pre-wrap; max-height:240px; overflow:auto; margin-top:10px; }
+</style>
+</head>
+<body>
+<h1>PDF44 — Adsterra Diagnostic</h1>
+<p>Open this on the <strong>real, approved domain</strong> (e.g. <code>https://pdf44.com/ad-test.html</code>), then open DevTools → Console + Network. This page is served with a <strong>relaxed CSP</strong> (see <code>_headers</code>) so it isolates account/domain problems from CSP problems.</p>
+
+<p><strong>How to read the result:</strong></p>
+<ul>
+  <li><strong>Method A (inline) shows ads, Method B (srcdoc) is blank</strong> → the <code>srcdoc</code> isolation trick is the bug. Fix = stop using srcdoc.</li>
+  <li><strong>Both A and B blank here, but no CSP errors</strong> → Adsterra account/domain (not approved, no-fill, or ad blocker). Nothing in code will fix it.</li>
+  <li><strong>Works here but not on the main site</strong> → the strict CSP on the main pages is blocking it.</li>
+</ul>
+
+<h2>Method A — Official inline snippet (no srcdoc, no lazy)</h2>
+<p class="tag">This is exactly how Adsterra tells you to embed. If this is blank, the problem is your Adsterra account/domain, not our code.</p>
+<div class="grid" id="inline"></div>
+
+<h2>Method B — The srcdoc method our app currently uses</h2>
+<p class="tag">Same units, rendered inside an <code>&lt;iframe srcdoc&gt;</code>. Compare against Method A.</p>
+<div class="grid" id="srcdoc"></div>
+
+<div id="log">diagnostic log…\n</div>
+
+<script>
+var UNITS = [
+  { name:'Leaderboard',     key:'e7659e71460e94155aa12f1de3482b82', w:728, h:90  },
+  { name:'Mobile banner',   key:'6366b49cc04357ea126e44bac182d906', w:320, h:50  },
+  { name:'Rectangle',       key:'8468d7261d22406749b755f0d3f69f45', w:300, h:250 },
+  { name:'Skyscraper',      key:'80af7d3329c0334da5b929e1f157d6e0', w:160, h:600 },
+  { name:'Half skyscraper', key:'8eec23166fa508ed3cecc4e6a6a2271d', w:160, h:300 },
+  { name:'Compact banner',  key:'6c1add11f428c8f61ea10839b653a586', w:468, h:60  }
+];
+function log(m){ var el=document.getElementById('log'); el.textContent += m + "\n"; el.scrollTop=el.scrollHeight; }
+log('location.href = ' + location.href);
+log('location.hostname = ' + location.hostname);
+log('document.referrer = ' + (document.referrer||'(empty)'));
+
+// ---- Method A: official inline snippet, injected sequentially ----
+// invoke.js reads window.atOptions synchronously, so we inject one unit,
+// wait for its script to finish, then do the next — no atOptions collision.
+function inlineNext(i){
+  if (i >= UNITS.length) { log('Method A: all units injected.'); return; }
+  var u = UNITS[i];
+  var cell = document.createElement('div');
+  cell.className = 'cell';
+  cell.innerHTML = '<h3>'+u.name+' · '+u.w+'×'+u.h+'</h3>';
+  var box = document.createElement('div'); box.className='box';
+  box.style.width = u.w+'px'; box.style.minHeight = u.h+'px';
+  cell.appendChild(box);
+  document.getElementById('inline').appendChild(cell);
+
+  window.atOptions = { key:u.key, format:'iframe', height:u.h, width:u.w, params:{} };
+  var s = document.createElement('script');
+  s.src = 'https://www.highperformanceformat.com/'+u.key+'/invoke.js';
+  s.onload  = function(){ log('Method A ✓ invoke.js loaded for '+u.name); inlineNext(i+1); };
+  s.onerror = function(){ log('Method A ✗ invoke.js FAILED for '+u.name+' (blocked? network? CSP?)'); inlineNext(i+1); };
+  box.appendChild(s);
+}
+inlineNext(0);
+
+// ---- Method B: the srcdoc method ----
+UNITS.forEach(function(u){
+  var cell = document.createElement('div');
+  cell.className='cell';
+  cell.innerHTML = '<h3>'+u.name+' · '+u.w+'×'+u.h+'</h3>';
+  var ifr = document.createElement('iframe');
+  ifr.width=u.w; ifr.height=u.h; ifr.scrolling='no'; ifr.frameBorder='0';
+  ifr.style.cssText='border:0;background:#0b0f1a;';
+  ifr.srcdoc =
+    '<!doctype html><html><head><meta charset="utf-8"></head><body style="margin:0">'+
+    '<script>atOptions={"key":"'+u.key+'","format":"iframe","height":'+u.h+',"width":'+u.w+',"params":{}};<\/script>'+
+    '<script src="https://www.highperformanceformat.com/'+u.key+'/invoke.js"><\/script>'+
+    '</body></html>';
+  cell.appendChild(ifr);
+  document.getElementById('srcdoc').appendChild(cell);
+});
+log('Method B: srcdoc iframes appended.');
+</script>
+</body>
+</html>
