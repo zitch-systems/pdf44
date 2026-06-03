@@ -3255,7 +3255,9 @@ function _renderAd(id) {
   ifr.height = ad.h;
   ifr.scrolling = 'no';
   ifr.frameBorder = '0';
-  ifr.loading = 'lazy';
+  // NB: deliberately NOT setting loading="lazy" — we already defer injection
+  // via IntersectionObserver, and a lazy in-view iframe can be skipped by the
+  // browser, which would suppress eager (sticky/sidebar) ads.
   ifr.setAttribute('allow', '');
   ifr.style.cssText = 'border:0;display:block;margin:0 auto;background:transparent;';
   var doc =

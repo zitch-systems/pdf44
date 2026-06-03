@@ -205,6 +205,7 @@ for (const slug of [...slugSet].sort()) {
 const ASSETS = [
   'sw.js', 'manifest.json', 'icon.svg', 'og-image.png', 'og-image.svg',
   'robots.txt', 'sitemap.xml', 'llms.txt', '_headers', '404.html',
+  'ad-test.html',
 ];
 for (const f of ASSETS) {
   const src = path.join(ROOT, f);
