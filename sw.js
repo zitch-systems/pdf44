@@ -1,9 +1,9 @@
-// PDF44 Service Worker — v5
+// PDF44 Service Worker — v6
 // PWA offline caching
 
 // ── PDF44 PWA caching ─────────────────────────────────────────────
-const CACHE_NAME    = 'pdf44-v5';
-const RUNTIME_CACHE = 'pdf44-runtime-v5';
+const CACHE_NAME    = 'pdf44-v6';
+const RUNTIME_CACHE = 'pdf44-runtime-v6';
 
 const APP_SHELL = [
   '/',

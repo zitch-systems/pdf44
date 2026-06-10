@@ -6,6 +6,7 @@
 
 # ── Convert ──────────────────────────────────────────────────
 /pdf-to-word            /index.html?tool=pdf2word     200
+/pdf-to-powerpoint      /index.html?tool=pdf2ppt      200
 /pdf-to-jpg             /index.html?tool=pdf2jpg      200
 /pdf-to-png             /index.html?tool=pdf2png      200
 /pdf-to-excel           /index.html?tool=pdf2excel    200
@@ -245,6 +246,9 @@
 
 # ── Legacy / common typo redirects (301 = permanent) ─────────
 /pdftoword              /pdf-to-word                  301
+/pdf-to-ppt             /pdf-to-powerpoint            301
+/pdf-to-pptx            /pdf-to-powerpoint            301
+/pdftopowerpoint        /pdf-to-powerpoint            301
 /pdftojpg               /pdf-to-jpg                   301
 /mergepdf               /merge-pdf                    301
 /splitpdf               /split-pdf                    301

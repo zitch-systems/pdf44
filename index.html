@@ -8,7 +8,7 @@
 
 <!-- ══ Primary SEO (defaults; updated dynamically per route) ════ -->
 <title>PDF44 — Free Online PDF Tools | Merge, Split, Compress, Convert & Sign</title>
-<meta name="description" content="PDF44 is a free, private PDF toolkit with 41+ tools. Merge, split, compress, convert (PDF↔Word, JPG, Excel, EPUB, MOBI), edit, sign, protect & fill PDF forms — 100% in your browser. No uploads. No registration. Works offline.">
+<meta name="description" content="PDF44 is a free, private PDF toolkit with 41+ tools. Merge, split, compress, convert (PDF↔Word, PowerPoint, JPG, Excel, EPUB, MOBI), edit, sign, protect & fill PDF forms — 100% in your browser. No uploads. No registration. Works offline.">
 <meta name="author" content="PDF44">
 <meta name="publisher" content="PDF44">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -51,7 +51,7 @@
 <meta name="msapplication-TileImage" content="https://pdf44.com/icon.svg">
 
 <!-- ══ AI Search / GEO signals (concise, machine-readable) ═════ -->
-<meta name="ai-description" content="PDF44 is a free, fully client-side PDF toolkit with 41+ tools: merge, split, compress, rotate, sign, redact, protect, fill forms, convert PDF↔Word/JPG/PNG/Excel/Text, plus EPUB/MOBI ebook conversion. All processing runs in the browser via WebAssembly/JS; files never leave the user's device. No account, no upload, works offline as a PWA.">
+<meta name="ai-description" content="PDF44 is a free, fully client-side PDF toolkit with 41+ tools: merge, split, compress, rotate, sign, redact, protect, fill forms, convert PDF↔Word/PowerPoint/JPG/PNG/Excel/Text, plus EPUB/MOBI ebook conversion. All processing runs in the browser via WebAssembly/JS; files never leave the user's device. No account, no upload, works offline as a PWA.">
 <meta name="subject" content="Free online PDF tools, document conversion, e-signature, PDF editor">
 <meta name="topic" content="PDF editing, PDF conversion, document workflow, ebook conversion, electronic signatures">
 <link rel="alternate" hreflang="en" href="https://pdf44.com/">
@@ -182,7 +182,7 @@ window.addEventListener('unhandledrejection', function(e) {
     "Merge multiple PDFs into one",
     "Split PDF into separate files",
     "Compress PDF to reduce file size",
-    "Convert PDF to JPG, PNG, Word, Excel",
+    "Convert PDF to JPG, PNG, Word, PowerPoint, Excel",
     "Convert JPG, images to PDF",
     "Edit PDF — add text and annotations",
     "Sign PDF with draw, type or image",
@@ -206,7 +206,7 @@ window.addEventListener('unhandledrejection', function(e) {
     "100% private — no files uploaded to servers"
   ],
   "screenshot": "https://pdf44.com/og-image.png",
-  "keywords": "free pdf tools, merge pdf, split pdf, compress pdf, pdf to word, pdf to jpg, sign pdf, protect pdf, epub to pdf, fill pdf form",
+  "keywords": "free pdf tools, merge pdf, split pdf, compress pdf, pdf to word, pdf to powerpoint, pdf to jpg, sign pdf, protect pdf, epub to pdf, fill pdf form",
   "inLanguage": "en",
   "isAccessibleForFree": true,
   "memoryRequirements": "512MB RAM",
@@ -295,7 +295,7 @@ window.addEventListener('unhandledrejection', function(e) {
   "name": "Free Online PDF Tools",
   "description": "Complete list of free PDF tools available on PDF44",
   "url": "https://pdf44.com/",
-  "numberOfItems": 41,
+  "numberOfItems": 42,
   "itemListElement": [
     { "@type": "ListItem", "position": 1,  "name": "Merge PDF",        "url": "https://pdf44.com/?tool=merge",      "description": "Combine multiple PDFs into a single file" },
     { "@type": "ListItem", "position": 2,  "name": "Split PDF",        "url": "https://pdf44.com/?tool=split",      "description": "Separate PDF pages or extract ranges" },
@@ -311,7 +311,8 @@ window.addEventListener('unhandledrejection', function(e) {
     { "@type": "ListItem", "position": 12, "name": "Fill PDF Form",    "url": "https://pdf44.com/?tool=fillpdf",    "description": "Fill interactive PDF forms" },
     { "@type": "ListItem", "position": 13, "name": "EPUB to PDF",       "url": "https://pdf44.com/?tool=epub2pdf",   "description": "Convert EPUB ebooks to PDF" },
     { "@type": "ListItem", "position": 14, "name": "EPUB to Word",      "url": "https://pdf44.com/?tool=epub2word",  "description": "Convert EPUB ebooks to Word documents" },
-    { "@type": "ListItem", "position": 15, "name": "MOBI to PDF",       "url": "https://pdf44.com/?tool=mobi2pdf",   "description": "Convert Kindle MOBI ebooks to PDF" }
+    { "@type": "ListItem", "position": 15, "name": "MOBI to PDF",       "url": "https://pdf44.com/?tool=mobi2pdf",   "description": "Convert Kindle MOBI ebooks to PDF" },
+    { "@type": "ListItem", "position": 16, "name": "PDF to PowerPoint", "url": "https://pdf44.com/?tool=pdf2ppt",    "description": "Convert PDF pages to PowerPoint slides" }
   ]
 }</script>
 
@@ -1483,17 +1484,21 @@ input[type="range"]::-moz-range-thumb {
 }
 .app-footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
 .app-footer-links a { color: var(--text-3); font-size: 12px; }
+/* Centered process action bar — sits in the content flow right below the
+   Options panel, so the main CTA is next to the settings the user just edited.
+   The #processBtn node is moved here from the topbar on tool pages. */
+.process-bar {
+  display: flex;
+  justify-content: center;
+  margin: 18px 0 22px;
+}
+.process-bar #processBtn {
+  padding: 13px 46px;
+  font-size: 15px;
+  border-radius: 12px;
+}
 @media (max-width: 900px) {
-  #processBtn {
-    position: fixed;
-    bottom: calc(var(--ad-h) + 14px);
-    right: 16px;
-    z-index: 85;
-    box-shadow: 0 4px 20px rgba(99,102,241,0.4);
-    border-radius: 50px;
-    padding: 12px 22px;
-    font-size: 14px;
-  }
+  .process-bar #processBtn { width: 100%; max-width: 420px; }
 }
 .app-footer-links a:hover { color: var(--accent); text-decoration: none; }
 
@@ -1889,6 +1894,7 @@ input[type="range"]::-moz-range-thumb {
     <div class="noscript-tool"><strong>PDF to PNG</strong><span>Convert pages to transparent PNG images</span></div>
     <div class="noscript-tool"><strong>JPG to PDF</strong><span>Combine images into a PDF document</span></div>
     <div class="noscript-tool"><strong>PDF to Word</strong><span>Export PDF text as a .docx document</span></div>
+    <div class="noscript-tool"><strong>PDF to PowerPoint</strong><span>Turn each page into a .pptx slide</span></div>
     <div class="noscript-tool"><strong>PDF to Excel</strong><span>Extract tables as CSV spreadsheets</span></div>
     <div class="noscript-tool"><strong>PDF to Text</strong><span>Extract all text content from a PDF</span></div>
     <div class="noscript-tool"><strong>HTML to PDF</strong><span>Convert HTML markup into a PDF</span></div>
@@ -1938,7 +1944,7 @@ input[type="range"]::-moz-range-thumb {
     <dt>Can I install PDF44 as an app?</dt>
     <dd>Yes. PDF44 is a Progressive Web App. Install it from Chrome or Safari to use it offline, just like a native app.</dd>
     <dt>What formats can PDF44 convert to?</dt>
-    <dd>PDF44 converts PDFs to JPG, PNG, Word (.docx), Excel (.csv), and plain text. It also converts JPG, PNG, HTML, and text files to PDF.</dd>
+    <dd>PDF44 converts PDFs to JPG, PNG, Word (.docx), PowerPoint (.pptx), Excel (.csv), and plain text. It also converts JPG, PNG, HTML, and text files to PDF.</dd>
   </dl>
 
   <p style="margin-top:32px;font-size:13px;color:#94a3b8;">© 2025 PDF44 · <a href="mailto:hello@pdf44.com">hello@pdf44.com</a> · Privacy-first PDF tools</p>
@@ -2086,7 +2092,7 @@ input[type="range"]::-moz-range-thumb {
 // ============================================================
 //  SVG ICON SYSTEM — crisp at any resolution, theme-aware
 // ============================================================
-const ICONS = {"home":"<path d=\"M3 12 12 3l9 9\"/><path d=\"M5 10v10h14V10\"/>","merge":"<rect x=\"3\" y=\"3\" width=\"8\" height=\"8\" rx=\"1.5\"/><rect x=\"13\" y=\"13\" width=\"8\" height=\"8\" rx=\"1.5\"/><path d=\"M11 7h4M17 11v2M7 17h2\"/>","split":"<path d=\"M3 12h18\"/><rect x=\"3\" y=\"3\" width=\"18\" height=\"6\" rx=\"1.5\"/><rect x=\"3\" y=\"15\" width=\"18\" height=\"6\" rx=\"1.5\"/>","organize":"<rect x=\"3\" y=\"4\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"4\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"13\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"13\" width=\"7\" height=\"7\" rx=\"1.5\"/>","rotate":"<path d=\"M3 12a9 9 0 0 1 15-6.7l3 3\"/><path d=\"M21 3v6h-6\"/><path d=\"M21 12a9 9 0 0 1-15 6.7l-3-3\"/><path d=\"M3 21v-6h6\"/>","remove":"<path d=\"M3 6h18\"/><path d=\"M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2\"/><path d=\"M5 6l1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14\"/><path d=\"M10 11v6M14 11v6\"/>","extract":"<rect x=\"3\" y=\"3\" width=\"13\" height=\"13\" rx=\"1.5\"/><path d=\"M21 21V11a2 2 0 0 0-2-2h-3\"/><path d=\"M16 5v4h4\"/><path d=\"m13 13 4-4\"/>","compress":"<path d=\"M9 4v6H3\"/><path d=\"M15 4v6h6\"/><path d=\"M9 20v-6H3\"/><path d=\"M15 20v-6h6\"/>","repair":"<path d=\"M14.7 6.3a4 4 0 1 0-5.4 5.4l-6 6a2 2 0 0 0 2.8 2.8l6-6a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-2.4 2.1-2.9z\"/>","pdf2jpg":"<rect x=\"3\" y=\"4\" width=\"14\" height=\"16\" rx=\"1.5\"/><path d=\"M21 8v12a2 2 0 0 1-2 2H9\"/><circle cx=\"9\" cy=\"10\" r=\"1.5\"/><path d=\"m7 16 3-3 3 4 2-2 3 3\"/>","pdf2png":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"1.5\"/><circle cx=\"9\" cy=\"9\" r=\"1.5\"/><path d=\"m4 17 5-5 4 5 3-3 5 5\"/>","jpg2pdf":"<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6\"/><path d=\"m7 17 2.5-2.5L11 16l3-3 3 3\"/><circle cx=\"9\" cy=\"11\" r=\"1\"/>","html2pdf":"<path d=\"m9 18-3-3 3-3\"/><path d=\"m15 12 3 3-3 3\"/><path d=\"M3 12h18\"/><path d=\"M3 5h18M3 19h18\"/>","text2pdf":"<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6\"/><path d=\"M8 13h8M8 17h5\"/>","pdf2text":"<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6\"/><path d=\"M9 12h6M9 16h6M9 8h2\"/>","edit":"<path d=\"M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z\"/><path d=\"m15 5 4 4\"/>","watermark":"<path d=\"M12 2.7s7 6 7 11.3a7 7 0 0 1-14 0c0-5.3 7-11.3 7-11.3z\"/><path d=\"M8 14.5c1.5 1.5 4 1.5 4 0 0 1.5 2.5 1.5 4 0\"/>","pagenumber":"<rect x=\"4\" y=\"3\" width=\"16\" height=\"18\" rx=\"1.5\"/><path d=\"M8 17h3\"/><path d=\"M14 14v3h3v-3a1.5 1.5 0 0 0-3 0z\"/>","crop":"<path d=\"M6 2v14a2 2 0 0 0 2 2h14\"/><path d=\"M2 6h14a2 2 0 0 1 2 2v14\"/>","protect":"<rect x=\"3\" y=\"11\" width=\"18\" height=\"10\" rx=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/><circle cx=\"12\" cy=\"16\" r=\"1\"/>","unlock":"<rect x=\"3\" y=\"11\" width=\"18\" height=\"10\" rx=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 9.9-1\"/><circle cx=\"12\" cy=\"16\" r=\"1\"/>","sign":"<path d=\"M3 17.5c4-5 6-9 7-10s2 0 2 2-3 7-3 7l1-1c1-1 4-3 4-1s-3 5-3 5h2c2 0 4-2 7-4\"/>","redact":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"1.5\"/><path d=\"M7 9h10M7 13h6M7 17h4\"/><path d=\"M14 12h6v2h-6z\" fill=\"currentColor\"/>","compare":"<path d=\"M12 3v18\"/><rect x=\"3\" y=\"6\" width=\"7\" height=\"12\" rx=\"1\"/><rect x=\"14\" y=\"6\" width=\"7\" height=\"12\" rx=\"1\"/>","info":"<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 8h.01M11 12h1v4h1\"/>","install":"<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><path d=\"M5 21h14\"/>","contact":"<rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"m3 7 9 6 9-6\"/>","privacy":"<path d=\"M12 3 4 6v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V6z\"/><path d=\"m9 12 2 2 4-4\"/>","sun":"<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41\"/>","moon":"<path d=\"M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z\"/>","upload":"<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><path d=\"m17 8-5-5-5 5\"/><path d=\"M12 3v12\"/>","bolt":"<path d=\"M13 2 3 14h7l-1 8 10-12h-7l1-8z\"/>","check":"<path d=\"m5 12 5 5L20 7\"/>","eye":"<path d=\"M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>","gear":"<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1A2 2 0 1 1 4.3 17l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1A2 2 0 1 1 7 4.3l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z\"/>","trash":"<path d=\"M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2\"/>","cat_organize":"<rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/>","cat_optimize":"<path d=\"M13 2 3 14h7l-1 8 10-12h-7l1-8z\"/>","cat_convert":"<path d=\"M3 7h13M3 7l4-4M3 7l4 4\"/><path d=\"M21 17H8M21 17l-4-4M21 17l-4 4\"/>","cat_edit":"<path d=\"M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z\"/>","cat_security":"<path d=\"M12 2 4 5v7c0 4.5 3.5 8.5 8 9 4.5-.5 8-4.5 8-9V5z\"/>","cat_analysis":"<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-4.3-4.3\"/>","app":"<rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/>","apple":"<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.05 12.04c-.03-2.94 2.4-4.36 2.51-4.43-1.37-2-3.5-2.28-4.26-2.31-1.81-.18-3.54 1.07-4.47 1.07-.93 0-2.35-1.04-3.86-1.01-1.98.03-3.81 1.15-4.83 2.93-2.07 3.58-.53 8.88 1.49 11.79.99 1.42 2.16 3.02 3.7 2.97 1.49-.06 2.05-.96 3.85-.96s2.31.96 3.88.93c1.6-.03 2.61-1.45 3.59-2.88 1.13-1.65 1.6-3.25 1.62-3.34-.04-.02-3.11-1.19-3.14-4.74zM14.18 4.05c.82-1 1.38-2.38 1.22-3.76-1.18.05-2.6.79-3.45 1.78-.76.88-1.43 2.29-1.25 3.65 1.31.1 2.66-.67 3.48-1.67z\"/></svg>","android":"<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.6 9.48l1.84-3.18a.4.4 0 0 0-.15-.55.4.4 0 0 0-.55.15l-1.87 3.22A11.3 11.3 0 0 0 12 8c-1.74 0-3.39.39-4.87 1.12L5.26 5.9a.4.4 0 0 0-.55-.15.4.4 0 0 0-.15.55L6.4 9.48A10.4 10.4 0 0 0 1 18h22a10.4 10.4 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z\"/></svg>","desktop":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"2\" y=\"3\" width=\"20\" height=\"14\" rx=\"2\"/><path d=\"M8 21h8M12 17v4\"/></svg>","shield_check":"<path d=\"M12 2 4 5v7c0 4.5 3.5 8.5 8 9 4.5-.5 8-4.5 8-9V5z\"/><path d=\"m9 12 2 2 4-4\"/>","privacy_dot":"","nup":"<rect x=\"3\" y=\"3\" width=\"8\" height=\"8\" rx=\"1\"/><rect x=\"13\" y=\"3\" width=\"8\" height=\"8\" rx=\"1\"/><rect x=\"3\" y=\"13\" width=\"8\" height=\"8\" rx=\"1\"/><rect x=\"13\" y=\"13\" width=\"8\" height=\"8\" rx=\"1\"/>","header":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M3 8h18M3 16h18\"/>","flatten":"<rect x=\"3\" y=\"6\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M3 10h18M8 14h8\"/>","insertblank":"<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6\"/><path d=\"M12 12v6M9 15h6\"/>","background":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M8 14l3-3 3 3 4-4\"/><circle cx=\"9\" cy=\"9\" r=\"1.5\"/>","bates":"<rect x=\"4\" y=\"3\" width=\"16\" height=\"18\" rx=\"2\"/><path d=\"M8 8h2M8 13h6M8 17h8\"/><circle cx=\"16\" cy=\"8\" r=\"1.5\"/>","scan":"<path d=\"M3 7V5a2 2 0 0 1 2-2h2\"/><path d=\"M17 3h2a2 2 0 0 1 2 2v2\"/><path d=\"M21 17v2a2 2 0 0 1-2 2h-2\"/><path d=\"M7 21H5a2 2 0 0 1-2-2v-2\"/><path d=\"M3 12h18\"/>","bookmarks":"<path d=\"M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z\"/>","pdf2word":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M7 8l2 8 2-5 2 5 2-8\"/>","pdf2excel":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M3 9h18M3 15h18M9 3v18M15 3v18\"/>","zip2pdf":"<rect x=\"6\" y=\"3\" width=\"12\" height=\"18\" rx=\"2\"/><path d=\"M12 3v4M12 11v3M12 18v.01M10 7h4M10 14h4\"/>","heic":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><circle cx=\"9\" cy=\"9\" r=\"2\"/><path d=\"m21 15-5-5L5 21\"/>","history":"<path d=\"M3 12a9 9 0 1 0 3-6.7L3 8\"/><path d=\"M3 3v5h5\"/><path d=\"M12 7v5l3 2\"/>","star":"<path d=\"m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z\"/>","queue":"<rect x=\"3\" y=\"4\" width=\"14\" height=\"3\" rx=\"1\"/><rect x=\"3\" y=\"10.5\" width=\"18\" height=\"3\" rx=\"1\"/><rect x=\"3\" y=\"17\" width=\"10\" height=\"3\" rx=\"1\"/>","cmd":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M9 9l3 3-3 3M13 15h2\"/>","reader":"<path d=\"M2 6a2 2 0 0 1 2-2h4a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z\"/><path d=\"M22 6a2 2 0 0 0-2-2h-4a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z\"/>","link":"<path d=\"M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1\"/><path d=\"M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1\"/>","url":"<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20\"/>","paste":"<rect x=\"8\" y=\"2\" width=\"8\" height=\"4\" rx=\"1\"/><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"/>","swap":"<path d=\"M16 3l5 5-5 5\"/><path d=\"M21 8H9a4 4 0 0 0-4 4v0\"/><path d=\"M8 21l-5-5 5-5\"/><path d=\"M3 16h12a4 4 0 0 0 4-4v0\"/>","invert":"<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 2a10 10 0 0 0 0 20\"/>","epub":"<path d=\"M4 4h16v16H4z\" rx=\"2\"/><path d=\"M9 4v16M4 9h5M4 14h5M9 9h11M9 14h11\"/><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/>","ebook":"<path d=\"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\"/><path d=\"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\"/>","mobi":"<rect x=\"5\" y=\"2\" width=\"14\" height=\"20\" rx=\"2\"/><path d=\"M9 7h6M9 11h6M9 15h4\"/><circle cx=\"12\" cy=\"18\" r=\"1\"/>"};
+const ICONS = {"home":"<path d=\"M3 12 12 3l9 9\"/><path d=\"M5 10v10h14V10\"/>","merge":"<rect x=\"3\" y=\"3\" width=\"8\" height=\"8\" rx=\"1.5\"/><rect x=\"13\" y=\"13\" width=\"8\" height=\"8\" rx=\"1.5\"/><path d=\"M11 7h4M17 11v2M7 17h2\"/>","split":"<path d=\"M3 12h18\"/><rect x=\"3\" y=\"3\" width=\"18\" height=\"6\" rx=\"1.5\"/><rect x=\"3\" y=\"15\" width=\"18\" height=\"6\" rx=\"1.5\"/>","organize":"<rect x=\"3\" y=\"4\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"4\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"13\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"13\" width=\"7\" height=\"7\" rx=\"1.5\"/>","rotate":"<path d=\"M3 12a9 9 0 0 1 15-6.7l3 3\"/><path d=\"M21 3v6h-6\"/><path d=\"M21 12a9 9 0 0 1-15 6.7l-3-3\"/><path d=\"M3 21v-6h6\"/>","remove":"<path d=\"M3 6h18\"/><path d=\"M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2\"/><path d=\"M5 6l1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14\"/><path d=\"M10 11v6M14 11v6\"/>","extract":"<rect x=\"3\" y=\"3\" width=\"13\" height=\"13\" rx=\"1.5\"/><path d=\"M21 21V11a2 2 0 0 0-2-2h-3\"/><path d=\"M16 5v4h4\"/><path d=\"m13 13 4-4\"/>","compress":"<path d=\"M9 4v6H3\"/><path d=\"M15 4v6h6\"/><path d=\"M9 20v-6H3\"/><path d=\"M15 20v-6h6\"/>","repair":"<path d=\"M14.7 6.3a4 4 0 1 0-5.4 5.4l-6 6a2 2 0 0 0 2.8 2.8l6-6a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-2.4 2.1-2.9z\"/>","pdf2jpg":"<rect x=\"3\" y=\"4\" width=\"14\" height=\"16\" rx=\"1.5\"/><path d=\"M21 8v12a2 2 0 0 1-2 2H9\"/><circle cx=\"9\" cy=\"10\" r=\"1.5\"/><path d=\"m7 16 3-3 3 4 2-2 3 3\"/>","pdf2png":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"1.5\"/><circle cx=\"9\" cy=\"9\" r=\"1.5\"/><path d=\"m4 17 5-5 4 5 3-3 5 5\"/>","jpg2pdf":"<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6\"/><path d=\"m7 17 2.5-2.5L11 16l3-3 3 3\"/><circle cx=\"9\" cy=\"11\" r=\"1\"/>","html2pdf":"<path d=\"m9 18-3-3 3-3\"/><path d=\"m15 12 3 3-3 3\"/><path d=\"M3 12h18\"/><path d=\"M3 5h18M3 19h18\"/>","text2pdf":"<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6\"/><path d=\"M8 13h8M8 17h5\"/>","pdf2text":"<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6\"/><path d=\"M9 12h6M9 16h6M9 8h2\"/>","edit":"<path d=\"M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z\"/><path d=\"m15 5 4 4\"/>","watermark":"<path d=\"M12 2.7s7 6 7 11.3a7 7 0 0 1-14 0c0-5.3 7-11.3 7-11.3z\"/><path d=\"M8 14.5c1.5 1.5 4 1.5 4 0 0 1.5 2.5 1.5 4 0\"/>","pagenumber":"<rect x=\"4\" y=\"3\" width=\"16\" height=\"18\" rx=\"1.5\"/><path d=\"M8 17h3\"/><path d=\"M14 14v3h3v-3a1.5 1.5 0 0 0-3 0z\"/>","crop":"<path d=\"M6 2v14a2 2 0 0 0 2 2h14\"/><path d=\"M2 6h14a2 2 0 0 1 2 2v14\"/>","protect":"<rect x=\"3\" y=\"11\" width=\"18\" height=\"10\" rx=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/><circle cx=\"12\" cy=\"16\" r=\"1\"/>","unlock":"<rect x=\"3\" y=\"11\" width=\"18\" height=\"10\" rx=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 9.9-1\"/><circle cx=\"12\" cy=\"16\" r=\"1\"/>","sign":"<path d=\"M3 17.5c4-5 6-9 7-10s2 0 2 2-3 7-3 7l1-1c1-1 4-3 4-1s-3 5-3 5h2c2 0 4-2 7-4\"/>","redact":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"1.5\"/><path d=\"M7 9h10M7 13h6M7 17h4\"/><path d=\"M14 12h6v2h-6z\" fill=\"currentColor\"/>","compare":"<path d=\"M12 3v18\"/><rect x=\"3\" y=\"6\" width=\"7\" height=\"12\" rx=\"1\"/><rect x=\"14\" y=\"6\" width=\"7\" height=\"12\" rx=\"1\"/>","info":"<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 8h.01M11 12h1v4h1\"/>","install":"<path d=\"M12 3v12\"/><path d=\"m7 10 5 5 5-5\"/><path d=\"M5 21h14\"/>","contact":"<rect x=\"3\" y=\"5\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"m3 7 9 6 9-6\"/>","privacy":"<path d=\"M12 3 4 6v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V6z\"/><path d=\"m9 12 2 2 4-4\"/>","sun":"<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41\"/>","moon":"<path d=\"M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z\"/>","upload":"<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><path d=\"m17 8-5-5-5 5\"/><path d=\"M12 3v12\"/>","bolt":"<path d=\"M13 2 3 14h7l-1 8 10-12h-7l1-8z\"/>","check":"<path d=\"m5 12 5 5L20 7\"/>","eye":"<path d=\"M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>","gear":"<circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1A2 2 0 1 1 4.3 17l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1A2 2 0 1 1 7 4.3l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z\"/>","trash":"<path d=\"M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2\"/>","cat_organize":"<rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/>","cat_optimize":"<path d=\"M13 2 3 14h7l-1 8 10-12h-7l1-8z\"/>","cat_convert":"<path d=\"M3 7h13M3 7l4-4M3 7l4 4\"/><path d=\"M21 17H8M21 17l-4-4M21 17l-4 4\"/>","cat_edit":"<path d=\"M17 3a2.8 2.8 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z\"/>","cat_security":"<path d=\"M12 2 4 5v7c0 4.5 3.5 8.5 8 9 4.5-.5 8-4.5 8-9V5z\"/>","cat_analysis":"<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-4.3-4.3\"/>","app":"<rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/>","apple":"<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.05 12.04c-.03-2.94 2.4-4.36 2.51-4.43-1.37-2-3.5-2.28-4.26-2.31-1.81-.18-3.54 1.07-4.47 1.07-.93 0-2.35-1.04-3.86-1.01-1.98.03-3.81 1.15-4.83 2.93-2.07 3.58-.53 8.88 1.49 11.79.99 1.42 2.16 3.02 3.7 2.97 1.49-.06 2.05-.96 3.85-.96s2.31.96 3.88.93c1.6-.03 2.61-1.45 3.59-2.88 1.13-1.65 1.6-3.25 1.62-3.34-.04-.02-3.11-1.19-3.14-4.74zM14.18 4.05c.82-1 1.38-2.38 1.22-3.76-1.18.05-2.6.79-3.45 1.78-.76.88-1.43 2.29-1.25 3.65 1.31.1 2.66-.67 3.48-1.67z\"/></svg>","android":"<svg viewBox=\"0 0 24 24\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M17.6 9.48l1.84-3.18a.4.4 0 0 0-.15-.55.4.4 0 0 0-.55.15l-1.87 3.22A11.3 11.3 0 0 0 12 8c-1.74 0-3.39.39-4.87 1.12L5.26 5.9a.4.4 0 0 0-.55-.15.4.4 0 0 0-.15.55L6.4 9.48A10.4 10.4 0 0 0 1 18h22a10.4 10.4 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z\"/></svg>","desktop":"<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" xmlns=\"http://www.w3.org/2000/svg\"><rect x=\"2\" y=\"3\" width=\"20\" height=\"14\" rx=\"2\"/><path d=\"M8 21h8M12 17v4\"/></svg>","shield_check":"<path d=\"M12 2 4 5v7c0 4.5 3.5 8.5 8 9 4.5-.5 8-4.5 8-9V5z\"/><path d=\"m9 12 2 2 4-4\"/>","privacy_dot":"","nup":"<rect x=\"3\" y=\"3\" width=\"8\" height=\"8\" rx=\"1\"/><rect x=\"13\" y=\"3\" width=\"8\" height=\"8\" rx=\"1\"/><rect x=\"3\" y=\"13\" width=\"8\" height=\"8\" rx=\"1\"/><rect x=\"13\" y=\"13\" width=\"8\" height=\"8\" rx=\"1\"/>","header":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M3 8h18M3 16h18\"/>","flatten":"<rect x=\"3\" y=\"6\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M3 10h18M8 14h8\"/>","insertblank":"<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6\"/><path d=\"M12 12v6M9 15h6\"/>","background":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M8 14l3-3 3 3 4-4\"/><circle cx=\"9\" cy=\"9\" r=\"1.5\"/>","bates":"<rect x=\"4\" y=\"3\" width=\"16\" height=\"18\" rx=\"2\"/><path d=\"M8 8h2M8 13h6M8 17h8\"/><circle cx=\"16\" cy=\"8\" r=\"1.5\"/>","scan":"<path d=\"M3 7V5a2 2 0 0 1 2-2h2\"/><path d=\"M17 3h2a2 2 0 0 1 2 2v2\"/><path d=\"M21 17v2a2 2 0 0 1-2 2h-2\"/><path d=\"M7 21H5a2 2 0 0 1-2-2v-2\"/><path d=\"M3 12h18\"/>","bookmarks":"<path d=\"M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z\"/>","pdf2word":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M7 8l2 8 2-5 2 5 2-8\"/>","pdf2ppt":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"13\" rx=\"1.5\"/><path d=\"M12 16v4\"/><path d=\"M8 20h8\"/><path d=\"M7.5 12.5v-3M12 12.5v-6M16.5 12.5V8\"/>","pdf2excel":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M3 9h18M3 15h18M9 3v18M15 3v18\"/>","zip2pdf":"<rect x=\"6\" y=\"3\" width=\"12\" height=\"18\" rx=\"2\"/><path d=\"M12 3v4M12 11v3M12 18v.01M10 7h4M10 14h4\"/>","heic":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><circle cx=\"9\" cy=\"9\" r=\"2\"/><path d=\"m21 15-5-5L5 21\"/>","history":"<path d=\"M3 12a9 9 0 1 0 3-6.7L3 8\"/><path d=\"M3 3v5h5\"/><path d=\"M12 7v5l3 2\"/>","star":"<path d=\"m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z\"/>","queue":"<rect x=\"3\" y=\"4\" width=\"14\" height=\"3\" rx=\"1\"/><rect x=\"3\" y=\"10.5\" width=\"18\" height=\"3\" rx=\"1\"/><rect x=\"3\" y=\"17\" width=\"10\" height=\"3\" rx=\"1\"/>","cmd":"<rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><path d=\"M9 9l3 3-3 3M13 15h2\"/>","reader":"<path d=\"M2 6a2 2 0 0 1 2-2h4a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z\"/><path d=\"M22 6a2 2 0 0 0-2-2h-4a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z\"/>","link":"<path d=\"M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1\"/><path d=\"M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1\"/>","url":"<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20\"/>","paste":"<rect x=\"8\" y=\"2\" width=\"8\" height=\"4\" rx=\"1\"/><path d=\"M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2\"/>","swap":"<path d=\"M16 3l5 5-5 5\"/><path d=\"M21 8H9a4 4 0 0 0-4 4v0\"/><path d=\"M8 21l-5-5 5-5\"/><path d=\"M3 16h12a4 4 0 0 0 4-4v0\"/>","invert":"<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 2a10 10 0 0 0 0 20\"/>","epub":"<path d=\"M4 4h16v16H4z\" rx=\"2\"/><path d=\"M9 4v16M4 9h5M4 14h5M9 9h11M9 14h11\"/><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/>","ebook":"<path d=\"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z\"/><path d=\"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z\"/>","mobi":"<rect x=\"5\" y=\"2\" width=\"14\" height=\"20\" rx=\"2\"/><path d=\"M9 7h6M9 11h6M9 15h4\"/><circle cx=\"12\" cy=\"18\" r=\"1\"/>"};
 function icon(name, opts) {
   opts = opts || {};
   const size = opts.size || 20;
@@ -2206,6 +2212,7 @@ const TOOLS = {
   pdf2jpg:    { title:'PDF to JPG',       desc:'Convert each PDF page to a high-quality JPG image.',     iconKey:'pdf2jpg',    color:'indigo', cat:'convert', accepts:'.pdf',                   multi:false },
   pdf2png:    { title:'PDF to PNG',       desc:'Convert PDF pages to transparent PNG images.',            iconKey:'pdf2png',    color:'purple', cat:'convert', accepts:'.pdf',                   multi:false },
   pdf2word:   { title:'PDF to Word',      desc:'Export PDF text as a .docx Word document.',               iconKey:'pdf2word',   color:'blue',   cat:'convert', accepts:'.pdf',                   multi:true  },
+  pdf2ppt:    { title:'PDF to PowerPoint',desc:'Turn each PDF page into a .pptx presentation slide.',     iconKey:'pdf2ppt',    color:'orange', cat:'convert', accepts:'.pdf',                   multi:false },
   pdf2excel:  { title:'PDF to Excel',     desc:'Extract tables from a PDF to a .csv spreadsheet.',        iconKey:'pdf2excel',  color:'green',  cat:'convert', accepts:'.pdf',                   multi:false },
   pdf2text:   { title:'PDF to Text',      desc:'Extract all text content from any PDF file.',             iconKey:'pdf2text',   color:'teal',   cat:'convert', accepts:'.pdf',                   multi:true  },
   jpg2pdf:    { title:'Image to PDF',     desc:'Combine JPG, PNG or WebP images into one PDF.',           iconKey:'jpg2pdf',    color:'pink',   cat:'convert', accepts:'image/*',                multi:true  },
@@ -2487,7 +2494,7 @@ function renderSidebar() {
     tools.forEach(([key, t]) => {
       html += `
         <div class="nav-item ${state.currentTool===key?'active':''}" onclick="route('${key}')">
-          <span class="nav-icon">${icon(t.iconKey, {size:17})}</span><span>${t.title}</span>${['epub2pdf','epub2word','mobi2pdf'].includes(key)?'<span class="nav-badge">NEW</span>':''}
+          <span class="nav-icon">${icon(t.iconKey, {size:17})}</span><span>${t.title}</span>${['pdf2ppt','epub2pdf','epub2word','mobi2pdf'].includes(key)?'<span class="nav-badge">NEW</span>':''}
         </div>`;
     });
     html += `</div>`;
@@ -2514,7 +2521,7 @@ const TOOL_SLUGS = {
   rotate:'rotate-pdf', remove:'remove-pages-from-pdf',
   extract:'extract-pages-from-pdf', organize:'reorder-pdf-pages',
   pdf2jpg:'pdf-to-jpg', pdf2png:'pdf-to-png', jpg2pdf:'jpg-to-pdf',
-  pdf2word:'pdf-to-word', pdf2excel:'pdf-to-excel', pdf2text:'pdf-to-text',
+  pdf2word:'pdf-to-word', pdf2ppt:'pdf-to-powerpoint', pdf2excel:'pdf-to-excel', pdf2text:'pdf-to-text',
   html2pdf:'html-to-pdf', text2pdf:'text-to-pdf',
   epub2pdf:'epub-to-pdf', epub2word:'epub-to-word', mobi2pdf:'mobi-to-pdf',
   edit:'edit-pdf', editpdf:'annotate-pdf', fillpdf:'fill-pdf-form',
@@ -2695,6 +2702,7 @@ const SLUG_TO_TOOL = (function () {
   m['fill-pdf'] = 'fillpdf'; m['add-watermark-to-pdf'] = 'watermark';
   m['password-protect-pdf'] = 'protect'; m['remove-pdf-password'] = 'unlock';
   m['esign-pdf'] = 'sign'; m['pdf-viewer'] = 'reader';
+  m['pdf-to-ppt'] = 'pdf2ppt'; m['pdf-to-pptx'] = 'pdf2ppt';
   m['privacy-policy'] = 'privacy';
   // New how-to guides
   m['how-to-compress-pdf-file'] = 'how-to-compress-pdf-file';
@@ -2871,6 +2879,7 @@ const SEO = {
   pdf2png:    { title:'PDF to PNG — Convert PDF Pages to PNG Free Online | PDF44', desc:'Convert each PDF page to a transparent PNG image. Free, private, no upload — runs entirely in your browser. PDF44.' },
   jpg2pdf:    { title:'Image to PDF Free — Convert JPG, PNG, WebP to PDF | PDF44', desc:'Combine JPG, PNG or WebP images into one PDF file. Drag to reorder, choose page size. Free, private, no upload. PDF44.' },
   pdf2word:   { title:'PDF to Word Free — Convert PDF to Editable .docx Online | PDF44', desc:'Convert PDF to editable Word document (.docx) free online. Preserves text. Private — runs in your browser, no upload. PDF44.' },
+  pdf2ppt:    { title:'PDF to PowerPoint Free — Convert PDF to .pptx Online | PDF44', desc:'Convert a PDF to a PowerPoint presentation (.pptx) free online. Each page becomes a slide. Private — runs in your browser, no upload. PDF44.' },
   pdf2excel:  { title:'PDF to Excel Free — Extract Tables to CSV Online | PDF44', desc:'Extract tables from a PDF into a CSV spreadsheet free online. Open in Excel, Google Sheets or Numbers. Private, in-browser. PDF44.' },
   pdf2text:   { title:'PDF to Text Free — Extract All Text from PDF Online | PDF44', desc:'Extract all text content from any PDF file as plain .txt, free and private. Runs in your browser, no upload required. PDF44.' },
   html2pdf:   { title:'HTML to PDF Free — Convert HTML Markup to PDF Online | PDF44', desc:'Convert HTML markup or whole web pages to a clean PDF document free online. Private, in-browser conversion. PDF44.' },
@@ -3386,6 +3395,13 @@ function toggleSidebar() {
 // ============================================================
 function render() {
   const container = document.getElementById('content');
+  // On tool pages the Process button lives inside #content (see renderToolPage).
+  // Re-home it to the topbar before the content is wiped so the node survives.
+  const pb = document.getElementById('processBtn');
+  if (pb && container.contains(pb)) {
+    const actions = document.querySelector('.topbar-actions');
+    if (actions) actions.appendChild(pb);
+  }
   if (state.currentTool === 'home')    return renderHome(container);
   if (state.currentTool === 'install') return renderInstallPage(container);
   if (state.currentTool === 'contact') return renderContactPage(container);
@@ -4173,7 +4189,7 @@ function renderHubEncryption(container) {
 // ---- Hub 6: Convert PDF online free (broad hub) --------------
 function renderHubConvertHub(container) {
   const published = '2026-04-25', updated = '2026-05-24';
-  const convertTools = ['pdf2word','pdf2jpg','pdf2png','pdf2excel','pdf2text','jpg2pdf','html2pdf','text2pdf','epub2pdf','epub2word','mobi2pdf','zip2pdf','scan','ocr','fromurl'];
+  const convertTools = ['pdf2word','pdf2ppt','pdf2jpg','pdf2png','pdf2excel','pdf2text','jpg2pdf','html2pdf','text2pdf','epub2pdf','epub2word','mobi2pdf','zip2pdf','scan','ocr','fromurl'];
   container.innerHTML = `
     <article class="seo-content" itemscope itemtype="https://schema.org/Article" style="max-width:920px;margin:0 auto;">
       <div class="hero" style="padding-top:8px;">
@@ -4185,7 +4201,7 @@ function renderHubConvertHub(container) {
       <h2 class="seo-h2">Convert FROM PDF</h2>
       <p class="seo-p">Turn a PDF into any of these editable / shareable formats:</p>
       <div class="tools-grid" style="margin-top:14px;">
-        ${['pdf2word','pdf2jpg','pdf2png','pdf2excel','pdf2text'].map(function(k){
+        ${['pdf2word','pdf2ppt','pdf2jpg','pdf2png','pdf2excel','pdf2text'].map(function(k){
           const t = TOOLS[k];
           return '<a class="tool-card" href="' + _toolHref(k) + '" onclick="route(\''+k+'\');return false;"><div class="tool-card-icon ti-'+t.color+'" aria-hidden="true">'+icon(t.iconKey,{size:22,stroke:2.2})+'</div><div class="tool-card-title">'+t.title+'</div><div class="tool-card-desc">'+t.desc+'</div></a>';
         }).join('')}
@@ -6611,6 +6627,9 @@ function renderToolPage(container) {
   html += getToolSettingsHTML(state.currentTool);
   html += `</div>`;
 
+  // Centered home for the Process button, right below the options
+  html += `<div class="process-bar" id="processBar"></div>`;
+
   // Preview area
   html += `<div class="preview-area" id="previewArea" style="display:none;">
     <div class="preview-title"><span class="title-icon">${icon('eye', {size:16})}</span> Preview</div>
@@ -6639,6 +6658,10 @@ function renderToolPage(container) {
   html += `<div id="ad-tool-bottom" class="ad-slot"></div>`;
 
   container.innerHTML = html;
+  // Move the Process button from the topbar into the centered bar
+  const bar = document.getElementById('processBar');
+  const pb = document.getElementById('processBtn');
+  if (bar && pb) bar.appendChild(pb);
   setupDragDrop();
   setupToolListeners();
   if (tool.accepts === '') updateProcessButton();
@@ -6700,7 +6723,11 @@ function renderToolSEOBlock(toolKey) {
     epub2pdf: [['Will all chapters be in the right order?', 'Yes — PDF44 reads the EPUB OPF spine, so chapters appear in the publisher\'s intended reading order.'],
                ['Can I choose page size and font size?', 'Yes — A4, US Letter, or A5, with adjustable font size for comfortable reading.'],
                ['Will images and chapter titles be preserved?', 'Chapter titles render as headings. Inline images and basic CSS are preserved where the EPUB embeds them.'],
-               ['Does this work for DRM-protected ebooks?', 'No. Amazon Kindle and most retailer-DRM-locked EPUBs cannot be opened without first removing DRM, which is a separate (and country-dependent) step.']]
+               ['Does this work for DRM-protected ebooks?', 'No. Amazon Kindle and most retailer-DRM-locked EPUBs cannot be opened without first removing DRM, which is a separate (and country-dependent) step.']],
+    pdf2ppt:  [['How does PDF to PowerPoint conversion work?', 'Each PDF page is rendered at high resolution and placed on its own slide, so the result looks exactly like the original — fonts, layout, and graphics included.'],
+               ['Can I edit the text on the slides?', 'Slides contain a pixel-perfect image of each page, so the layout never breaks. Text is not editable — for editable text, use the PDF to Word tool.'],
+               ['Will the slides be stretched or cropped?', 'No. The slide size is matched to your PDF page size, and pages with different dimensions are centered without distortion.'],
+               ['Which apps open the .pptx file?', 'Microsoft PowerPoint, Google Slides, Apple Keynote, and LibreOffice Impress — the output is standard Office Open XML.']]
   };
   const faqs = FAQ_BY_TOOL[toolKey] || [
     ['Is ' + title + ' really free?', 'Yes — PDF44\'s ' + title + ' tool is 100% free with no watermarks, no signup, and no file-size limits.'],
@@ -6833,6 +6860,14 @@ function getToolSettingsHTML(toolKey) {
         </select></div>
       <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="imgAllPages" checked> Export all pages</label></div>
       <p style="font-size:11.5px;color:var(--text-3);line-height:1.5;">Higher DPI = sharper images but larger files. 300 DPI = print-ready.</p>`;
+    case 'pdf2ppt': return `
+      <div class="form-group"><label class="form-label">Slide quality</label>
+        <select class="form-select" id="pptDpi">
+          <option value="96">Standard · 96 DPI (smallest file)</option>
+          <option value="150" selected>High · 150 DPI (recommended)</option>
+          <option value="220">Maximum · 220 DPI (sharpest, largest)</option>
+        </select></div>
+      <p style="font-size:11.5px;color:var(--text-3);line-height:1.5;">Each PDF page becomes one PowerPoint slide. The slide size matches your PDF page size, so nothing is cropped or distorted. Opens in PowerPoint, Keynote, and Google Slides.</p>`;
     case 'jpg2pdf': return `
       <div class="form-row">
         <div class="form-group"><label class="form-label">Page size</label>
@@ -7654,6 +7689,7 @@ async function processCurrentTool() {
       case 'scan':        await processScan(); break;
       case 'zip2pdf':     await processZip2Pdf(); break;
       case 'pdf2word':    await processPdf2Word(); break;
+      case 'pdf2ppt':     await processPdf2Ppt(); break;
       case 'pdf2excel':   await processPdf2Excel(); break;
       case 'reader':      await processReader(); break;
       case 'fromurl':     toast('Use the Fetch PDF button above', 'info'); break;
@@ -9103,6 +9139,153 @@ async function processPdf2Word() {
   toast('PDFs exported to Word', 'success');
 }
 function escapeXml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;'); }
+
+// ---- PDF to PowerPoint (PPTX) ----
+// Renders each page with pdf.js and embeds it as a full-slide image in a
+// minimal Office Open XML presentation built with JSZip. Slide size follows
+// the first page; other pages are letterboxed to fit without distortion.
+async function processPdf2Ppt() {
+  const f = state.files[0];
+  if (!f?.pdfDoc) return;
+  await loadPdfJs(f);
+  const pc = f.pdfjsDoc.numPages;
+  const dpi = optInt('pptDpi', 150);
+  const EMU = 12700;             // EMU per PDF point
+  const MAX_EMU = 51206400;      // PowerPoint slide limit: 56 inches
+
+  const NS_A = 'http://schemas.openxmlformats.org/drawingml/2006/main';
+  const NS_R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  const NS_P = 'http://schemas.openxmlformats.org/presentationml/2006/main';
+  const XMLDECL = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  const EMPTY_TREE = '<p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>' +
+    '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr></p:spTree>';
+
+  // Slide size from page 1 (PPTX slide size is global), clamped to 56in
+  const first = await f.pdfjsDoc.getPage(1);
+  const v1 = first.getViewport({ scale: 1 });
+  const clamp = Math.min(1, MAX_EMU / (v1.width * EMU), MAX_EMU / (v1.height * EMU));
+  const sldW = Math.round(v1.width * EMU * clamp);
+  const sldH = Math.round(v1.height * EMU * clamp);
+
+  const zip = new JSZip();
+  let contentTypes = XMLDECL +
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+    '<Default Extension="xml" ContentType="application/xml"/>' +
+    '<Default Extension="jpeg" ContentType="image/jpeg"/>' +
+    '<Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>' +
+    '<Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>' +
+    '<Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>' +
+    '<Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>';
+
+  zip.folder('_rels').file('.rels', XMLDECL +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>' +
+    '</Relationships>');
+
+  zip.file('ppt/theme/theme1.xml', XMLDECL +
+    '<a:theme xmlns:a="' + NS_A + '" name="PDF44"><a:themeElements>' +
+    '<a:clrScheme name="PDF44"><a:dk1><a:srgbClr val="000000"/></a:dk1><a:lt1><a:srgbClr val="FFFFFF"/></a:lt1>' +
+    '<a:dk2><a:srgbClr val="44546A"/></a:dk2><a:lt2><a:srgbClr val="E7E6E6"/></a:lt2>' +
+    '<a:accent1><a:srgbClr val="4472C4"/></a:accent1><a:accent2><a:srgbClr val="ED7D31"/></a:accent2>' +
+    '<a:accent3><a:srgbClr val="A5A5A5"/></a:accent3><a:accent4><a:srgbClr val="FFC000"/></a:accent4>' +
+    '<a:accent5><a:srgbClr val="5B9BD5"/></a:accent5><a:accent6><a:srgbClr val="70AD47"/></a:accent6>' +
+    '<a:hlink><a:srgbClr val="0563C1"/></a:hlink><a:folHlink><a:srgbClr val="954F72"/></a:folHlink></a:clrScheme>' +
+    '<a:fontScheme name="PDF44"><a:majorFont><a:latin typeface="Calibri Light"/><a:ea typeface=""/><a:cs typeface=""/></a:majorFont>' +
+    '<a:minorFont><a:latin typeface="Calibri"/><a:ea typeface=""/><a:cs typeface=""/></a:minorFont></a:fontScheme>' +
+    '<a:fmtScheme name="PDF44">' +
+    '<a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:fillStyleLst>' +
+    '<a:lnStyleLst><a:ln w="6350"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln><a:ln w="12700"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln><a:ln w="19050"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln></a:lnStyleLst>' +
+    '<a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst>' +
+    '<a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:bgFillStyleLst>' +
+    '</a:fmtScheme></a:themeElements></a:theme>');
+
+  zip.file('ppt/slideMasters/slideMaster1.xml', XMLDECL +
+    '<p:sldMaster xmlns:a="' + NS_A + '" xmlns:r="' + NS_R + '" xmlns:p="' + NS_P + '">' +
+    '<p:cSld><p:bg><p:bgPr><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:effectLst/></p:bgPr></p:bg>' + EMPTY_TREE + '</p:cSld>' +
+    '<p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/>' +
+    '<p:sldLayoutIdLst><p:sldLayoutId id="2147483649" r:id="rId1"/></p:sldLayoutIdLst></p:sldMaster>');
+  zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', XMLDECL +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>' +
+    '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/>' +
+    '</Relationships>');
+
+  zip.file('ppt/slideLayouts/slideLayout1.xml', XMLDECL +
+    '<p:sldLayout xmlns:a="' + NS_A + '" xmlns:r="' + NS_R + '" xmlns:p="' + NS_P + '" type="blank" preserve="1">' +
+    '<p:cSld name="Blank">' + EMPTY_TREE + '</p:cSld>' +
+    '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>');
+  zip.file('ppt/slideLayouts/_rels/slideLayout1.xml.rels', XMLDECL +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="../slideMasters/slideMaster1.xml"/>' +
+    '</Relationships>');
+
+  let presRels = XMLDECL +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="slideMasters/slideMaster1.xml"/>';
+  let sldIdLst = '';
+
+  for (let i = 1; i <= pc; i++) {
+    const page = await f.pdfjsDoc.getPage(i);
+    const vp1 = page.getViewport({ scale: 1 });
+    // Deterministic export scale (no devicePixelRatio), capped at ~12 MP
+    let scale = dpi / 72;
+    const px = vp1.width * scale * vp1.height * scale;
+    if (px > 12e6) scale *= Math.sqrt(12e6 / px);
+    const viewport = page.getViewport({ scale });
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.floor(viewport.width);
+    canvas.height = Math.floor(viewport.height);
+    const ctx = canvas.getContext('2d', { alpha: false });
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    await page.render({ canvasContext: ctx, viewport, intent: 'print' }).promise;
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.9));
+    canvas.width = canvas.height = 0;
+    zip.file('ppt/media/image' + i + '.jpeg', blob);
+
+    // Letterbox this page into the (page-1-sized) slide box
+    const fit = Math.min(sldW / (vp1.width * EMU), sldH / (vp1.height * EMU));
+    const w = Math.round(vp1.width * EMU * fit), h = Math.round(vp1.height * EMU * fit);
+    const x = Math.round((sldW - w) / 2), y = Math.round((sldH - h) / 2);
+
+    zip.file('ppt/slides/slide' + i + '.xml', XMLDECL +
+      '<p:sld xmlns:a="' + NS_A + '" xmlns:r="' + NS_R + '" xmlns:p="' + NS_P + '">' +
+      '<p:cSld><p:spTree>' +
+      '<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr/>' +
+      '<p:pic><p:nvPicPr><p:cNvPr id="2" name="Page ' + i + '"/><p:cNvPicPr/><p:nvPr/></p:nvPicPr>' +
+      '<p:blipFill><a:blip r:embed="rId2"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>' +
+      '<p:spPr><a:xfrm><a:off x="' + x + '" y="' + y + '"/><a:ext cx="' + w + '" cy="' + h + '"/></a:xfrm>' +
+      '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>' +
+      '</p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>');
+    zip.file('ppt/slides/_rels/slide' + i + '.xml.rels', XMLDECL +
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>' +
+      '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image' + i + '.jpeg"/>' +
+      '</Relationships>');
+
+    contentTypes += '<Override PartName="/ppt/slides/slide' + i + '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';
+    presRels += '<Relationship Id="rId' + (i + 1) + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide' + i + '.xml"/>';
+    sldIdLst += '<p:sldId id="' + (255 + i) + '" r:id="rId' + (i + 1) + '"/>';
+    showProgress(i / pc * 90, `Building slide ${i} of ${pc}…`);
+  }
+
+  zip.file('[Content_Types].xml', contentTypes + '</Types>');
+  zip.file('ppt/_rels/presentation.xml.rels', presRels + '</Relationships>');
+  zip.file('ppt/presentation.xml', XMLDECL +
+    '<p:presentation xmlns:a="' + NS_A + '" xmlns:r="' + NS_R + '" xmlns:p="' + NS_P + '">' +
+    '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>' +
+    '<p:sldIdLst>' + sldIdLst + '</p:sldIdLst>' +
+    '<p:sldSz cx="' + sldW + '" cy="' + sldH + '"/>' +
+    '<p:notesSz cx="6858000" cy="9144000"/></p:presentation>');
+
+  showProgress(95, 'Packaging .pptx…');
+  const blob = await zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+  const outName = f.name.replace(/\.pdf$/i, '.pptx');
+  saveAs(blob, outName);
+  showResult(outName, blob.size, 'PPTX');
+  toast(`${pc} ${pc === 1 ? 'slide' : 'slides'} created`, 'success');
+}
 
 // ---- PDF to Excel (CSV) ----
 async function processPdf2Excel() {

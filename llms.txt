@@ -26,6 +26,7 @@ funded by display ads that never see file contents.
 
 ### Convert
 - [PDF to Word](https://pdf44.com/pdf-to-word) — Export PDF text as `.docx`
+- [PDF to PowerPoint](https://pdf44.com/pdf-to-powerpoint) — Each page → `.pptx` slide
 - [PDF to JPG](https://pdf44.com/pdf-to-jpg) — Each page → JPG image
 - [PDF to PNG](https://pdf44.com/pdf-to-png) — Each page → transparent PNG
 - [PDF to Excel](https://pdf44.com/pdf-to-excel) — Tables → CSV
