@@ -212,13 +212,39 @@ for (const f of ASSETS) {
   if (fs.existsSync(src)) fs.copyFileSync(src, path.join(DIST, f));
 }
 
-// _redirects: replace SPA catch-all with real 404 so unknown paths return HTTP 404
-const rawRedirects = fs.readFileSync(path.join(ROOT, '_redirects'), 'utf8');
-const distRedirects = rawRedirects.replace(
-  /^\/\*\s+\/index\.html\s+200\s*$/m,
-  '/*                      /404.html                     404'
-);
+// _redirects for dist:
+//   1. Drop the per-route "?tool=" rewrites for canonical slugs that now have a
+//      real prerendered file. On Cloudflare Pages a `/slug /index.html?tool=x 200`
+//      rewrite can shadow the prerendered dist/slug/index.html, serving the
+//      generic homepage HTML (and its homepage <title>) under every tool URL —
+//      which makes all 196 pages look like duplicates to crawlers. The SPA still
+//      resolves the tool from location.pathname (detectToolFromLocation), so the
+//      rewrite is redundant. Alias slugs (not a canonical TOOL_SLUGS value) keep
+//      their rewrite, since they don't self-resolve from the path alone.
+//   2. Keep every 301 redirect (canonicalisation) untouched.
+//   3. Replace the SPA catch-all with a real 404 so unknown paths return HTTP 404.
+const canonicalSlugs = new Set(Object.values(TOOL_SLUGS).filter(Boolean));
+let shadowing = 0;
+const distRedirects = redirectsText
+  .split('\n')
+  .filter((line) => {
+    const t = line.trim();
+    if (!t || t.startsWith('#')) return true;
+    const parts = t.split(/\s+/);
+    // Drop:  /<canonical-slug>   /index.html?tool=...   200
+    if (parts[2] === '200' && parts[1] && parts[1].includes('?tool=')) {
+      const slug = parts[0].replace(/^\//, '');
+      if (canonicalSlugs.has(slug)) { shadowing++; return false; }
+    }
+    return true;
+  })
+  .join('\n')
+  .replace(
+    /^\/\*\s+\/index\.html\s+200\s*$/m,
+    '/*                      /404.html                     404'
+  );
 fs.writeFileSync(path.join(DIST, '_redirects'), distRedirects);
+console.log(`✓ Removed ${shadowing} redundant rewrite(s) that could shadow prerendered pages`);
 
 // ── 8. Report ────────────────────────────────────────────────────────────────
 console.log(`✓ Built ${built} route(s) → dist/`);
