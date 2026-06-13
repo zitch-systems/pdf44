@@ -74,6 +74,20 @@
 <meta name="yandex-verification"      content="REPLACE_WITH_YANDEX_TOKEN">
 <meta name="p:domain_verify"          content="REPLACE_WITH_PINTEREST_TOKEN">
 
+<!--
+  ══ Cloudflare Web Analytics — privacy-first, cookieless ══════
+  No cookies, no fingerprinting, no cross-site tracking, no consent
+  banner required — fits the zero-upload privacy model. The beacon host
+  is already allow-listed in the CSP (static.cloudflareinsights.com).
+
+  To activate: Cloudflare dashboard → Web Analytics → "Add a site" →
+  copy the value of `token` from the snippet it gives you, and replace
+  the placeholder below. Until then this loads but reports nothing.
+  Do NOT also enable Pages "automatic" Web Analytics, or hits double-count.
+-->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "REPLACE_WITH_CF_ANALYTICS_TOKEN"}'></script>
+
 
 <script>
 window.addEventListener('error', function(e) {
