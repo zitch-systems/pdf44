@@ -74,6 +74,20 @@
 <meta name="yandex-verification"      content="REPLACE_WITH_YANDEX_TOKEN">
 <meta name="p:domain_verify"          content="REPLACE_WITH_PINTEREST_TOKEN">
 
+<!--
+  ══ Cloudflare Web Analytics — privacy-first, cookieless ══════
+  No cookies, no fingerprinting, no cross-site tracking, no consent
+  banner required — fits the zero-upload privacy model. The beacon host
+  is already allow-listed in the CSP (static.cloudflareinsights.com).
+
+  To activate: Cloudflare dashboard → Web Analytics → "Add a site" →
+  copy the value of `token` from the snippet it gives you, and replace
+  the placeholder below. Until then this loads but reports nothing.
+  Do NOT also enable Pages "automatic" Web Analytics, or hits double-count.
+-->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "REPLACE_WITH_CF_ANALYTICS_TOKEN"}'></script>
+
 
 <script>
 window.addEventListener('error', function(e) {
@@ -2704,6 +2718,7 @@ const SLUG_TO_TOOL = (function () {
   m['esign-pdf'] = 'sign'; m['pdf-viewer'] = 'reader';
   m['pdf-to-ppt'] = 'pdf2ppt'; m['pdf-to-pptx'] = 'pdf2ppt';
   m['privacy-policy'] = 'privacy';
+  m['ocr'] = 'ocr'; m['searchable-pdf'] = 'ocr';
   // New how-to guides
   m['how-to-compress-pdf-file'] = 'how-to-compress-pdf-file';
   m['how-to-rotate-pdf'] = 'how-to-rotate-pdf';

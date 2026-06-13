@@ -117,14 +117,31 @@ function escAttr(s) {
     .replace(/"/g, '&quot;');
 }
 
+// Acronyms / brand-casing and small joining words for the fallback humaniser,
+// so alias pages read "Image to PDF" and "OCR", not "Image To Pdf" and "Ocr".
+const HUMANISE_CASE = {
+  pdf:'PDF', ocr:'OCR', jpg:'JPG', jpeg:'JPEG', png:'PNG', webp:'WebP',
+  svg:'SVG', html:'HTML', csv:'CSV', url:'URL', epub:'EPUB', mobi:'MOBI',
+  ppt:'PPT', pptx:'PPTX', docx:'DOCX', xlsx:'XLSX', txt:'TXT', a4:'A4',
+  nup:'N-up', esign:'eSign', ai:'AI',
+};
+const HUMANISE_LOWER = new Set(['to','from','a','of','and','the','for','with','in','on','your']);
+function humanise(slug) {
+  return slug.split('-').map((w, i) => {
+    if (HUMANISE_CASE[w]) return HUMANISE_CASE[w];
+    if (i > 0 && HUMANISE_LOWER.has(w)) return w;
+    return w.charAt(0).toUpperCase() + w.slice(1);
+  }).join(' ');
+}
+
 function getMeta(slug) {
   const toolKey = SLUG_TO_TOOL[slug];
   if (toolKey && SEO_META[toolKey]) return SEO_META[toolKey];
-  // Graceful fallback: humanise the slug
-  const words = slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1));
+  // Graceful fallback: humanise the slug (unique per URL — no duplicate titles)
+  const label = humanise(slug);
   return {
-    title: `${words.join(' ')} — Free Online | PDF44`,
-    desc:  `${words.join(' ')} free online. Private, no upload, no registration. PDF44.`,
+    title: `${label} — Free Online | PDF44`,
+    desc:  `${label} free online. Private, no upload, no registration. PDF44.`,
   };
 }
 
@@ -212,13 +229,47 @@ for (const f of ASSETS) {
   if (fs.existsSync(src)) fs.copyFileSync(src, path.join(DIST, f));
 }
 
-// _redirects: replace SPA catch-all with real 404 so unknown paths return HTTP 404
-const rawRedirects = fs.readFileSync(path.join(ROOT, '_redirects'), 'utf8');
-const distRedirects = rawRedirects.replace(
-  /^\/\*\s+\/index\.html\s+200\s*$/m,
-  '/*                      /404.html                     404'
-);
+// _redirects for dist:
+//   1. Drop the per-route "?tool=" rewrites whose clean URL now has a real
+//      prerendered file AND self-resolves from location.pathname. On Cloudflare
+//      Pages a `/slug /index.html?tool=x 200` rewrite can shadow the prerendered
+//      dist/slug/index.html, serving the generic homepage HTML (and its homepage
+//      <title>) under every tool URL — making the pages look like duplicates to
+//      crawlers and defeating the prerender. The SPA resolves the tool from the
+//      path (detectToolFromLocation → SLUG_TO_TOOL), so the rewrite is redundant
+//      for any slug that map covers. A rewrite for a slug the app can't resolve
+//      from the path alone is kept, so the tool still loads.
+//   2. Keep every 301 redirect (canonicalisation) untouched.
+//   3. Replace the SPA catch-all with a real 404 so unknown paths return HTTP 404.
+//
+// Slugs the SPA resolves from the path = every canonical TOOL_SLUGS value
+// (reverse-mapped at runtime) + every explicit `m['slug'] = '...'` entry added
+// to SLUG_TO_TOOL. Parsing the app script keeps this in lockstep with the app.
+const selfResolving = new Set(Object.values(TOOL_SLUGS).filter(Boolean));
+for (const mm of appScript.matchAll(/\bm\[\s*['"]([^'"]+)['"]\s*\]\s*=\s*['"][^'"]+['"]/g)) {
+  selfResolving.add(mm[1]);
+}
+let shadowing = 0;
+const distRedirects = redirectsText
+  .split('\n')
+  .filter((line) => {
+    const t = line.trim();
+    if (!t || t.startsWith('#')) return true;
+    const parts = t.split(/\s+/);
+    // Drop:  /<self-resolving-slug>   /index.html?tool=...   200
+    if (parts[2] === '200' && parts[1] && parts[1].includes('?tool=')) {
+      const slug = parts[0].replace(/^\//, '');
+      if (selfResolving.has(slug)) { shadowing++; return false; }
+    }
+    return true;
+  })
+  .join('\n')
+  .replace(
+    /^\/\*\s+\/index\.html\s+200\s*$/m,
+    '/*                      /404.html                     404'
+  );
 fs.writeFileSync(path.join(DIST, '_redirects'), distRedirects);
+console.log(`✓ Removed ${shadowing} redundant rewrite(s) that could shadow prerendered pages`);
 
 // ── 8. Report ────────────────────────────────────────────────────────────────
 console.log(`✓ Built ${built} route(s) → dist/`);
