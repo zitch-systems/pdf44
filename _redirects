@@ -259,5 +259,12 @@
 # ── llms convention ──────────────────────────────────────────
 /llms-full.txt          /llms.txt                     200
 
+# ── Accounts / subscriptions / admin ─────────────────────────
+# Served by the SPA (account.js reads the path); admin is its own page.
+/account                /index.html                   200
+/pricing                /index.html                   200
+/billing/callback       /index.html                   200
+/admin                  /admin.html                   200
+
 # ── SPA fallback (must be last) ──────────────────────────────
 /*                      /index.html                   200

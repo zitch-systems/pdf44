@@ -1,0 +1,165 @@
+/* ============================================================================
+ *  PDF44 — account / subscription UI
+ *  Uses the site's existing design tokens so it matches light & dark themes.
+ *  Everything is scoped under .pdf44-acct* to avoid clashing with the app.
+ * ========================================================================== */
+
+/* When a user is premium, suppress every ad slot site-wide. */
+body.pdf44-premium .ad-slot { display: none !important; }
+
+/* ── Topbar account button ──────────────────────────────────────────────── */
+.pdf44-acct-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 38px; padding: 0 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg-glass);
+  color: var(--text);
+  font: inherit; font-size: 13px; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  transition: border-color .2s, background .2s, transform .2s;
+}
+.pdf44-acct-btn:hover { border-color: var(--accent); background: var(--bg-glass-hover); transform: translateY(-1px); }
+.pdf44-acct-btn .pdf44-avatar { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
+.pdf44-acct-btn .pdf44-badge-pill {
+  font-size: 10px; font-weight: 800; letter-spacing: .4px;
+  padding: 2px 6px; border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff; text-transform: uppercase;
+}
+
+/* ── Overlay + sheet ────────────────────────────────────────────────────── */
+.pdf44-acct-overlay {
+  position: fixed; inset: 0; z-index: 4000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  background: rgba(5,5,12,.6); backdrop-filter: blur(6px);
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.pdf44-acct-overlay.open { opacity: 1; pointer-events: auto; }
+.pdf44-acct-sheet {
+  width: 100%; max-width: 440px; max-height: 92vh; overflow-y: auto;
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  border-radius: 18px;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(8px) scale(.98); transition: transform .2s;
+  padding: 26px 26px 24px;
+}
+.pdf44-acct-sheet.wide { max-width: 720px; }
+.pdf44-acct-overlay.open .pdf44-acct-sheet { transform: none; }
+
+.pdf44-acct-x {
+  position: absolute; top: 14px; right: 16px;
+  width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg-glass);
+  color: var(--text-2); cursor: pointer; font-size: 18px; line-height: 1;
+}
+.pdf44-acct-x:hover { color: var(--text); border-color: var(--accent); }
+
+.pdf44-acct-head { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+.pdf44-acct-logo {
+  width: 40px; height: 40px; border-radius: 11px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: grid; place-items: center; color: #fff; font-weight: 900; font-size: 20px;
+}
+.pdf44-acct-title { font-size: 20px; font-weight: 800; letter-spacing: -.4px; color: var(--text); }
+.pdf44-acct-sub { color: var(--text-2); font-size: 13.5px; margin: 2px 0 18px; line-height: 1.5; }
+
+/* ── Form fields ────────────────────────────────────────────────────────── */
+.pdf44-acct-field { margin-bottom: 13px; }
+.pdf44-acct-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; }
+.pdf44-acct-field input {
+  width: 100%; height: 44px; padding: 0 13px;
+  border: 1px solid var(--border-strong); border-radius: 10px;
+  background: var(--bg-2); color: var(--text);
+  font: inherit; font-size: 14px; outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.pdf44-acct-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+.pdf44-acct-btn-primary {
+  width: 100%; height: 46px; border: 0; border-radius: 11px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff; font: inherit; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: transform .15s, box-shadow .15s; margin-top: 4px;
+}
+.pdf44-acct-btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-glow); }
+.pdf44-acct-btn-primary:disabled { opacity: .6; cursor: progress; transform: none; box-shadow: none; }
+
+.pdf44-acct-btn-ghost {
+  width: 100%; height: 46px; border: 1px solid var(--border-strong); border-radius: 11px;
+  background: var(--bg-glass); color: var(--text);
+  font: inherit; font-size: 14px; font-weight: 600; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  transition: border-color .2s, background .2s;
+}
+.pdf44-acct-btn-ghost:hover { border-color: var(--accent); background: var(--bg-glass-hover); }
+
+.pdf44-acct-divider { display: flex; align-items: center; gap: 12px; color: var(--text-3); font-size: 12px; margin: 16px 0; }
+.pdf44-acct-divider::before, .pdf44-acct-divider::after { content: ""; height: 1px; flex: 1; background: var(--border); }
+
+.pdf44-acct-switch { text-align: center; margin-top: 16px; font-size: 13.5px; color: var(--text-2); }
+.pdf44-acct-switch a { color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: none; }
+.pdf44-acct-switch a:hover { text-decoration: underline; }
+
+.pdf44-acct-msg { font-size: 13px; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; line-height: 1.45; }
+.pdf44-acct-msg.err { background: rgba(239,68,68,.12); color: var(--error); border: 1px solid rgba(239,68,68,.25); }
+.pdf44-acct-msg.ok  { background: rgba(34,197,94,.12); color: var(--success); border: 1px solid rgba(34,197,94,.25); }
+
+/* ── Profile / account view ─────────────────────────────────────────────── */
+.pdf44-acct-profile-top { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.pdf44-acct-profile-top .pdf44-avatar-lg {
+  width: 56px; height: 56px; border-radius: 50%; object-fit: cover;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: grid; place-items: center; color: #fff; font-weight: 800; font-size: 22px;
+}
+.pdf44-acct-profile-name { font-size: 18px; font-weight: 800; color: var(--text); }
+.pdf44-acct-profile-email { font-size: 13px; color: var(--text-2); }
+
+.pdf44-plan-card {
+  border: 1px solid var(--border-strong); border-radius: 14px;
+  padding: 16px; margin-bottom: 14px; background: var(--bg-2);
+}
+.pdf44-plan-card.premium { border-color: transparent; background: linear-gradient(135deg, var(--accent-glow), var(--accent-glow-2)); }
+.pdf44-plan-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pdf44-plan-status { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+.pdf44-status-chip { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; padding: 4px 9px; border-radius: 999px; }
+.pdf44-status-chip.active { background: rgba(34,197,94,.16); color: var(--success); }
+.pdf44-status-chip.free   { background: var(--bg-glass); color: var(--text-2); border: 1px solid var(--border); }
+.pdf44-status-chip.past_due, .pdf44-status-chip.cancelled { background: rgba(245,158,11,.16); color: var(--warning); }
+
+/* ── Pricing / paywall ──────────────────────────────────────────────────── */
+.pdf44-pricing { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0 8px; }
+@media (max-width: 560px) { .pdf44-pricing { grid-template-columns: 1fr; } }
+.pdf44-price-card {
+  position: relative; border: 1.5px solid var(--border-strong); border-radius: 16px;
+  padding: 20px 18px; cursor: pointer; background: var(--bg-2);
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.pdf44-price-card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: var(--shadow); }
+.pdf44-price-card.best { border-color: var(--accent); }
+.pdf44-price-tag {
+  position: absolute; top: -11px; right: 14px;
+  font-size: 10.5px; font-weight: 800; letter-spacing: .4px; text-transform: uppercase;
+  padding: 4px 9px; border-radius: 999px; color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+.pdf44-price-name { font-size: 13px; font-weight: 700; color: var(--text-2); text-transform: uppercase; letter-spacing: .5px; }
+.pdf44-price-amount { font-size: 34px; font-weight: 900; letter-spacing: -1px; color: var(--text); margin: 6px 0 2px; }
+.pdf44-price-amount span { font-size: 14px; font-weight: 600; color: var(--text-3); }
+.pdf44-price-blurb { font-size: 12.5px; color: var(--text-2); line-height: 1.5; }
+
+.pdf44-feat { list-style: none; padding: 0; margin: 16px 0 4px; }
+.pdf44-feat li { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--text); padding: 5px 0; }
+.pdf44-feat li svg { flex: none; color: var(--success); }
+
+.pdf44-acct-fineprint { font-size: 11.5px; color: var(--text-3); text-align: center; margin-top: 14px; line-height: 1.5; }
+.pdf44-acct-fineprint a { color: var(--accent); }
+
+.pdf44-acct-spin {
+  width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.4);
+  border-top-color: #fff; border-radius: 50%; display: inline-block;
+  animation: pdf44spin .7s linear infinite; vertical-align: -3px; margin-right: 8px;
+}
+@keyframes pdf44spin { to { transform: rotate(360deg); } }
