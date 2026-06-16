@@ -20,7 +20,7 @@
   # CDNs — those are SCRIPTS, so frame-src does not cover them and the old
   # allowlist silently blocked them, suppressing fill. script-src now allows
   # the Adsterra creative CDNs explicitly (wildcarded) so those load.
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://www.highperformanceformat.com https://*.highperformanceformat.com https://*.adsterra.com https://*.profitabledisplaynetwork.com https://*.profitablecpmrate.com https://*.displaycontentnetwork.com https://*.effectivegatecpm.com https://*.creativecdn.com https://googlesyndication.com https://*.doubleclick.net https://*.googlesyndication.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: blob: data:; worker-src 'self' blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; child-src 'self' blob: https:; frame-src 'self' https:; manifest-src 'self'; base-uri 'self'; form-action 'self' mailto:; object-src 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://js.paystack.co https://www.highperformanceformat.com https://*.highperformanceformat.com https://*.adsterra.com https://*.profitabledisplaynetwork.com https://*.profitablecpmrate.com https://*.displaycontentnetwork.com https://*.effectivegatecpm.com https://*.creativecdn.com https://googlesyndication.com https://*.doubleclick.net https://*.googlesyndication.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: blob: data:; worker-src 'self' blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; child-src 'self' blob: https:; frame-src 'self' https:; manifest-src 'self'; base-uri 'self'; form-action 'self' https://*.paystack.com mailto:; object-src 'none'; upgrade-insecure-requests
 
 # Ad diagnostic page — deliberately relaxed CSP so it can prove whether
 # Adsterra serves at all on this domain, independent of the strict site CSP.
@@ -29,6 +29,18 @@
   Cache-Control: no-store
   Content-Type: text/html; charset=utf-8
   Content-Security-Policy: default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; frame-src https: data:; img-src https: data: blob:; connect-src https: data: blob:
+  X-Robots-Tag: noindex, nofollow
+
+# Admin portal — never indexed, never cached. Gated server-side by Supabase
+# row-level security (is_admin); these headers just keep it out of search.
+/admin
+  Cache-Control: no-store
+  Content-Type: text/html; charset=utf-8
+  X-Robots-Tag: noindex, nofollow
+
+/admin.html
+  Cache-Control: no-store
+  Content-Type: text/html; charset=utf-8
   X-Robots-Tag: noindex, nofollow
 
 # HTML must always be revalidated so SEO/meta updates ship instantly.

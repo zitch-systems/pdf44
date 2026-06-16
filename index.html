@@ -1873,6 +1873,36 @@ input[type="range"]::-moz-range-thumb {
 [data-theme="light"] .seo-faq-item { background: #fff; }
 [data-theme="light"] .seo-faq-q { color: #0f1729; }
 </style>
+
+<!-- ══ Accounts / subscriptions / ad-free (additive — no-ops until configured) ══ -->
+<link rel="stylesheet" href="/assets/pdf44-account.css">
+<script src="/config.js"></script>
+<script>
+/* Ad-gate bootstrap. Runs before ads init so returning premium users never see
+   a flash of ads. Reads a cached flag; the account controller corrects it once
+   it has confirmed the live subscription with the server. Fully inert unless
+   accounts are enabled in config.js. */
+(function () {
+  window.PDF44_AdGate = window.PDF44_AdGate || { suppress: false };
+  try {
+    if (window.PDF44_CONFIG && window.PDF44_CONFIG.enabled &&
+        localStorage.getItem('pdf44_prem') === '1') {
+      window.PDF44_AdGate.suppress = true;
+    }
+  } catch (e) {}
+  window.PDF44_applyAdState = function (suppress) {
+    window.PDF44_AdGate.suppress = !!suppress;
+    if (document.body) document.body.classList.toggle('pdf44-premium', !!suppress);
+    if (suppress) {
+      var slots = document.querySelectorAll('.ad-slot');
+      for (var i = 0; i < slots.length; i++) { slots[i].innerHTML = ''; slots[i].style.display = 'none'; }
+    } else if (document.body) {
+      document.body.classList.remove('pdf44-premium');
+      if (typeof window.initAds === 'function') { try { window.initAds(); } catch (e) {} }
+    }
+  };
+})();
+</script>
 </head>
 <body data-theme="dark">
 
@@ -3298,6 +3328,11 @@ function _renderAd(id) {
 // Register a slot: gate by viewport, reserve height to avoid layout shift,
 // then either render now (eager) or defer until it scrolls near (lazy).
 function _injectAd(id) {
+  // Premium users (or an admin ad kill-switch) suppress all ad slots.
+  if (window.PDF44_AdGate && window.PDF44_AdGate.suppress) {
+    var _g = document.getElementById(id); if (_g) _g.style.display = 'none';
+    return;
+  }
   var el = document.getElementById(id);
   if (!el || el.dataset.adReg) return;
   var isMobile = window.innerWidth < 728;
@@ -9997,5 +10032,8 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 </script>
+
+<!-- Account / subscription controller (deferred; inert until config.js enables it) -->
+<script src="/assets/pdf44-account.js" defer></script>
 </body>
 </html>

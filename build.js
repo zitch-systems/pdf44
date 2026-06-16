@@ -223,10 +223,18 @@ const ASSETS = [
   'sw.js', 'manifest.json', 'icon.svg', 'og-image.png', 'og-image.svg',
   'robots.txt', 'sitemap.xml', 'llms.txt', '_headers', '404.html',
   'ad-test.html',
+  // Accounts / subscriptions / admin
+  'config.js', 'admin.html',
 ];
 for (const f of ASSETS) {
   const src = path.join(ROOT, f);
   if (fs.existsSync(src)) fs.copyFileSync(src, path.join(DIST, f));
+}
+
+// Copy the assets/ directory (account CSS/JS) verbatim.
+const assetsDir = path.join(ROOT, 'assets');
+if (fs.existsSync(assetsDir)) {
+  fs.cpSync(assetsDir, path.join(DIST, 'assets'), { recursive: true });
 }
 
 // _redirects for dist:

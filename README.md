@@ -72,6 +72,20 @@ Also enable the Monetag script tag at the top of `<head>`:
 <script src="//monetag.com/tag/YOUR_ID.js"></script>
 ```
 
+## Subscriptions, accounts & admin (optional, off by default)
+
+An optional ad-free tier lives behind a master switch in `config.js`
+(`enabled: false` by default — when off, the site is unchanged: no accounts, no
+auth, ads as-is). When enabled it adds:
+
+- **Accounts** — email + Google sign-in (Supabase Auth) with a user profile.
+- **Subscription** — **$1/month** or **$10/year** via Paystack; removes all ads.
+- **Admin portal** at `/admin` — users, subscriptions, revenue (MRR/ARR), signup
+  trends, grant/revoke premium, plus a site-wide ad kill-switch.
+
+Backend is **Supabase** (Postgres + RLS + Edge Functions) and **Paystack**.
+Full configuration steps are in **[SUBSCRIPTION_SETUP.md](SUBSCRIPTION_SETUP.md)**.
+
 ## Tech stack
 - **pdf-lib** — PDF creation, editing, encryption
 - **PDF.js** — rendering & text extraction (the source of truth for visuals)
@@ -82,6 +96,9 @@ Also enable the Monetag script tag at the top of `<head>`:
 
 ## Privacy guarantees
 - No file ever leaves the browser tab. All `pdf-lib` and `pdf.js` work happens in-memory.
-- No analytics, no accounts, no fingerprinting.
+- No fingerprinting. Accounts are **optional and off by default** (see above); even
+  when enabled, sign-in is only for billing — your PDFs are still processed locally
+  and never uploaded.
 - Service worker caches static assets only. User files are never persisted.
-- Theme preference is the *only* thing stored (in `localStorage`).
+- Theme preference is stored in `localStorage` (plus a cached premium flag once
+  accounts are enabled).
