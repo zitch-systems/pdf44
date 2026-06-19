@@ -1303,6 +1303,54 @@ input[type="range"]::-moz-range-thumb {
 .result-info { flex: 1; min-width: 0; }
 .result-name { font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .result-meta { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+.result-icon { animation: pdf44-pop .4s var(--ease-bounce); }
+
+/* ── Loading animation: animated shimmer + spinner on the progress area ── */
+.progress-fill { position: relative; overflow: hidden; }
+.progress-fill::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+  transform: translateX(-100%); animation: pdf44-shimmer 1.1s var(--ease) infinite;
+}
+.progress-text { display: flex; align-items: center; gap: 8px; }
+.progress-text::before {
+  content: ''; width: 14px; height: 14px; flex-shrink: 0;
+  border: 2px solid var(--border-strong); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin .7s linear infinite;
+}
+@keyframes pdf44-shimmer { to { transform: translateX(100%); } }
+@keyframes pdf44-pop { 0% { transform: scale(0); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+
+/* ── Download animation: floating chip "Downloading…" → "Downloaded ✓" ── */
+.pdf44-dl-chip {
+  position: fixed; left: 50%; bottom: calc(var(--ad-h) + 70px);
+  transform: translateX(-50%) translateY(14px);
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg-elev); border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-lg); border-radius: 14px; padding: 12px 16px;
+  z-index: 1200; opacity: 0; pointer-events: none; max-width: 86vw;
+  transition: opacity .25s var(--ease), transform .25s var(--ease);
+}
+.pdf44-dl-chip.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.pdf44-dl-ic {
+  width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+  display: grid; place-items: center; color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+.pdf44-dl-ic svg { animation: pdf44-bounce .8s var(--ease) infinite; }
+.pdf44-dl-ic.done { background: var(--success); }
+.pdf44-dl-ic.done svg { animation: pdf44-pop .4s var(--ease-bounce); }
+@keyframes pdf44-bounce { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(3px); } }
+.pdf44-dl-tx { min-width: 0; }
+.pdf44-dl-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.pdf44-dl-sub { font-size: 11.5px; color: var(--text-3); margin-top: 1px; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pdf44-dl-bar { height: 3px; border-radius: 2px; background: var(--bg-3); overflow: hidden; margin-top: 7px; }
+.pdf44-dl-bar > i { display: block; height: 100%; width: 40%; border-radius: 2px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); animation: pdf44-indet 1s var(--ease) infinite; }
+@keyframes pdf44-indet { from { margin-left: -40%; } to { margin-left: 100%; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-fill::after, .progress-text::before, .pdf44-dl-ic svg, .pdf44-dl-bar > i { animation: none; }
+}
 
 .toast-container {
   position: fixed;
@@ -1972,19 +2020,54 @@ input[type="range"]::-moz-range-thumb {
     else window.toast(left + ' free download' + (left === 1 ? '' : 's') + ' left today', 'info');
   }
 
+  // Local HTML escaper for filenames shown in the download chip.
+  function escHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // Download animation: a floating chip that shows "Downloading…" then flips to
+  // "Downloaded ✓". Self-contained and reused across all tools.
+  var dlChip = null, dlT1 = null, dlT2 = null;
+  function downloadFx(name) {
+    if (!document.body) return;
+    if (!dlChip) { dlChip = document.createElement('div'); dlChip.className = 'pdf44-dl-chip'; document.body.appendChild(dlChip); }
+    clearTimeout(dlT1); clearTimeout(dlT2);
+    var DOWN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>';
+    var OK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    dlChip.innerHTML =
+      '<div class="pdf44-dl-ic">' + DOWN + '</div>' +
+      '<div class="pdf44-dl-tx"><div class="pdf44-dl-title">Downloading…</div>' +
+        '<div class="pdf44-dl-sub">' + escHtml(name) + '</div>' +
+        '<div class="pdf44-dl-bar"><i></i></div></div>';
+    requestAnimationFrame(function () { if (dlChip) dlChip.classList.add('show'); });
+    dlT1 = setTimeout(function () {
+      if (!dlChip) return;
+      var ic = dlChip.querySelector('.pdf44-dl-ic'); if (ic) { ic.classList.add('done'); ic.innerHTML = OK; }
+      var t = dlChip.querySelector('.pdf44-dl-title'); if (t) t.textContent = 'Downloaded';
+      var b = dlChip.querySelector('.pdf44-dl-bar'); if (b) b.remove();
+    }, 1100);
+    dlT2 = setTimeout(function () { if (dlChip) dlChip.classList.remove('show'); }, 3300);
+  }
+
   // Download gate: wrap the global saveAs (FileSaver loads `defer`, so install a
   // get/set property now and capture the real impl when it's assigned). Multiple
-  // saveAs calls in one processing burst (e.g. Split → many files) cost 1 credit.
+  // saveAs calls in one processing burst (e.g. Split → many files) cost 1 credit
+  // and show a single download animation.
   var _real = (typeof window.saveAs === 'function') ? window.saveAs : null;
-  var consuming = false, burstUntil = 0, queue = [];
-  function flush() { var it; while ((it = queue.shift())) { try { _real.apply(it[0], it[1]); } catch (e) {} } }
+  var consuming = false, burstUntil = 0, fxUntil = 0, queue = [];
+  function fire(self, args) {
+    if (Date.now() >= fxUntil) { fxUntil = Date.now() + 1500; downloadFx(args && args[1] ? args[1] : 'your file'); }
+    try { _real.apply(self, args); } catch (e) {}
+  }
+  function flush() { var it; while ((it = queue.shift())) fire(it[0], it[1]); }
   function gate() {
     var args = arguments, self = this;
     if (!_real) return;
-    if (!on() || premium()) return _real.apply(self, args);
-    if (Date.now() < burstUntil) return _real.apply(self, args); // same burst, already paid
+    if (!on() || premium()) return fire(self, args);
+    if (Date.now() < burstUntil) return fire(self, args); // same burst, already paid
     queue.push([self, args]);
-    if (consuming) return;                                        // join in-flight consume
+    if (consuming) return;                                // join in-flight consume
     consuming = true;
     consume().then(function (q) {
       consuming = false;
@@ -1997,11 +2080,15 @@ input[type="range"]::-moz-range-thumb {
       consuming = false; burstUntil = Date.now() + 3000; flush(); // fail open
     });
   }
+  gate.saveAs = gate; // FileSaver exposes saveAs.saveAs; mirror it so either call works
   try {
     Object.defineProperty(window, 'saveAs', {
       configurable: true,
-      get: function () { return gate; },
-      set: function (v) { _real = v; },
+      // Return falsy until FileSaver has installed the real impl, otherwise its
+      // own `_global.saveAs || (...)` init would short-circuit to our gate and
+      // never build the real download function (→ recursion / dead downloads).
+      get: function () { return _real ? gate : _real; },
+      set: function (v) { if (v !== gate) _real = v; },
     });
   } catch (e) { /* if this fails, downloads simply aren't gated */ }
 })();
