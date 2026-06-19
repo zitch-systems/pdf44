@@ -462,6 +462,18 @@
       session = s;
       loadState();
     });
+
+    // Re-check subscription/ad state when the user returns to the tab (e.g. back
+    // from Paystack checkout), so premium activates without a manual reload even
+    // if the /billing/callback verify step didn't run. Throttled.
+    var lastRefresh = Date.now();
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible' && session && Date.now() - lastRefresh > 8000) {
+        lastRefresh = Date.now();
+        loadState();
+      }
+    });
+
     return loadState().then(function () {
       if (first) { first = false; handlePath(); }
     });
