@@ -215,12 +215,18 @@
     var planCard;
     if (prem) {
       var end = sub.current_period_end ? new Date(sub.current_period_end).toLocaleDateString() : null;
+      var canChange = !sub.cancel_at_period_end;
       planCard =
         '<div class="pdf44-plan-card premium"><div class="pdf44-plan-row">' +
         '<div><strong style="color:var(--text)">' + esc(planLabel()) + ' plan</strong>' +
         '<div class="pdf44-plan-status">Ad-free is active' + (end ? ' · renews ' + esc(end) : '') +
         (sub.cancel_at_period_end ? ' · cancels at period end' : '') + '</div></div>' +
-        '<span class="pdf44-status-chip active">Active</span></div></div>';
+        '<span class="pdf44-status-chip active">Active</span></div>' +
+        ((canChange && sub.plan === 'monthly')
+          ? '<button class="pdf44-acct-btn-ghost" id="pdf44Upgrade" style="margin-top:12px;">Upgrade to annual — 2 months free</button>' : '') +
+        (canChange
+          ? '<button class="pdf44-acct-btn-ghost" id="pdf44Cancel" style="margin-top:8px;color:var(--error);">Cancel subscription</button>' : '') +
+        '</div>';
     } else {
       planCard =
         '<div class="pdf44-plan-card"><div class="pdf44-plan-row">' +
@@ -239,11 +245,38 @@
         '<div class="pdf44-acct-field"><label>Display name</label><input name="name" type="text" value="' + esc(nm) + '" placeholder="Your name"></div>' +
         '<button type="submit" class="pdf44-acct-btn-ghost">Save profile</button>' +
       '</form>' +
+      '<form id="pdf44PwForm" class="pdf44-acct-body" style="margin-top:6px;">' +
+        '<div class="pdf44-acct-field"><label>New password</label><input name="newpw" type="password" minlength="6" placeholder="At least 6 characters" autocomplete="new-password"></div>' +
+        '<button type="submit" class="pdf44-acct-btn-ghost">Change password</button>' +
+      '</form>' +
       (profile.role === 'admin' ? '<a class="pdf44-acct-btn-ghost" href="/admin" style="margin-top:10px;text-decoration:none;">Open admin portal</a>' : '') +
       '<button class="pdf44-acct-btn-ghost" id="pdf44SignOut" style="margin-top:10px;">Sign out</button>'
     );
 
-    var up = sheet.querySelector('#pdf44Upgrade'); if (up) up.onclick = showPricing;
+    var up = sheet.querySelector('#pdf44Upgrade');
+    if (up) up.onclick = prem ? upgradeToAnnual : showPricing;
+
+    var cancelBtn = sheet.querySelector('#pdf44Cancel');
+    if (cancelBtn) cancelBtn.onclick = function () {
+      if (!window.confirm('Cancel your subscription? You’ll keep premium until the end of the current billing period, then ads return.')) return;
+      var b = this; b.disabled = true; b.textContent = 'Cancelling…';
+      cancelSubscription().then(function () { showProfile(); }).catch(function (err) {
+        b.disabled = false; b.textContent = 'Cancel subscription'; msg(sheet, err.message || 'Could not cancel', 'err');
+      });
+    };
+
+    sheet.querySelector('#pdf44PwForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var btn = e.target.querySelector('button'), pw = e.target.newpw.value;
+      if (!pw || pw.length < 6) { msg(sheet, 'Password must be at least 6 characters', 'err'); return; }
+      btn.disabled = true; btn.textContent = 'Updating…';
+      SB.auth.updateUser({ password: pw }).then(function (r) {
+        if (r.error) throw r.error;
+        e.target.newpw.value = ''; btn.disabled = false; btn.textContent = 'Password updated ✓';
+        setTimeout(function () { btn.textContent = 'Change password'; }, 1800);
+      }).catch(function (err) { btn.disabled = false; btn.textContent = 'Change password'; msg(sheet, err.message || 'Could not update password', 'err'); });
+    });
+
     sheet.querySelector('#pdf44SignOut').onclick = function () { signOut(); };
     sheet.querySelector('#pdf44ProfForm').addEventListener('submit', function (e) {
       e.preventDefault();
@@ -289,8 +322,12 @@
     var chosen = 'annual';
     function paint() {
       sheet.querySelectorAll('.pdf44-price-card').forEach(function (c) {
-        c.style.borderColor = c.dataset.plan === chosen ? 'var(--accent)' : '';
-        c.style.boxShadow = c.dataset.plan === chosen ? 'var(--shadow)' : '';
+        var sel = c.dataset.plan === chosen;
+        // Set the unselected border explicitly to var(--border): the annual card
+        // carries a permanent accent border via the `.best` CSS rule, so an empty
+        // string wouldn't clear it (the red border would stay on annual).
+        c.style.borderColor = sel ? 'var(--accent)' : 'var(--border)';
+        c.style.boxShadow = sel ? 'var(--shadow)' : 'none';
       });
     }
     sheet.querySelectorAll('.pdf44-price-card').forEach(function (c) {
@@ -323,6 +360,32 @@
       if (j && j.authorization_url) { location.href = j.authorization_url; return; }
       throw new Error((j && j.error) || 'Could not start checkout');
     });
+  }
+
+  // Cancel: stop the Paystack subscription renewing; premium stays until the
+  // period end (server marks cancel_at_period_end). Refreshes local state.
+  function cancelSubscription() {
+    return SB.auth.getSession().then(function (r) {
+      var token = r.data.session && r.data.session.access_token;
+      if (!token) throw new Error('Please sign in first');
+      return fetch(fnUrl(CFG.functions.cancel || 'paystack-cancel'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token, 'apikey': CFG.supabaseAnonKey },
+        body: '{}',
+      });
+    }).then(function (res) { return res.json(); }).then(function (j) {
+      if (j && j.error) throw new Error(j.error);
+      return loadState().then(function () { return j; });
+    });
+  }
+
+  // Upgrade monthly → annual: stop the monthly renewal, then start annual
+  // checkout. The webhook replaces the active subscription on the new charge.
+  function upgradeToAnnual() {
+    if (!window.confirm('Upgrade to the annual plan? Your monthly plan is cancelled and you’ll be taken to checkout for the annual plan (₦15,000/yr).')) return;
+    cancelSubscription()
+      .then(function () { return subscribe('annual'); })
+      .catch(function (err) { window.alert(err.message || 'Could not start the upgrade'); });
   }
 
   function verifyReturn(reference) {

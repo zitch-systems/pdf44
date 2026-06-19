@@ -131,13 +131,13 @@ Deno.serve(async (req) => {
 
       case "subscription.not_renew":
       case "subscription.disable": {
+        // Cancellation: stop renewal but keep access until the paid period ends.
+        // Status stays 'active'; has_active_subscription() falls false once
+        // current_period_end passes. (We never hard-cancel mid-period.)
         const code = data.subscription_code;
         if (code) {
           await admin.from("subscriptions")
-            .update({
-              status: event === "subscription.disable" ? "cancelled" : "active",
-              cancel_at_period_end: true,
-            })
+            .update({ cancel_at_period_end: true })
             .eq("paystack_subscription_code", code);
         }
         break;
