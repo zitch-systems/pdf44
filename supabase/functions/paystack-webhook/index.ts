@@ -13,6 +13,11 @@ import { createHmac } from "node:crypto";
 
 const PAYSTACK_SECRET = Deno.env.get("PAYSTACK_SECRET_KEY") ?? "";
 
+// Plan amounts (minor units) — used as a currency-agnostic fallback to tell the
+// monthly and annual charges apart when an event carries no interval metadata.
+const AMOUNT_MONTHLY = Number(Deno.env.get("PAYSTACK_AMOUNT_MONTHLY") ?? "150000");
+const AMOUNT_ANNUAL = Number(Deno.env.get("PAYSTACK_AMOUNT_ANNUAL") ?? "1500000");
+
 function addInterval(plan: string, from = new Date()): string {
   const d = new Date(from);
   if (plan === "annual") d.setFullYear(d.getFullYear() + 1);
@@ -20,13 +25,16 @@ function addInterval(plan: string, from = new Date()): string {
   return d.toISOString();
 }
 
-// Paystack plan codes carry no interval; infer from the plan name/amount.
+// Paystack plan codes carry no interval; infer from the plan name, then fall
+// back to the amount. The amount threshold is the midpoint between the two
+// configured prices, so it works for any currency (kobo, cents, …).
 function planKeyFrom(event: Record<string, any>): "monthly" | "annual" {
-  const meta = event?.metadata?.plan ?? event?.plan?.interval ?? "";
-  if (String(meta).toLowerCase().includes("annual") ||
-      String(meta).toLowerCase().includes("year")) return "annual";
+  const meta = String(event?.metadata?.plan ?? event?.plan?.interval ?? "").toLowerCase();
+  if (meta.includes("annual") || meta.includes("year")) return "annual";
+  if (meta.includes("month")) return "monthly";
   const amount = Number(event?.amount ?? event?.plan?.amount ?? 0);
-  return amount >= 500 ? "annual" : "monthly";
+  const midpoint = (AMOUNT_MONTHLY + AMOUNT_ANNUAL) / 2;
+  return amount >= midpoint ? "annual" : "monthly";
 }
 
 Deno.serve(async (req) => {
@@ -72,7 +80,7 @@ Deno.serve(async (req) => {
             user_id: userId,
             plan,
             amount: data.amount,
-            currency: data.currency ?? "USD",
+            currency: data.currency ?? "NGN",
             paid_at: new Date().toISOString(),
             raw: data,
           }).eq("reference", ref);
