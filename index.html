@@ -1997,11 +1997,15 @@ input[type="range"]::-moz-range-thumb {
       consuming = false; burstUntil = Date.now() + 3000; flush(); // fail open
     });
   }
+  gate.saveAs = gate; // FileSaver exposes saveAs.saveAs; mirror it so either call works
   try {
     Object.defineProperty(window, 'saveAs', {
       configurable: true,
-      get: function () { return gate; },
-      set: function (v) { _real = v; },
+      // Return falsy until FileSaver has installed the real impl, otherwise its
+      // own `_global.saveAs || (...)` init would short-circuit to our gate and
+      // never build the real download function (→ recursion / dead downloads).
+      get: function () { return _real ? gate : _real; },
+      set: function (v) { if (v !== gate) _real = v; },
     });
   } catch (e) { /* if this fails, downloads simply aren't gated */ }
 })();
