@@ -21,6 +21,14 @@ window.PDF44_CONFIG = {
   functions: {
     initialize: "paystack-initialize",
     verify:     "paystack-verify",
+    quota:      "download-quota",
+  },
+
+  // Free-tier limits (premium subscribers bypass all of these). Only enforced
+  // while `enabled` is true — otherwise the site behaves exactly as before.
+  freeTier: {
+    maxUploadBytes: 5 * 1024 * 1024, // 5 MB: free users can't process bigger files
+    dailyDownloads: 3,               // downloads per IP per day before the paywall
   },
 
   // Display-only plan info. The real Paystack plan CODES + amounts live in the

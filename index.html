@@ -458,11 +458,11 @@ window.addEventListener('unhandledrejection', function(e) {
   --text:          #ffffff;
   --text-2:        #b8b8c8;
   --text-3:        #a0a0b8;
-  --accent:        #6366f1;
-  --accent-2:      #8b5cf6;
-  --accent-3:      #a855f7;
-  --accent-glow:   rgba(99,102,241,0.18);
-  --accent-glow-2: rgba(139,92,246,0.18);
+  --accent:        #e5322d;
+  --accent-2:      #ff5a52;
+  --accent-3:      #ff7a45;
+  --accent-glow:   rgba(229,50,45,0.18);
+  --accent-glow-2: rgba(255,90,82,0.18);
   --success:       #22c55e;
   --warning:       #f59e0b;
   --error:         #ef4444;
@@ -486,11 +486,11 @@ window.addEventListener('unhandledrejection', function(e) {
   --text:          #0f1729;
   --text-2:        #475569;
   --text-3:        #64748b;
-  --accent:        #6366f1;
-  --accent-2:      #8b5cf6;
-  --accent-3:      #a855f7;
-  --accent-glow:   rgba(99,102,241,0.12);
-  --accent-glow-2: rgba(139,92,246,0.12);
+  --accent:        #e5322d;
+  --accent-2:      #ff5a52;
+  --accent-3:      #ff7a45;
+  --accent-glow:   rgba(229,50,45,0.12);
+  --accent-glow-2: rgba(255,90,82,0.12);
   --success:       #16a34a;
   --warning:       #d97706;
   --error:         #dc2626;
@@ -499,7 +499,7 @@ window.addEventListener('unhandledrejection', function(e) {
   --shadow-sm:     0 1px 3px rgba(15,23,41,0.06);
   --shadow:        0 4px 16px rgba(15,23,41,0.08);
   --shadow-lg:     0 12px 40px rgba(15,23,41,0.12);
-  --shadow-glow:   0 0 32px rgba(99,102,241,0.18);
+  --shadow-glow:   0 0 32px rgba(229,50,45,0.18);
   --canvas-bg:     #ffffff;
   --code-bg:       #f1f5f9;
 }
@@ -1901,6 +1901,109 @@ input[type="range"]::-moz-range-thumb {
       if (typeof window.initAds === 'function') { try { window.initAds(); } catch (e) {} }
     }
   };
+})();
+</script>
+<script>
+/* ════ PDF44 free-tier limits — 5 MB upload cap + daily download paywall ════
+   Active only when accounts/subscriptions are enabled (config.js). Premium
+   subscribers bypass everything. Downloads are metered server-side by IP via
+   the download-quota edge function; we gate the global saveAs() so every tool
+   is covered without touching individual handlers. */
+(function () {
+  var CFG = window.PDF44_CONFIG;
+  function on() { return !!(CFG && CFG.enabled); }
+  function premium() {
+    try {
+      if (window.PDF44Account && typeof window.PDF44Account.isPremium === 'function')
+        return !!window.PDF44Account.isPremium();
+    } catch (e) {}
+    try { return localStorage.getItem('pdf44_prem') === '1'; } catch (e) {}
+    return false;
+  }
+  var FREE = (CFG && CFG.freeTier) || {};
+  var MAX_BYTES = FREE.maxUploadBytes || 5 * 1024 * 1024;
+  var DAILY = FREE.dailyDownloads || 3;
+  var MB = Math.round(MAX_BYTES / (1024 * 1024));
+
+  function quotaUrl() {
+    var fns = (CFG && CFG.functions) || {};
+    return CFG.supabaseUrl.replace(/\/$/, '') + '/functions/v1/' + (fns.quota || 'download-quota');
+  }
+  function consume() {
+    var token = null;
+    try { token = window.PDF44Account && window.PDF44Account.getToken && window.PDF44Account.getToken(); } catch (e) {}
+    var headers = { 'Content-Type': 'application/json', 'apikey': CFG.supabaseAnonKey };
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    return fetch(quotaUrl(), { method: 'POST', headers: headers, body: JSON.stringify({ action: 'consume' }) })
+      .then(function (r) { return r.json(); });
+  }
+
+  function paywall(kind) {
+    var sub = (kind === 'size')
+      ? ('Files over ' + MB + ' MB need a Premium plan. Upgrade for unlimited file size and downloads — or try a smaller file.')
+      : ('You’ve used your ' + DAILY + ' free downloads for today. Upgrade to Premium for unlimited downloads and no ads.');
+    try {
+      if (window.PDF44Account && window.PDF44Account.paywall) {
+        window.PDF44Account.paywall({ title: 'Upgrade to keep going', sub: sub });
+        return;
+      }
+    } catch (e) {}
+    if (typeof window.toast === 'function') window.toast(sub, 'error');
+  }
+
+  // 5 MB upload cap (free users). Returns true if allowed, else shows paywall.
+  // Always safe to call — no-ops to `true` when limits are off or user is premium.
+  window.PDF44_checkFileSize = function (file) {
+    if (!on() || premium()) return true;
+    if (file && file.size > MAX_BYTES) {
+      if (typeof window.toast === 'function')
+        window.toast('"' + (file.name || 'File') + '" is over ' + MB + ' MB — Premium needed', 'error');
+      paywall('size');
+      return false;
+    }
+    return true;
+  };
+
+  function remainingToast(q) {
+    if (!q || q.premium || typeof window.toast !== 'function') return;
+    var left = (typeof q.remaining === 'number') ? q.remaining : null;
+    if (left === null) return;
+    if (left <= 0) window.toast('That was your last free download today.', 'info');
+    else window.toast(left + ' free download' + (left === 1 ? '' : 's') + ' left today', 'info');
+  }
+
+  // Download gate: wrap the global saveAs (FileSaver loads `defer`, so install a
+  // get/set property now and capture the real impl when it's assigned). Multiple
+  // saveAs calls in one processing burst (e.g. Split → many files) cost 1 credit.
+  var _real = (typeof window.saveAs === 'function') ? window.saveAs : null;
+  var consuming = false, burstUntil = 0, queue = [];
+  function flush() { var it; while ((it = queue.shift())) { try { _real.apply(it[0], it[1]); } catch (e) {} } }
+  function gate() {
+    var args = arguments, self = this;
+    if (!_real) return;
+    if (!on() || premium()) return _real.apply(self, args);
+    if (Date.now() < burstUntil) return _real.apply(self, args); // same burst, already paid
+    queue.push([self, args]);
+    if (consuming) return;                                        // join in-flight consume
+    consuming = true;
+    consume().then(function (q) {
+      consuming = false;
+      if (q && (q.allowed || q.premium)) {
+        burstUntil = Date.now() + 3000; flush(); remainingToast(q);
+      } else {
+        queue.length = 0; paywall('limit');
+      }
+    }).catch(function () {
+      consuming = false; burstUntil = Date.now() + 3000; flush(); // fail open
+    });
+  }
+  try {
+    Object.defineProperty(window, 'saveAs', {
+      configurable: true,
+      get: function () { return gate; },
+      set: function (v) { _real = v; },
+    });
+  } catch (e) { /* if this fails, downloads simply aren't gated */ }
 })();
 </script>
 </head>
@@ -3473,16 +3576,14 @@ function render() {
 
 function renderHome(container) {
   let html = `
-    <div id="ad-home-hero-top" class="ad-slot" style="margin:8px 0 18px;"></div>
     <section class="hero" aria-label="PDF44 — Free Online PDF Tools">
-      <div class="hero-badge" role="note">41+ free PDF tools · 100% private · No upload needed</div>
-      <h1>Free Online PDF Tools — <span>No Upload Required</span></h1>
-      <p>Merge, split, compress, convert, edit, sign and protect PDFs <strong>entirely in your browser</strong> — <strong>no file uploads, no registration, no watermarks, free forever</strong>. PDF44 has <strong>41 free PDF tools</strong> including PDF to Word, PDF to JPG, EPUB to PDF, fill PDF forms, e-signatures, and password protection. Your files never leave your device.</p>
+      <div class="hero-badge" role="note">Every tool you need to work with PDFs, in one place</div>
+      <h1>Online PDF Tools — <span>Private &amp; In Your Browser</span></h1>
+      <p>Merge, split, compress, convert, edit, sign and protect PDFs <strong>entirely in your browser</strong> — <strong>no file uploads, no registration, no watermarks</strong>. PDF44 has <strong>41 PDF tools</strong> including PDF to Word, PDF to JPG, EPUB to PDF, fill PDF forms, e-signatures, and password protection. Your files never leave your device.</p>
       <div class="hero-stats" role="list" aria-label="PDF44 key facts">
-        <div class="hero-stat" role="listitem"><div class="hero-stat-num" aria-label="${Object.keys(TOOLS).length} plus">${Object.keys(TOOLS).length}+</div><div class="hero-stat-label">Free PDF tools</div></div>
-        <div class="hero-stat" role="listitem"><div class="hero-stat-num">100%</div><div class="hero-stat-label">Client-side</div></div>
-        <div class="hero-stat" role="listitem"><div class="hero-stat-num">∞</div><div class="hero-stat-label">File size limit</div></div>
-        <div class="hero-stat" role="listitem"><div class="hero-stat-num">Free</div><div class="hero-stat-label">Forever</div></div>
+        <div class="hero-stat" role="listitem"><div class="hero-stat-num" aria-label="${Object.keys(TOOLS).length} plus">${Object.keys(TOOLS).length}+</div><div class="hero-stat-label">PDF tools</div></div>
+        <div class="hero-stat" role="listitem"><div class="hero-stat-num">100%</div><div class="hero-stat-label">In your browser</div></div>
+        <div class="hero-stat" role="listitem"><div class="hero-stat-num">0</div><div class="hero-stat-label">Files uploaded</div></div>
       </div>
     </section>
     <nav class="quick-tools" aria-label="Popular tools">
@@ -3497,9 +3598,8 @@ function renderHome(container) {
       <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 2 4 5v7c0 4.5 3.5 8.5 8 9 4.5-.5 8-4.5 8-9V5z"/><path d="m9 12 2 2 4-4"/></svg> Files never leave your device</div>
       <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg> No sign-up required</div>
       <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg> Works offline as a PWA</div>
-      <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> No file size limit</div>
+      <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Works on any device</div>
     </div>
-    <div id="ad-home-quick" class="ad-slot" style="margin:14px 0;"></div>
     ${(() => {
     const recent = safeLoadRecent();
     if (!recent.length) return '';
@@ -3511,7 +3611,6 @@ function renderHome(container) {
         '</div>'
       ).join('') + '</div></div>';
   })()}
-  <div id="ad-home-top" class="ad-slot"></div>
   `;
 
   CATEGORIES.forEach(cat => {
@@ -6663,7 +6762,7 @@ function renderToolPage(container) {
         <div class="upload-icon">${icon('upload', {size:32, stroke:2.2})}</div>
         <div class="upload-text">Drop ${acceptText.toLowerCase()} here</div>
         <div class="upload-subtext">or click to browse</div>
-        <div class="upload-formats">${acceptText} · ${multiText} · Unlimited</div>
+        <div class="upload-formats">${acceptText} · ${multiText} · Private</div>
         <input type="file" id="fileInput" style="display:none;" ${tool.multi?'multiple':''} accept="${tool.accepts}" onchange="handleFiles(this.files)">
       </div>
       <div class="file-list" id="fileList"></div>
@@ -7349,6 +7448,7 @@ async function handleFiles(fileList) {
   }
 
   for (const file of files) {
+    if (window.PDF44_checkFileSize && !window.PDF44_checkFileSize(file)) continue;
     const id = Math.random().toString(36).slice(2);
     const item = { id, file, name: file.name, size: file.size, type: file.type };
     const fname = file.name.toLowerCase();
