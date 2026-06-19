@@ -26,8 +26,8 @@ window.PDF44_CONFIG = {
   // Display-only plan info. The real Paystack plan CODES + amounts live in the
   // edge-function environment variables (server-side), never in the browser.
   plans: {
-    monthly: { key: "monthly", label: "Monthly", price: "$1",  per: "/month", blurb: "Billed monthly. Cancel anytime." },
-    annual:  { key: "annual",  label: "Annual",  price: "$10", per: "/year",  blurb: "Best value — 2 months free vs monthly." },
+    monthly: { key: "monthly", label: "Monthly", price: "₦1,500",  per: "/month", blurb: "Billed monthly. Cancel anytime." },
+    annual:  { key: "annual",  label: "Annual",  price: "₦15,000", per: "/year",  blurb: "Best value — 2 months free vs monthly." },
   },
 
   // Optional: which sign-in methods to offer. Both are on by default.

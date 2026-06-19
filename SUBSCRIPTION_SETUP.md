@@ -94,15 +94,17 @@ Paystack dashboard → **Plans → Create Plan** (do this twice):
 
 | Plan | Interval | Amount | Currency |
 |---|---|---|---|
-| PDF44 Monthly | Monthly | 1.00 | USD* |
-| PDF44 Annual | Annually | 10.00 | USD* |
+| PDF44 Monthly | Monthly | 1,500 | NGN* |
+| PDF44 Annual | Annually | 15,000 | NGN* |
 
 Copy each **plan code** (`PLN_xxxxxxxx`). Grab your **secret key** (`sk_...`) from
 Settings → API Keys & Webhooks.
 
-> *Currency:* Paystack settles in NGN/GHS/ZAR/KES and USD depending on your
-> account. If USD isn't enabled for you, set `PAYSTACK_CURRENCY` and the amounts
-> below to your enabled currency, and update the price labels in `config.js`.
+> *Currency:* priced in **NGN** (≈ \$1/mo and \$10/yr). Paystack settles in
+> NGN/GHS/ZAR/KES and USD depending on your account. To switch currency, set
+> `PAYSTACK_CURRENCY` + the amounts below to your enabled currency and update the
+> price labels in `config.js`. Amounts are in the **minor unit** (kobo for NGN,
+> so ₦1,500 = `150000`; cents for USD, so \$1 = `100`).
 
 ## 5. Deploy the Edge Functions + secrets
 
@@ -113,9 +115,9 @@ supabase secrets set \
   PAYSTACK_SECRET_KEY=sk_live_or_test_xxx \
   PAYSTACK_PLAN_MONTHLY=PLN_monthly_code \
   PAYSTACK_PLAN_ANNUAL=PLN_annual_code \
-  PAYSTACK_AMOUNT_MONTHLY=100 \
-  PAYSTACK_AMOUNT_ANNUAL=1000 \
-  PAYSTACK_CURRENCY=USD \
+  PAYSTACK_AMOUNT_MONTHLY=150000 \
+  PAYSTACK_AMOUNT_ANNUAL=1500000 \
+  PAYSTACK_CURRENCY=NGN \
   SITE_URL=https://pdf44.com
 ```
 

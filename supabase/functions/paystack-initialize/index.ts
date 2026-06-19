@@ -14,16 +14,17 @@ import { corsHeaders, json } from "../_shared/cors.ts";
 
 const PAYSTACK_SECRET = Deno.env.get("PAYSTACK_SECRET_KEY") ?? "";
 const SITE_URL = Deno.env.get("SITE_URL") ?? "";
-const CURRENCY = Deno.env.get("PAYSTACK_CURRENCY") ?? "USD";
+const CURRENCY = Deno.env.get("PAYSTACK_CURRENCY") ?? "NGN";
 
+// Amounts are in the currency's minor unit (kobo for NGN, cents for USD).
 const PLANS: Record<string, { code: string; amount: number }> = {
   monthly: {
     code: Deno.env.get("PAYSTACK_PLAN_MONTHLY") ?? "",
-    amount: Number(Deno.env.get("PAYSTACK_AMOUNT_MONTHLY") ?? "100"), // $1.00
+    amount: Number(Deno.env.get("PAYSTACK_AMOUNT_MONTHLY") ?? "150000"), // ₦1,500
   },
   annual: {
     code: Deno.env.get("PAYSTACK_PLAN_ANNUAL") ?? "",
-    amount: Number(Deno.env.get("PAYSTACK_AMOUNT_ANNUAL") ?? "1000"), // $10.00
+    amount: Number(Deno.env.get("PAYSTACK_AMOUNT_ANNUAL") ?? "1500000"), // ₦15,000
   },
 };
 
