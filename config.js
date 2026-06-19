@@ -11,11 +11,11 @@
  * ========================================================================== */
 window.PDF44_CONFIG = {
   // Master switch. Leave false to ship without touching the live experience.
-  enabled: false,
+  enabled: true,
 
   // From Supabase dashboard → Project Settings → API
-  supabaseUrl:     "https://YOUR_PROJECT.supabase.co",
-  supabaseAnonKey: "YOUR_SUPABASE_ANON_KEY",
+  supabaseUrl:     "https://rqknwkiyoudsqjvdrvmg.supabase.co",
+  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxa253a2l5b3Vkc3FqdmRydm1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NjI0NjAsImV4cCI6MjA5NzQzODQ2MH0.diR1gwceEKhj21Jrst_eY3717_kDaL3XAqpWO5ZYivU",
 
   // Edge function names (defaults match supabase/functions/*)
   functions: {
