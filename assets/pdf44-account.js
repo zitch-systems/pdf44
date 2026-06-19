@@ -260,13 +260,16 @@
   }
 
   /* ── pricing / paywall ─────────────────────────────────────────────────── */
-  function showPricing() {
+  function showPricing(ctx) {
     var m = CFG.plans.monthly, a = CFG.plans.annual;
-    var feat = ['No ads, anywhere', 'All 41+ PDF tools', 'Faster, cleaner workflow', 'Support an indie tool', 'Cancel anytime'];
+    var title = (ctx && ctx.title) || 'Go Premium';
+    var subText = (ctx && ctx.sub) ||
+      ('Remove every ad and support ' + esc(CFG.brand || 'PDF44') + '. Same private, in-browser tools — just cleaner.');
+    var feat = ['Unlimited downloads', 'No file-size limit', 'No ads, anywhere', 'All 41+ PDF tools', 'Cancel anytime'];
     var sheet = openOverlay(
       '<div class="pdf44-acct-head"><div class="pdf44-acct-logo">P</div>' +
-      '<div class="pdf44-acct-title">Go ad-free</div></div>' +
-      '<p class="pdf44-acct-sub">Remove every ad and support ' + esc(CFG.brand || 'PDF44') + '. Same private, in-browser tools — just cleaner.</p>' +
+      '<div class="pdf44-acct-title">' + esc(title) + '</div></div>' +
+      '<p class="pdf44-acct-sub">' + subText + '</p>' +
       '<div class="pdf44-pricing">' +
         '<div class="pdf44-price-card" data-plan="monthly"><div class="pdf44-price-name">' + esc(m.label) + '</div>' +
           '<div class="pdf44-price-amount">' + esc(m.price) + '<span>' + esc(m.per) + '</span></div>' +
@@ -378,8 +381,12 @@
   window.PDF44Account = {
     open: function () { session ? showProfile() : showAuth('signin'); },
     openPricing: showPricing,
+    paywall: function (ctx) { showPricing(ctx || {}); },
     signOut: signOut,
     isPremium: isPremium,
+    // Current access token (or null) — lets the app prove premium to the
+    // download-quota function so subscribers are never metered.
+    getToken: function () { return (session && session.access_token) || null; },
     refresh: loadState,
   };
 

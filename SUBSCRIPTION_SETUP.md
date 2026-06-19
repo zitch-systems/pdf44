@@ -121,13 +121,25 @@ supabase secrets set \
   SITE_URL=https://pdf44.com
 ```
 
-Deploy. **The webhook must skip JWT verification** (Paystack calls it directly):
+Deploy. **The webhook and the quota meter must skip JWT verification** (Paystack
+calls the webhook directly; the quota meter is called by logged-out free users):
 
 ```bash
 supabase functions deploy paystack-initialize
 supabase functions deploy paystack-verify
-supabase functions deploy paystack-webhook --no-verify-jwt
+supabase functions deploy paystack-webhook  --no-verify-jwt
+supabase functions deploy download-quota    --no-verify-jwt
 ```
+
+`download-quota` meters the free tier (3 downloads per IP per UTC day). Override
+the cap with an optional secret — premium subscribers are never metered:
+
+```bash
+supabase secrets set FREE_DAILY_DOWNLOADS=3
+```
+
+Free-tier limits also include a **5 MB upload cap** (set in `config.js` →
+`freeTier.maxUploadBytes`). Both limits only apply while `enabled: true`.
 
 ## 6. Point Paystack at the webhook
 
