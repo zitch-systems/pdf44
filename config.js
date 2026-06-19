@@ -21,6 +21,7 @@ window.PDF44_CONFIG = {
   functions: {
     initialize: "paystack-initialize",
     verify:     "paystack-verify",
+    cancel:     "paystack-cancel",
     quota:      "download-quota",
   },
 

@@ -52,21 +52,27 @@ Deno.serve(async (req) => {
   const reference = `pdf44_${planKey}_${user.id.slice(0, 8)}_${Date.now()}`;
 
   // ── Ask Paystack to start the transaction (plan code ⇒ recurring sub) ─────
+  // When a plan code is supplied, the plan already defines the currency and
+  // amount. We deliberately DO NOT send `currency` here: passing one that
+  // differs from the plan/account (e.g. a stale PAYSTACK_CURRENCY) makes
+  // Paystack reject the call with "Currency not supported".
+  const payload: Record<string, unknown> = {
+    email: user.email,
+    amount: plan.amount,
+    plan: plan.code,
+    reference,
+    callback_url: SITE_URL ? `${SITE_URL}/billing/callback` : undefined,
+    metadata: { user_id: user.id, plan: planKey },
+  };
+  if (!plan.code) payload.currency = CURRENCY; // only for non-plan one-off charges
+
   const initRes = await fetch("https://api.paystack.co/transaction/initialize", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${PAYSTACK_SECRET}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      email: user.email,
-      amount: plan.amount,
-      currency: CURRENCY,
-      plan: plan.code,
-      reference,
-      callback_url: SITE_URL ? `${SITE_URL}/billing/callback` : undefined,
-      metadata: { user_id: user.id, plan: planKey },
-    }),
+    body: JSON.stringify(payload),
   });
   const initJson = await initRes.json();
   if (!initRes.ok || !initJson.status) {
