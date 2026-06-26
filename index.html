@@ -6944,8 +6944,8 @@ function renderToolSEOBlock(toolKey) {
                ['Will compression lose quality?', '"High" compression downsamples images (~72 DPI); "Medium" keeps screen quality (~150 DPI); "Low" only re-encodes losslessly.'],
                ['Is my file uploaded?', 'No. Compression happens entirely in your browser via JavaScript and WebAssembly — your PDF never leaves your device.'],
                ['What if my compressed PDF is bigger?', 'Some PDFs (especially heavily-vector ones) are already optimal. Try Medium instead of High — or skip compression.']],
-    pdf2word: [['Will my PDF to Word conversion preserve formatting?', 'Text content, paragraph breaks, and basic styling are preserved. Complex layouts (multi-column, tables with merged cells) may need touch-up in Word.'],
-               ['Does PDF44 work with scanned PDFs?', 'Scanned PDFs are images — they need OCR first. PDF44 currently does not do OCR; convert via OCR tool then run PDF to Word.'],
+    pdf2word: [['Will my PDF to Word conversion preserve formatting?', 'Text is rebuilt into real, flowing paragraphs with heading sizes preserved, so the document reads naturally. Complex layouts (multi-column, tables with merged cells) may still need touch-up in Word.'],
+               ['Does PDF44 work with scanned PDFs?', 'Yes. Scanned or image-only pages are detected automatically and run through built-in Tesseract OCR, so their text is recognised and added to the Word document — no separate step needed.'],
                ['Can I open the .docx in Google Docs?', 'Yes. The output is standard OOXML and opens in Microsoft Word, Google Docs, LibreOffice, Apple Pages and Zoho.'],
                ['Is this really free?', 'Yes — 100% free, no watermark, no signup, no ads on the output file.']],
     sign:     [['Is an electronic signature legally binding?', 'In most jurisdictions (US ESIGN Act, EU eIDAS) typed/drawn signatures with intent are legally binding for most contracts. Check local rules for high-value or regulated contracts.'],
@@ -7096,6 +7096,30 @@ function getToolSettingsHTML(toolKey) {
         </select></div>
       <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="imgAllPages" checked> Export all pages</label></div>
       <p style="font-size:11.5px;color:var(--text-3);line-height:1.5;">Higher DPI = sharper images but larger files. 300 DPI = print-ready.</p>`;
+    case 'pdf2word': return `
+      <p style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:12px;">Rebuilds your PDF as an editable <code style="background:var(--code-bg);padding:1px 5px;border-radius:4px;">.docx</code>. Text is reflowed into real paragraphs with heading sizes preserved — so the document reads naturally instead of breaking into scattered fragments.</p>
+      <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="docxPageBreak" checked> Add page break between PDF pages</label></div>
+      <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="docxOcr" checked> Run OCR on scanned pages (no selectable text)</label></div>
+      <div class="form-group"><label class="form-label">OCR language (for scanned pages)</label>
+        <select class="form-select" id="docxOcrLang">
+          <option value="eng">English</option>
+          <option value="spa">Spanish</option>
+          <option value="fra">French</option>
+          <option value="deu">German</option>
+          <option value="ita">Italian</option>
+          <option value="por">Portuguese</option>
+          <option value="nld">Dutch</option>
+          <option value="pol">Polish</option>
+          <option value="rus">Russian</option>
+          <option value="ara">Arabic</option>
+          <option value="chi_sim">Chinese (Simplified)</option>
+          <option value="chi_tra">Chinese (Traditional)</option>
+          <option value="jpn">Japanese</option>
+          <option value="kor">Korean</option>
+          <option value="hin">Hindi</option>
+          <option value="tur">Turkish</option>
+        </select></div>
+      <p style="font-size:11.5px;color:var(--text-3);line-height:1.5;">Scanned pages are detected automatically. OCR downloads the Tesseract engine (~1.5 MB) only when needed, and runs entirely in your browser — files never leave your device.</p>`;
     case 'pdf2ppt': return `
       <div class="form-group"><label class="form-label">Slide quality</label>
         <select class="form-select" id="pptDpi">
@@ -9320,60 +9344,217 @@ async function processZip2Pdf() {
 }
 
 // ---- PDF to Word (DOCX) ----
+// Rebuilds selectable PDF text into flowing paragraphs (headings sized from the
+// source), and falls back to Tesseract OCR for scanned / image-only pages so the
+// output is never empty or scattered. Everything runs client-side.
 async function processPdf2Word() {
   const addBreaks = optCheck('docxPageBreak', true);
+  const useOcr    = optCheck('docxOcr', true);
+  const ocrLang   = optVal('docxOcrLang', 'eng') || 'eng';
+  let ocrWorker = null;
+
   for (let n = 0; n < state.files.length; n++) {
     const f = state.files[n];
     if (!f.pdfDoc) continue;
     await loadPdfJs(f);
     const pc = f.pdfjsDoc.numPages;
-    // Build minimal DOCX (Office Open XML) — text-only with paragraphs & page breaks
-    let docXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>';
+
+    // Page size (twips, 1pt = 20tw) from page 1 for the section properties.
+    const firstVp = (await f.pdfjsDoc.getPage(1)).getViewport({ scale: 1 });
+    const pageWtw = Math.round(firstVp.width * 20);
+    const pageHtw = Math.round(firstVp.height * 20);
+
+    const bodyParts = [];
     for (let i = 1; i <= pc; i++) {
       const page = await f.pdfjsDoc.getPage(i);
       const tc = await page.getTextContent();
-      // Group items by 'y' to recreate lines
-      const lines = {};
-      tc.items.forEach(it => {
-        const y = Math.round(it.transform[5]);
-        (lines[y] = lines[y] || []).push(it);
-      });
-      const ys = Object.keys(lines).map(Number).sort((a, b) => b - a);
-      ys.forEach(y => {
-        const sorted = lines[y].sort((a, b) => a.transform[4] - b.transform[4]);
-        const lineText = sorted.map(it => it.str).join(' ').replace(/\s+/g, ' ').trim();
-        if (lineText) {
-          docXml += '<w:p><w:r><w:t xml:space="preserve">' + escapeXml(lineText) + '</w:t></w:r></w:p>';
-        }
-      });
-      if (addBreaks && i < pc) {
-        docXml += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
-      }
-      showProgress(i/pc*100, `Extracting page ${i} of ${pc}…`);
-    }
-    docXml += '</w:body></w:document>';
+      let paras = _pdfTextToParagraphs(tc);
 
-    const zip = new JSZip();
-    zip.file('[Content_Types].xml',
-      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
-      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
-      '<Default Extension="xml" ContentType="application/xml"/>' +
-      '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
-      '</Types>'
-    );
-    zip.folder('_rels').file('.rels',
-      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
-      '</Relationships>'
-    );
-    zip.folder('word').file('document.xml', docXml);
-    const blob = await zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+      // Scanned page (little / no embedded text) → OCR fallback.
+      const textLen = paras.reduce((s, p) => s + p.text.length, 0);
+      if (useOcr && textLen < 8) {
+        showProgress(i / pc * 100, `Page ${i} of ${pc}: scanned — running OCR…`);
+        if (!ocrWorker) ocrWorker = await _getOcrWorker(ocrLang);
+        paras = await _ocrPageToParagraphs(page, ocrWorker);
+      }
+
+      if (addBreaks && i > 1) {
+        if (paras.length) paras[0].pageBreakBefore = true;
+        else bodyParts.push('<w:p><w:pPr><w:pageBreakBefore/></w:pPr></w:p>');
+      }
+      for (const p of paras) bodyParts.push(_docxParagraph(p));
+      showProgress(i / pc * 100, `Extracting page ${i} of ${pc}…`);
+    }
+
+    const blob = await _buildDocxBlob(bodyParts.join(''), pageWtw, pageHtw);
     saveAs(blob, f.name.replace(/\.pdf$/i, '.docx'));
     showResult(f.name.replace(/\.pdf$/i, '.docx'), blob.size, 'DOCX');
   }
   toast('PDFs exported to Word', 'success');
+}
+
+// Reconstruct flowing paragraphs from a pdf.js text-content object.
+// Returns [{ text, size (pt), bold }] — preserving heading sizes and avoiding
+// the broken word-splitting / over-spacing of naive extraction.
+function _pdfTextToParagraphs(tc) {
+  const runs = [];
+  for (const it of (tc.items || [])) {
+    if (it.str == null) continue;
+    const tr = it.transform || [1, 0, 0, 1, 0, 0];
+    const size = Math.hypot(tr[2], tr[3]) || Math.abs(tr[3]) || 10;
+    runs.push({
+      str: it.str,
+      x: tr[4],
+      y: tr[5],
+      size: size,
+      width: it.width || (it.str.length * size * 0.5),
+      bold: /bold|black|heavy|semibold|[-]?bd/i.test(it.fontName || '')
+    });
+  }
+  if (!runs.length) return [];
+
+  // Group runs into visual lines by baseline (y), tolerant of sub-pixel jitter.
+  runs.sort((a, b) => (b.y - a.y) || (a.x - b.x));
+  const lines = [];
+  let cur = null;
+  for (const r of runs) {
+    if (cur && Math.abs(cur.y - r.y) <= Math.max(2, r.size * 0.4)) {
+      cur.runs.push(r);
+    } else {
+      cur = { y: r.y, runs: [r] };
+      lines.push(cur);
+    }
+  }
+
+  // Within each line: order by x, insert a space only where a real gap exists.
+  for (const line of lines) {
+    line.runs.sort((a, b) => a.x - b.x);
+    let text = '';
+    let prevEnd = null, size = 0, bold = false, minX = Infinity;
+    for (const r of line.runs) {
+      size = Math.max(size, r.size);
+      bold = bold || r.bold;
+      minX = Math.min(minX, r.x);
+      if (prevEnd != null) {
+        const gap = r.x - prevEnd;
+        if (gap > r.size * 0.22 && !/\s$/.test(text) && !/^\s/.test(r.str)) text += ' ';
+      }
+      text += r.str;
+      prevEnd = r.x + r.width;
+    }
+    line.text = text.replace(/[ \t]+/g, ' ').trim();
+    line.size = size || 11;
+    line.bold = bold;
+    line.x = minX;
+  }
+
+  const kept = lines.filter(l => l.text);
+  if (!kept.length) return [];
+
+  // Body font size = median line size (used to detect headings / breaks).
+  const sizesSorted = kept.map(l => l.size).sort((a, b) => a - b);
+  const bodySize = sizesSorted[Math.floor(sizesSorted.length / 2)] || 11;
+
+  // Merge consecutive lines into flowing paragraphs.
+  const paras = [];
+  let para = null, prev = null;
+  for (const line of kept) {
+    let split = !prev;
+    if (prev) {
+      const gap = prev.y - line.y;
+      const lineH = Math.max(prev.size, line.size) * 1.2;
+      if (gap > lineH * 1.6) split = true;                              // blank line
+      else if (Math.abs(line.size - prev.size) > bodySize * 0.3) split = true; // size jump
+      else if (line.x - prev.x > bodySize * 1.2) split = true;          // indentation
+    }
+    if (split) {
+      para = { text: line.text, size: line.size, bold: line.bold };
+      paras.push(para);
+    } else {
+      para.text += ' ' + line.text;
+      para.size = Math.max(para.size, line.size);
+      para.bold = para.bold && line.bold;
+    }
+    prev = line;
+  }
+
+  // Promote clearly-larger paragraphs to bold headings.
+  for (const p of paras) if (p.size > bodySize * 1.15) p.bold = true;
+  return paras;
+}
+
+// OCR a single rendered PDF page into paragraphs (scanned-page fallback).
+async function _ocrPageToParagraphs(page, worker) {
+  const scale = 200 / 72;                       // render at ~200 DPI for OCR
+  const viewport = page.getViewport({ scale });
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.floor(viewport.width);
+  canvas.height = Math.floor(viewport.height);
+  const ctx = canvas.getContext('2d', { alpha: false });
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  await page.render({ canvasContext: ctx, viewport }).promise;
+  const { data } = await worker.recognize(canvas);
+  canvas.width = canvas.height = 0;
+  const txt = (data.text || '').replace(/\r/g, '');
+  return txt
+    .split(/\n[ \t]*\n/)
+    .map(s => s.replace(/\n/g, ' ').replace(/[ \t]+/g, ' ').trim())
+    .filter(Boolean)
+    .map(t => ({ text: t, size: 11, bold: false }));
+}
+
+// One <w:p> element for a reconstructed paragraph.
+function _docxParagraph(p) {
+  // half-points, clamped to a sane 6–72pt range
+  const half = Math.min(144, Math.max(12, Math.round((p.size || 11) * 2)));
+  const text = (p.text || '').replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
+  const rPr = '<w:rPr>' + (p.bold ? '<w:b/><w:bCs/>' : '') +
+    '<w:sz w:val="' + half + '"/><w:szCs w:val="' + half + '"/></w:rPr>';
+  const pPr = '<w:pPr>' +
+    (p.pageBreakBefore ? '<w:pageBreakBefore/>' : '') +
+    (p.bold && half > 26 ? '<w:keepNext/>' : '') +
+    '<w:spacing w:after="160"/></w:pPr>';
+  return '<w:p>' + pPr + '<w:r>' + rPr +
+    '<w:t xml:space="preserve">' + escapeXml(text) + '</w:t></w:r></w:p>';
+}
+
+// Package paragraph XML into a valid .docx (styles + section/page size).
+async function _buildDocxBlob(bodyXml, pageWtw, pageHtw) {
+  const W = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+  const sectPr = '<w:sectPr><w:pgSz w:w="' + (pageWtw || 12240) + '" w:h="' + (pageHtw || 15840) + '"/>' +
+    '<w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="720" w:footer="720" w:gutter="0"/></w:sectPr>';
+  const docXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<w:document xmlns:w="' + W + '"><w:body>' + (bodyXml || '<w:p/>') + sectPr + '</w:body></w:document>';
+  const stylesXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<w:styles xmlns:w="' + W + '"><w:docDefaults><w:rPrDefault><w:rPr>' +
+    '<w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/><w:sz w:val="22"/><w:szCs w:val="22"/></w:rPr></w:rPrDefault>' +
+    '<w:pPrDefault><w:pPr><w:spacing w:after="160" w:line="259" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults>' +
+    '<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style></w:styles>';
+
+  const zip = new JSZip();
+  zip.file('[Content_Types].xml',
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+    '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+    '<Default Extension="xml" ContentType="application/xml"/>' +
+    '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>' +
+    '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>' +
+    '</Types>');
+  zip.folder('_rels').file('.rels',
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>' +
+    '</Relationships>');
+  const word = zip.folder('word');
+  word.file('document.xml', docXml);
+  word.file('styles.xml', stylesXml);
+  word.folder('_rels').file('document.xml.rels',
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
+    '</Relationships>');
+  return zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
 }
 function escapeXml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;'); }
 
