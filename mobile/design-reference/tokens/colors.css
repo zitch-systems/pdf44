@@ -1,0 +1,106 @@
+/* ============================================================
+   PDF44 — COLOR TOKENS
+   Dark is the default brand surface; light is a full mirror.
+   Accent is a warm red→coral→orange gradient family.
+   ============================================================ */
+
+:root, [data-theme="dark"] {
+  /* ── Surfaces (dark, default) ───────────────────────────── */
+  --bg:             #0a0a0f;   /* app canvas */
+  --bg-2:           #12121a;   /* sidebar, panels, cards */
+  --bg-3:           #1a1a2e;   /* insets, page tiles */
+  --bg-elev:        #1e1e2e;   /* elevated menus/popovers */
+  --bg-glass:       rgba(255,255,255,0.04);
+  --bg-glass-hover: rgba(255,255,255,0.07);
+
+  /* ── Text ───────────────────────────────────────────────── */
+  --text:    #ffffff;   /* primary */
+  --text-2:  #b8b8c8;   /* secondary / body */
+  --text-3:  #a0a0b8;   /* tertiary / labels */
+
+  /* ── Accent (brand red → coral → orange) ────────────────── */
+  --accent:        #e5322d;
+  --accent-2:      #ff5a52;
+  --accent-3:      #ff7a45;
+  --accent-glow:   rgba(229,50,45,0.18);
+  --accent-glow-2: rgba(255,90,82,0.18);
+
+  /* ── Semantic status ────────────────────────────────────── */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error:   #ef4444;
+
+  /* ── Lines ──────────────────────────────────────────────── */
+  --border:        rgba(255,255,255,0.07);
+  --border-strong: rgba(255,255,255,0.12);
+
+  /* ── Misc ───────────────────────────────────────────────── */
+  --canvas-bg: #ffffff;   /* the white "paper" a PDF renders on */
+  --code-bg:   #0d0d18;
+
+  /* ── Semantic aliases (prefer these in product code) ────── */
+  --surface-app:    var(--bg);
+  --surface-panel:  var(--bg-2);
+  --surface-inset:  var(--bg-3);
+  --surface-card:   var(--bg-2);
+  --text-body:      var(--text-2);
+  --text-heading:   var(--text);
+  --text-muted:     var(--text-3);
+  --brand:          var(--accent);
+  --link:           var(--accent);
+  --focus-ring:     var(--accent-glow);
+}
+
+[data-theme="light"] {
+  --bg:             #f7f8fc;
+  --bg-2:           #ffffff;
+  --bg-3:           #eef0f7;
+  --bg-elev:        #ffffff;
+  --bg-glass:       rgba(0,0,0,0.025);
+  --bg-glass-hover: rgba(0,0,0,0.05);
+
+  --text:    #0f1729;
+  --text-2:  #475569;
+  --text-3:  #64748b;
+
+  --accent:        #e5322d;
+  --accent-2:      #ff5a52;
+  --accent-3:      #ff7a45;
+  --accent-glow:   rgba(229,50,45,0.12);
+  --accent-glow-2: rgba(255,90,82,0.12);
+
+  --success: #16a34a;
+  --warning: #d97706;
+  --error:   #dc2626;
+
+  --border:        rgba(15,23,41,0.08);
+  --border-strong: rgba(15,23,41,0.15);
+
+  --canvas-bg: #ffffff;
+  --code-bg:   #f1f5f9;
+}
+
+/* ============================================================
+   TOOL-CATEGORY GRADIENTS
+   Every tool gets a small gradient icon tile. These 14 named
+   ramps are the full palette used across the tool grid.
+   ============================================================ */
+:root {
+  --ti-red:    linear-gradient(135deg, #ef4444, #f87171); /* @kind color */
+  --ti-orange: linear-gradient(135deg, #f97316, #fb923c); /* @kind color */
+  --ti-yellow: linear-gradient(135deg, #eab308, #facc15); /* @kind color */
+  --ti-green:  linear-gradient(135deg, #22c55e, #4ade80); /* @kind color */
+  --ti-teal:   linear-gradient(135deg, #14b8a6, #2dd4bf); /* @kind color */
+  --ti-cyan:   linear-gradient(135deg, #06b6d4, #22d3ee); /* @kind color */
+  --ti-blue:   linear-gradient(135deg, #3b82f6, #60a5fa); /* @kind color */
+  --ti-indigo: linear-gradient(135deg, #6366f1, #818cf8); /* @kind color */
+  --ti-purple: linear-gradient(135deg, #8b5cf6, #a78bfa); /* @kind color */
+  --ti-pink:   linear-gradient(135deg, #ec4899, #f472b6); /* @kind color */
+  --ti-rose:   linear-gradient(135deg, #f43f5e, #fb7185); /* @kind color */
+  --ti-slate:  linear-gradient(135deg, #64748b, #94a3b8); /* @kind color */
+
+  /* The brand gradient — used on the logo mark, primary buttons,
+     hero headline highlight, range thumbs. */
+  --grad-brand: linear-gradient(135deg, var(--accent), var(--accent-2)); /* @kind color */
+  --grad-brand-3: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3)); /* @kind color */
+}

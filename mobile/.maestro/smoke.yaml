@@ -1,0 +1,56 @@
+# Maestro UI smoke flow for PDF44 — taps through the core journeys and captures
+# a screenshot at each stop. Runs on an Android emulator in Codemagic CI.
+appId: com.pdf44
+---
+- launchApp:
+    clearState: true        # force the onboarding screen every run
+- assertVisible: "Get started"
+- takeScreenshot: 01-onboarding
+
+- tapOn: "Get started"
+- assertVisible: "Quick actions"
+- takeScreenshot: 02-home
+
+# Generic tool flow (a real on-device op screen)
+- tapOn:
+    text: "Compress"
+    index: 0
+- assertVisible: "Process"
+- takeScreenshot: 03-tool-flow
+- back
+
+# All Tools tab
+- tapOn: "Tools"
+- assertVisible: "All tools"
+- takeScreenshot: 04-all-tools
+
+# Files tab
+- tapOn: "Files"
+- assertVisible: "Stored only on this device"
+- takeScreenshot: 05-files
+
+# Settings tab
+- tapOn: "Settings"
+- assertVisible: "Privacy"
+- takeScreenshot: 06-settings
+
+# Document viewer (open a recent file from Home)
+- tapOn: "Home"
+- assertVisible: "Recent"
+- tapOn:
+    text: "Lease Agreement.pdf"
+    index: 0
+- assertVisible: "Edit"          # bottom action bar
+- takeScreenshot: 07-viewer
+
+# Edit PDF — the comprehensive object editor
+- tapOn:
+    text: "Edit"
+    index: 0
+- assertVisible: "Edit PDF"
+- tapOn: "Text"                  # select the Text tool
+- takeScreenshot: 08-editor
+- tapOn: "Done"
+
+- assertVisible: "Quick actions"
+- takeScreenshot: 09-back-home

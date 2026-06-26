@@ -1,0 +1,8 @@
+/* ============================================================
+   PDF44 — Webfonts
+   The product loads Inter (UI) + JetBrains Mono (code/inputs)
+   from Google Fonts. We mirror that here so consumers get the
+   exact same type. If you need fully self-hosted binaries,
+   swap these @import lines for local @font-face rules.
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
