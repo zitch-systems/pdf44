@@ -17,7 +17,7 @@
 workflows:
   android-apk:
     name: PDF44 Android APK
-    instance_type: linux_x2
+    instance_type: mac_mini_m2
     max_build_duration: 60
     environment:
       node: 20
@@ -78,8 +78,8 @@ workflows:
   # debug output.
   android-emulator-test:
     name: PDF44 Emulator UI Test (Maestro)
-    instance_type: linux_x2
-    max_build_duration: 60
+    instance_type: mac_mini_m2
+    max_build_duration: 90
     environment:
       node: 20
       java: 17
@@ -108,16 +108,27 @@ workflows:
           echo "PATH=$PATH:$HOME/.maestro/bin" >> "$CM_ENV"
       - name: Create & boot emulator
         script: |
+          set -e
           SDK="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin"
-          yes | "$SDK/sdkmanager" --install "system-images;android-34;google_apis;x86_64" >/dev/null
+          # Mac mini instances are Apple Silicon → use arm64-v8a system images
+          # (x86_64 emulator images cannot boot on ARM hosts).
+          IMAGE="system-images;android-34;google_apis;arm64-v8a"
+          yes | "$SDK/sdkmanager" --licenses >/dev/null 2>&1 || true
+          "$SDK/sdkmanager" --install "$IMAGE" "emulator" "platform-tools" >/dev/null
           echo "no" | "$SDK/avdmanager" create avd --force --name pdf44 \
-            --package "system-images;android-34;google_apis;x86_64" --device "pixel_6"
+            --package "$IMAGE" --device "pixel_6"
           "$ANDROID_SDK_ROOT/emulator/emulator" -avd pdf44 -no-window -no-audio \
-            -no-boot-anim -gpu swiftshader_indirect -no-snapshot -accel on &
+            -no-boot-anim -gpu swiftshader_indirect -no-snapshot &
           adb wait-for-device
-          # Block until the system finishes booting.
-          until [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; do sleep 3; done
+          # Block until the system finishes booting (up to ~5 min).
+          for i in $(seq 1 100); do
+            [ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ] && break
+            sleep 3
+          done
           adb shell input keyevent 82 || true
+          adb shell settings put global window_animation_scale 0 || true
+          adb shell settings put global transition_animation_scale 0 || true
+          adb shell settings put global animator_duration_scale 0 || true
       - name: Install APK on emulator
         script: |
           adb install -r mobile/android/app/build/outputs/apk/debug/app-debug.apk
