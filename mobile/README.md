@@ -73,11 +73,12 @@ cd mobile/android
 ./gradlew assembleRelease     # → app/build/outputs/apk/release/app-release.apk
 ```
 
-On **Codemagic** (recommended): see `codemagic.yaml`. Connect the repo, point the
-build at `mobile/codemagic.yaml`, and run the `android-apk` workflow. The debug
-APK always builds; for a release-signed APK add the `pdf44_release` env group with
-your keystore (details in the YAML header). Without it, release falls back to
-debug signing so the build still completes.
+On **Codemagic** (recommended): the config is `codemagic.yaml` at the **repo root**
+(Codemagic only auto-detects it there). Connect the repo as a React Native app and
+run the `android-apk` workflow to build APKs, or `android-emulator-test` to boot an
+emulator and run the Maestro UI smoke flow. The debug APK always builds; for a
+release-signed APK add the `pdf44_release` env group with your keystore (details in
+the YAML header). Without it, release falls back to debug signing.
 
 ## Notes
 

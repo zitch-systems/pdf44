@@ -1,8 +1,9 @@
 # Codemagic CI/CD for the PDF44 Android app (mobile/).
 #
-# Connect: in Codemagic, add this repository, then point the build at this file
-# (Settings → Build → "Use codemagic.yaml") and set the path to `mobile/codemagic.yaml`.
-# Trigger the `android-apk` workflow to produce installable APKs.
+# Connect: in Codemagic, add this repository (project type: React Native). This
+# file lives at the repo root, where Codemagic auto-detects it. Trigger the
+# `android-apk` workflow to produce installable APKs, or `android-emulator-test`
+# to boot an emulator and run the Maestro UI smoke flow.
 #
 # Signing: the debug APK always builds with the bundled debug keystore. For a
 # release-signed APK, add the environment group `pdf44_release` with:
