@@ -1,0 +1,72 @@
+# Codemagic CI/CD for the PDF44 Android app (mobile/).
+#
+# Connect: in Codemagic, add this repository, then point the build at this file
+# (Settings → Build → "Use codemagic.yaml") and set the path to `mobile/codemagic.yaml`.
+# Trigger the `android-apk` workflow to produce installable APKs.
+#
+# Signing: the debug APK always builds with the bundled debug keystore. For a
+# release-signed APK, add the environment group `pdf44_release` with:
+#   PDF44_KEYSTORE_BASE64        base64 of your upload keystore (.jks)
+#   PDF44_RELEASE_STORE_PASSWORD keystore password
+#   PDF44_RELEASE_KEY_ALIAS      key alias
+#   PDF44_RELEASE_KEY_PASSWORD   key password
+# Without that group, the release build falls back to debug signing so it still
+# completes (handled in android/app/build.gradle).
+
+workflows:
+  android-apk:
+    name: PDF44 Android APK
+    instance_type: linux_x2
+    max_build_duration: 60
+    environment:
+      node: 20
+      java: 17
+      groups:
+        - pdf44_release # optional; see header. Safe to omit for debug-only builds.
+      vars:
+        PACKAGE_NAME: "com.pdf44"
+    cache:
+      cache_paths:
+        - $HOME/.gradle/caches
+        - mobile/node_modules
+    scripts:
+      - name: Install JS dependencies
+        script: |
+          cd mobile
+          npm ci
+      - name: Typecheck & unit tests
+        script: |
+          cd mobile
+          npm run tsc
+          npm test -- --ci
+      - name: Decode release keystore (optional)
+        script: |
+          cd mobile
+          if [ -n "$PDF44_KEYSTORE_BASE64" ]; then
+            echo "$PDF44_KEYSTORE_BASE64" | base64 --decode > "$CM_BUILD_DIR/mobile/android/app/pdf44-release.jks"
+            echo "PDF44_RELEASE_STORE_FILE=$CM_BUILD_DIR/mobile/android/app/pdf44-release.jks" >> "$CM_ENV"
+            echo "Release keystore decoded."
+          else
+            echo "No release keystore provided — release build will use debug signing."
+          fi
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/mobile/android/local.properties"
+      - name: Build debug APK
+        script: |
+          cd mobile/android
+          ./gradlew assembleDebug --no-daemon
+      - name: Build release APK
+        script: |
+          cd mobile/android
+          ./gradlew assembleRelease --no-daemon
+    artifacts:
+      - mobile/android/app/build/outputs/**/*.apk
+      - mobile/android/app/build/outputs/**/mapping.txt
+    publishing:
+      email:
+        recipients:
+          - teyokensax1@gmail.com
+        notify:
+          success: true
+          failure: true
