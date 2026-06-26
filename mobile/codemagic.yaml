@@ -70,3 +70,69 @@ workflows:
         notify:
           success: true
           failure: true
+
+  # Boots an Android emulator, installs the debug APK, and runs the Maestro UI
+  # smoke flow — producing screenshots + video so the app is verified actually
+  # running (not just built). Artifacts land under mobile/.maestro and Maestro's
+  # debug output.
+  android-emulator-test:
+    name: PDF44 Emulator UI Test (Maestro)
+    instance_type: linux_x2
+    max_build_duration: 60
+    environment:
+      node: 20
+      java: 17
+      vars:
+        PACKAGE_NAME: "com.pdf44"
+    cache:
+      cache_paths:
+        - $HOME/.gradle/caches
+        - mobile/node_modules
+    scripts:
+      - name: Install JS dependencies
+        script: |
+          cd mobile
+          npm ci
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/mobile/android/local.properties"
+      - name: Build debug APK
+        script: |
+          cd mobile/android
+          ./gradlew assembleDebug --no-daemon
+      - name: Install Maestro
+        script: |
+          export MAESTRO_VERSION=1.39.0
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "PATH=$PATH:$HOME/.maestro/bin" >> "$CM_ENV"
+      - name: Create & boot emulator
+        script: |
+          SDK="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin"
+          yes | "$SDK/sdkmanager" --install "system-images;android-34;google_apis;x86_64" >/dev/null
+          echo "no" | "$SDK/avdmanager" create avd --force --name pdf44 \
+            --package "system-images;android-34;google_apis;x86_64" --device "pixel_6"
+          "$ANDROID_SDK_ROOT/emulator/emulator" -avd pdf44 -no-window -no-audio \
+            -no-boot-anim -gpu swiftshader_indirect -no-snapshot -accel on &
+          adb wait-for-device
+          # Block until the system finishes booting.
+          until [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = "1" ]; do sleep 3; done
+          adb shell input keyevent 82 || true
+      - name: Install APK on emulator
+        script: |
+          adb install -r mobile/android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Run Maestro smoke flow
+        script: |
+          cd mobile/.maestro
+          maestro test smoke.yaml --format junit --output "$CM_BUILD_DIR/maestro-report.xml"
+    artifacts:
+      - mobile/.maestro/*.png
+      - maestro-report.xml
+      - $HOME/.maestro/tests/**/*.png
+      - $HOME/.maestro/tests/**/*.mp4
+    publishing:
+      email:
+        recipients:
+          - teyokensax1@gmail.com
+        notify:
+          success: true
+          failure: true
