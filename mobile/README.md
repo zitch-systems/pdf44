@@ -66,6 +66,10 @@ npm run android  # build & run on a device/emulator (needs Android SDK)
 
 ## Build an APK
 
+**Install the *release* APK on a phone — not the debug one.** A debug APK loads its
+JS from a running Metro dev server, so it red-screens when sideloaded standalone.
+The release APK bundles the JS and runs offline.
+
 Locally (needs Android SDK):
 
 ```bash
@@ -73,12 +77,18 @@ cd mobile/android
 ./gradlew assembleRelease     # → app/build/outputs/apk/release/app-release.apk
 ```
 
+Copy `app-release.apk` to your phone and open it (enable "Install unknown apps" for
+your file manager once). It's signed with the debug key by default — fine for
+personal testing; use a real keystore (below) for distribution.
+
 On **Codemagic** (recommended): the config is `codemagic.yaml` at the **repo root**
 (Codemagic only auto-detects it there). Connect the repo as a React Native app and
-run the `android-apk` workflow to build APKs, or `android-emulator-test` to boot an
-emulator and run the Maestro UI smoke flow. The debug APK always builds; for a
-release-signed APK add the `pdf44_release` env group with your keystore (details in
-the YAML header). Without it, release falls back to debug signing.
+run the **`android-apk`** workflow — it typechecks, tests, then builds the installable
+release APK and publishes it as an artifact (also emailed). For a release-signed APK
+add the `pdf44_release` env group with your keystore (details in the YAML header);
+without it, release falls back to debug signing so it still installs. (The
+`android-emulator-test` workflow is optional and slow — emulator boot on the macOS
+instance can time out; the APK workflow is the reliable path.)
 
 ## Notes
 

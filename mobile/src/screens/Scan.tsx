@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, Pressable, StyleSheet} from 'react-native';
+import {View, Text, Pressable, StyleSheet, PermissionsAndroid, Platform} from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {AppTheme} from '../theme/theme';
 import Icon from '../components/Icon';
@@ -20,26 +20,37 @@ export default function Scan() {
 
   const finish = async (imgs: {bytes: Uint8Array; type: 'jpg' | 'png'}[]) => {
     if (!imgs.length) return;
-    const bytes = await imagesToPdf(imgs);
-    const uri = await writePdf(bytes, 'scan.pdf');
-    const file: FileItem = {
-      id: 'scan-' + Date.now(),
-      name: `Scan ${new Date().toISOString().slice(0, 10)}.pdf`,
-      meta: `${imgs.length} page${imgs.length === 1 ? '' : 's'} · just now`,
-      accent: '#14b8a6',
-      seed: 2,
-      starred: false,
-      tags: ['Scanned', 'Recent'],
-      uri,
-      pages: imgs.length,
-    };
-    addFile(file);
-    showToast('Scan saved as PDF', 'scan');
-    go('viewer', file);
+    try {
+      const bytes = await imagesToPdf(imgs);
+      const uri = await writePdf(bytes, 'scan.pdf');
+      const file: FileItem = {
+        id: 'scan-' + Date.now(),
+        name: `Scan ${new Date().toISOString().slice(0, 10)}.pdf`,
+        meta: `${imgs.length} page${imgs.length === 1 ? '' : 's'} · just now`,
+        accent: '#14b8a6',
+        seed: 2,
+        starred: false,
+        tags: ['Scanned', 'Recent'],
+        uri,
+        pages: imgs.length,
+      };
+      addFile(file);
+      showToast('Scan saved as PDF', 'scan');
+      go('viewer', file);
+    } catch {
+      showToast('Could not save scan', 'close');
+    }
   };
 
   const shutter = async () => {
     try {
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA);
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          showToast('Camera permission denied', 'close');
+          return;
+        }
+      }
       const img = await captureImage();
       if (!img) return;
       const next = [...shots, img];
@@ -84,7 +95,7 @@ export default function Scan() {
 
       {/* bottom controls */}
       <View style={styles.controls}>
-        <Pressable onPress={async () => { const imgs = await pickImages(); if (imgs.length) finish(imgs); }} hitSlop={10} style={styles.side}>
+        <Pressable onPress={async () => { try { const imgs = await pickImages(); if (imgs.length) finish(imgs); } catch { showToast('Could not open gallery', 'close'); } }} hitSlop={10} style={styles.side}>
           <Icon name="gallery" size={26} color="#fff" />
         </Pressable>
         <Pressable onPress={shutter} style={styles.shutterRing}>

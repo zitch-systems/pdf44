@@ -53,13 +53,12 @@ workflows:
       - name: Set Android SDK location
         script: |
           echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/mobile/android/local.properties"
-      - name: Build debug APK
+      - name: Build release APK (installable — JS bundled, sideload-ready)
         script: |
           cd mobile/android
-          ./gradlew assembleDebug --no-daemon
-      - name: Build release APK
-        script: |
-          cd mobile/android
+          # The release APK bundles the JS, so it installs and runs on a phone
+          # standalone (a debug APK would need a running Metro server). Signed
+          # with the debug key unless the pdf44_release keystore env is provided.
           ./gradlew assembleRelease --no-daemon
     artifacts:
       - mobile/android/app/build/outputs/**/*.apk
