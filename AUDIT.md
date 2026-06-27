@@ -342,3 +342,18 @@ A second follow-up addresses the web/mobile functionality findings. **Real fixes
 _Verification: EPUB-parsing and PalmDoc-decompression logic unit-tested in Node; `index.html` inline scripts
 syntax-checked; `node build.js` passes (212 routes). The browser-dependent fixes (Redact/Background/non-Latin-1)
 follow existing pdf.js/pdf-lib patterns in the file and warrant a manual in-browser smoke test._
+
+---
+
+## Round 3 — Supabase advisor hardening (2026-06-27)
+
+`supabase/migrations/0006_rls_perf.sql` (applied live + in repo):
+- Added covering indexes for the two unindexed foreign keys (`payments.subscription_id`,
+  `site_settings.updated_by`) → clears advisor `0001_unindexed_foreign_keys`.
+- Rewrote all RLS policies so `auth.uid()` / `is_admin()` evaluate once per query as an initplan
+  (`(select auth.uid())`) instead of per row → clears advisor `0003_auth_rls_initplan`. Semantics
+  unchanged; verified all 9 policies recreated and no security regression (security advisors identical).
+
+Deliberately left: `0006_multiple_permissive_policies` (micro-opt, no correctness impact at this scale),
+`0005_unused_index` (informational), and **Leaked Password Protection** — an Auth dashboard setting
+(Authentication → Sign In/Providers), not SQL, so enable it there to clear that security advisor.
