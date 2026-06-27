@@ -68,7 +68,7 @@ export default function RequestSign() {
         <Button
           mode="contained"
           disabled={!valid}
-          onPress={() => { showToast(`Request sent to ${valid} recipient${valid === 1 ? '' : 's'}`, 'contact'); back(); }}
+          onPress={() => { showToast('Sending signature requests needs an account/server — not available in this build yet', 'shield_check'); }}
           contentStyle={{height: 52}}
           style={{borderRadius: 14, marginTop: 22}}
           labelStyle={{fontWeight: '700', fontSize: 16}}>

@@ -47,7 +47,7 @@ export default function Comment() {
         onBack={back}
         actions={[
           {icon: 'comment', label: 'Comments', onPress: () => setPanel(true)},
-          {icon: 'install', label: 'Done', primary: true, onPress: () => { showToast('Markup saved', 'check'); back(); }},
+          {icon: 'install', label: 'Done', primary: true, onPress: () => { showToast('Preview only — saving markup onto the PDF isn’t available in this build yet', 'shield_check'); back(); }},
         ]}
       />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{gap: 8, paddingHorizontal: 14, paddingVertical: 10}} style={{flexGrow: 0}}>
