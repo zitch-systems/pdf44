@@ -253,3 +253,45 @@ These were investigated and found **not** to be defects — important for calibr
 5. **Harden the paywall** if it's meant to enforce anything: server-side entitlement checks that don't
    trust client flags/IP headers, and don't cache entitlement reads in the SW (H6/H7/H5).
 6. **Tidy:** admin revenue math/currency, dead controls, SW over-broad caching, CSP `frame-ancestors`.
+
+---
+
+## Addendum — live verification against the Supabase project (2026-06-27)
+
+After the static audit, the live project (`rqknwkiyoudsqjvdrvmg`, `pdf44`, `ACTIVE_HEALTHY`) was
+inspected read-only via the Supabase MCP (edge-function settings, RLS policies, constraints, function
+definitions, advisors, row counts). Net effect: **C2/C3 are not active outages**, and the remaining
+criticals are confirmed.
+
+**Corrected — C2 / C3 downgraded from critical to a config-drift risk (medium).**
+`list_edge_functions` shows `paystack-webhook` and `download-quota` are both deployed with
+`verify_jwt = false` (and initialize/verify/cancel with `true`). So fulfilment and free downloads
+work — the setting was applied in the dashboard despite the missing `config.toml`. The residual risk
+is real but latent: the value lives only in the dashboard, so a CLI/CI `supabase functions deploy`
+(default `verify_jwt = true`) would silently re-break both. **Fixed here** by committing
+`supabase/config.toml`.
+
+**Confirmed live (still valid):**
+- **C1** (`paystack-verify` free-premium) — deploy config is correct; the flaw is in-code, unaffected. **Fixed here.**
+- **H1 / H4** — `profiles` has only `profiles_pkey (id)`; `profiles.email` has **no UNIQUE** constraint. **Fixed here** (`0005`).
+- **RLS direct-write denial holds** — the only write policies on `subscriptions`/`payments` are the
+  `*_admin_all` (`is_admin(auth.uid())`) ones; no user INSERT/UPDATE policy exists. Admin authz is sound.
+- All four repo migrations are applied; live schema matches the repo.
+
+**New, live-only observations:**
+- `public.rls_auto_enable()` (SECURITY DEFINER, flagged by the advisor as anon-executable) is **benign** —
+  an *event-trigger* function that auto-enables RLS on new `public` tables. It can't be meaningfully
+  invoked via PostgREST RPC and only ever *enables* RLS. Leave it (it's a safety net).
+- `is_admin` / `has_active_subscription` anon-executable (advisor WARN) — intentional per `0001`, read-only.
+- **Auth: leaked-password protection is disabled** (advisor WARN) — enable in the dashboard (HaveIBeenPwned). Minor.
+- **Performance advisories (minor at current scale):** RLS policies re-evaluate `auth.uid()` per row
+  (use `(select auth.uid())`), duplicate permissive `admin_all`+`select_own` policies, two unindexed FKs
+  (`payments.subscription_id`, `site_settings.updated_by`), a few unused indexes.
+- Live data is small/clean test data (1 profile/admin, 3 subs incl. 1 active, 3 successful payments, 0 duplicate emails).
+
+### What this branch changes (repo only — not yet applied to the live project)
+- `supabase/config.toml` — pins `verify_jwt` per function so a CLI/CI deploy can't silently break the webhook/quota (C2/C3).
+- `supabase/migrations/0005_email_integrity.sql` — `UNIQUE` index on `profiles.email` + extends the role
+  guard to also freeze `email` against non-admin client updates (H1/H4).
+- `supabase/functions/paystack-verify/index.ts` — derives ownership/plan/amount from the `payments` row
+  (keyed by the unique reference) instead of forgeable Paystack metadata, and rejects under-payment (C1/H3).
