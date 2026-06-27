@@ -295,3 +295,50 @@ is real but latent: the value lives only in the dashboard, so a CLI/CI `supabase
   guard to also freeze `email` against non-admin client updates (H1/H4).
 - `supabase/functions/paystack-verify/index.ts` — derives ownership/plan/amount from the `payments` row
   (keyed by the unique reference) instead of forgeable Paystack metadata, and rejects under-payment (C1/H3).
+
+---
+
+## Round 2 — functional fixes (2026-06-27)
+
+A second follow-up addresses the web/mobile functionality findings. **Real fixes** where the stack allows,
+**honesty fixes** where a capability genuinely isn't feasible in-browser with the current libraries.
+
+### Real fixes (web `index.html`)
+- **C7 Redact — now truly removes content.** Redacted pages are rasterised and the black boxes are burned
+  into the image, so the underlying text/images are gone (non-redacted pages are copied as real text).
+  The "permanent redaction" claim is now accurate.
+- **H11 EPUB order — fixed.** The malformed spine regex (`<itemrefs+idref`) and fixed-order manifest regex
+  are replaced with attribute-order/quote-independent parsing, so chapters come out in true spine order.
+- **H10 MOBI — fixed.** Implemented PalmDoc/LZ77 decompression and correct text-record extraction
+  (records 1..N), with an honest "couldn't extract" path instead of emitting a garbage PDF. (HUFF/CDIC and
+  DRM remain unsupported — reported honestly.)
+- **H12 non-Latin-1 crash — fixed.** A `safePdfText()` sanitiser transliterates common typographic
+  characters and replaces un-encodable ones, so text tools no longer throw and abort with no output.
+- **H13 Background — fixed.** The colour is now drawn *behind* the page (via page embedding) instead of
+  painting over and hiding the content.
+
+### Honesty fixes (capability not feasible on this stack)
+- **C6 Protect — stops lying.** Standard pdf-lib can't encrypt; the tool now reports that real password
+  encryption isn't available in-browser instead of emitting an unencrypted file labelled "Protection applied".
+  (SEO/landing copy still advertises "AES encryption" across ~13 pages — a separate marketing cleanup, or
+  add a real encryption lib / remove the tool.)
+- **H8 Unlock — honest.** Detects whether a PDF is actually encrypted and says it can't remove real
+  passwords in-browser, instead of a misleading "Wrong password".
+
+### Mobile (`mobile/src`)
+- **H14 Split/Extract** now state plainly they kept pages 1–N (no silent half-discard behind "Done").
+- **Editor screens (Edit / Fill&Sign / Organize)** no longer toast false "Saved/Exported" — they say
+  "preview only, saving not available in this build yet" (these screens still operate on placeholder
+  content; wiring them to real PDF I/O is a larger follow-up).
+- **Compress / Flatten** now report they are a structural re-save (no image recompression / not truly flattened).
+
+### Still open (larger efforts, documented not done)
+- Real client-side PDF **encryption** (Protect) and **decryption** (Unlock) need a new dependency (e.g. qpdf-wasm).
+- Mobile **editor save pipeline** and the **Compare / RequestSign / Comment** mockup screens need real
+  implementations (or honest labelling).
+- Web **Compress** still only optimises structure/metadata; real image downsampling is a follow-up.
+- SEO/landing **marketing copy** for Protect should be reconciled with the honest in-app behaviour.
+
+_Verification: EPUB-parsing and PalmDoc-decompression logic unit-tested in Node; `index.html` inline scripts
+syntax-checked; `node build.js` passes (212 routes). The browser-dependent fixes (Redact/Background/non-Latin-1)
+follow existing pdf.js/pdf-lib patterns in the file and warrant a manual in-browser smoke test._

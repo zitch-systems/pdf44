@@ -49,7 +49,7 @@ export default function Organize() {
         onBack={back}
         actions={[
           {icon: 'check', label: 'Select all', onPress: selectAll},
-          {icon: 'install', label: 'Done', primary: true, onPress: () => { showToast('Saved page order', 'check'); back(); }},
+          {icon: 'install', label: 'Done', primary: true, onPress: () => { showToast('Preview only — saving the new page order isn’t available in this build yet', 'shield_check'); back(); }},
         ]}
       />
       <ScrollView contentContainerStyle={styles.grid}>

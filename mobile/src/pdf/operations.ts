@@ -100,13 +100,18 @@ export async function runTool(toolId: string, title: string): Promise<OpResult> 
     let bytes: Uint8Array;
     let label = picks[0].name.replace(/\.pdf$/i, '');
     const total = await engine.pageCount(src);
+    // Honest per-tool message (empty = use the generic "Done — N pages").
+    let note = '';
     switch (toolId) {
       case 'split':
       case 'extract': {
+        // No page-selection UI yet, so this keeps the first half. Say so plainly
+        // instead of silently discarding the rest behind a "Done" toast.
         const half = Math.max(1, Math.ceil(total / 2));
         const idx = Array.from({length: half}, (_, i) => i);
         bytes = await engine.extractPages(src, idx);
         label += '-pages-1-' + half;
+        note = `Kept pages 1–${half} of ${total} (page picking isn't available yet)`;
         break;
       }
       case 'rotate':
@@ -116,6 +121,7 @@ export async function runTool(toolId: string, title: string): Promise<OpResult> 
       case 'compress':
         bytes = await engine.resavePdf(src);
         label += '-compressed';
+        note = 'Re-saved (structure only — images are not recompressed, so size may be similar)';
         break;
       case 'pagenumber':
         bytes = await engine.addPageNumbers(src, 'bottom-center');
@@ -128,13 +134,14 @@ export async function runTool(toolId: string, title: string): Promise<OpResult> 
       case 'flatten':
         bytes = await engine.resavePdf(src);
         label += '-flattened';
+        note = 'Re-saved (note: interactive annotations are not truly flattened yet)';
         break;
       default:
         bytes = src;
     }
     const pages = await engine.pageCount(bytes);
     const uri = await writePdf(bytes, label + '.pdf');
-    return {name: label + '.pdf', uri, pages, real: true, message: `Done — ${pages} page${pages === 1 ? '' : 's'}`};
+    return {name: label + '.pdf', uri, pages, real: true, message: note || `Done — ${pages} page${pages === 1 ? '' : 's'}`};
   }
 
   // Stubbed: needs a heavier engine (rasteriser / OCR / docx writer) than this
