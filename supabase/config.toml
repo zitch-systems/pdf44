@@ -1,0 +1,39 @@
+# Supabase project config (CLI).
+# The CLI fills in defaults for anything not specified here; the blocks below
+# only pin what PDF44 actually depends on: per-function JWT verification.
+#
+# WHY THIS FILE EXISTS
+# --------------------
+# paystack-webhook and download-quota MUST run with verify_jwt = false:
+#   • paystack-webhook is called server-to-server by Paystack with an HMAC
+#     signature header and NO Supabase JWT — it authenticates the request
+#     itself (HMAC-SHA512 of the raw body). With verify_jwt = true the API
+#     gateway would 401 every delivery before the function runs, silently
+#     breaking subscription fulfilment.
+#   • download-quota is called by anonymous (logged-out) free users with only
+#     the anon apikey and no JWT. With verify_jwt = true the gateway would 401
+#     every anonymous call, paywalling all free downloads.
+#
+# These were previously set only in the dashboard, so a `supabase functions
+# deploy` from CI/CLI (which defaults verify_jwt = true) would silently revert
+# them. Keeping them here as code prevents that drift.
+
+project_id = "rqknwkiyoudsqjvdrvmg"
+
+# Server-to-server (Paystack HMAC) — no Supabase JWT is sent.
+[functions.paystack-webhook]
+verify_jwt = false
+
+# Anonymous free-tier metering — called without a JWT by logged-out users.
+[functions.download-quota]
+verify_jwt = false
+
+# The remaining functions require a signed-in user and keep JWT verification on.
+[functions.paystack-initialize]
+verify_jwt = true
+
+[functions.paystack-verify]
+verify_jwt = true
+
+[functions.paystack-cancel]
+verify_jwt = true
