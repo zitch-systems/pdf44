@@ -48,7 +48,7 @@ export default function Compare() {
         </Pressable>
         <Slot label="Revised" file={b} onPick={() => setB('Contract v2.pdf')} t={t} />
 
-        <Button mode="contained" onPress={() => { setResult(true); showToast('Comparison complete', 'compare'); }} disabled={!a || !b} contentStyle={{height: 50}} style={{borderRadius: 14, marginTop: 18}} labelStyle={{fontWeight: '700', fontSize: 15.5}}>
+        <Button mode="contained" onPress={() => { setResult(true); showToast('Preview only — real file diff isn’t available in this build yet', 'shield_check'); }} disabled={!a || !b} contentStyle={{height: 50}} style={{borderRadius: 14, marginTop: 18}} labelStyle={{fontWeight: '700', fontSize: 15.5}}>
           Compare
         </Button>
 
@@ -77,7 +77,7 @@ export default function Compare() {
                 </View>
               ))}
             </View>
-            <Button mode="outlined" onPress={() => showToast('Report exported', 'install')} style={{borderRadius: 12, marginTop: 18}} textColor={t.pdf44.accent}>
+            <Button mode="outlined" onPress={() => showToast('The diff above is an illustrative sample — exporting isn’t available yet', 'shield_check')} style={{borderRadius: 12, marginTop: 18}} textColor={t.pdf44.accent}>
               Export report
             </Button>
           </View>
