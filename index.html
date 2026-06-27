@@ -2527,7 +2527,7 @@ const SPECIAL_PAGES = {
   'how-to-edit-pdf':       { title:'How to edit a PDF',           desc:'Add text, images and shapes',                        hideProcess:true },
   'how-to-convert-pdf-to-word':{ title:'How to convert PDF to Word', desc:'Export an editable .docx',                       hideProcess:true },
   'how-to-sign-pdf':       { title:'How to sign a PDF',           desc:'Draw, type or upload a signature',                   hideProcess:true },
-  'how-to-password-protect-pdf':{ title:'How to password-protect a PDF', desc:'AES-encrypt a PDF in your browser',         hideProcess:true },
+  'how-to-password-protect-pdf':{ title:'How to password-protect a PDF', desc:'Password-protect a PDF (needs a desktop tool)', hideProcess:true },
   // ── New how-to guides ────────────────────────────────────────
   'how-to-compress-pdf-file':   { title:'How to compress a PDF file',     desc:'Reduce PDF size free in your browser',       hideProcess:true },
   'how-to-rotate-pdf':          { title:'How to rotate a PDF',            desc:'Fix page orientation free online',           hideProcess:true },
@@ -2617,7 +2617,7 @@ const SPECIAL_PAGES = {
   // ── Additional how-to guides ─────────────────────────────────
   'how-to-split-pdf-into-pages':{ title:'How to split PDF into pages',    desc:'Extract every page as a separate PDF',       hideProcess:true },
   'how-to-merge-jpg-to-pdf':    { title:'How to merge JPG files to PDF',  desc:'Combine multiple images into one PDF',       hideProcess:true },
-  'how-to-protect-pdf-with-password':{ title:'How to protect PDF',        desc:'AES-encrypt your PDF, free online',          hideProcess:true },
+  'how-to-protect-pdf-with-password':{ title:'How to protect PDF',        desc:'Password-protect a PDF (desktop tool needed)',  hideProcess:true },
   'how-to-sign-pdf-online-free':{ title:'How to sign PDF online free',    desc:'Draw, type or upload your e-signature',      hideProcess:true },
   'how-to-convert-pdf-to-png-free':{ title:'How to convert PDF to PNG',   desc:'Every page as a transparent PNG, free',      hideProcess:true },
   'how-to-make-pdf-searchable': { title:'How to make a PDF searchable',   desc:'Add a text layer with free OCR online',      hideProcess:true },
@@ -3137,7 +3137,7 @@ const SEO = {
   crop:       { title:'Crop PDF Online Free — Trim Margins or Areas | PDF44', desc:'Crop PDF margins or trim to a specific region online, free. Per-page or document-wide. Private. PDF44.' },
   background: { title:'Add Background Color to PDF Online Free | PDF44', desc:'Apply a solid background color to every page of a PDF online, free. Private, in-browser. PDF44.' },
   bates:      { title:'Bates Numbering for PDF Online Free — Legal-Grade | PDF44', desc:'Add Bates-style sequential numbers (ABC-000001) to a PDF for legal discovery, free online. Private, in-browser. PDF44.' },
-  protect:    { title:'Protect PDF with Password Free — Encrypt PDFs Online | PDF44', desc:'Password-protect any PDF online, free. AES encryption, owner/user passwords. Private — files never leave your device. PDF44.' },
+  protect:    { title:'Protect PDF With a Password — Guide | PDF44', desc:'How to password-protect a PDF. Real encryption needs a desktop tool (qpdf, Acrobat) — browser-only tools cannot write encrypted streams. PDF44.' },
   unlock:     { title:'Unlock PDF Free — Remove Known Password Online | PDF44', desc:'Remove a known password from a PDF online, free. 100% private, in-browser decryption. PDF44.' },
   sign:       { title:'Sign PDF Online Free — Draw, Type or Upload Signature | PDF44', desc:'Sign a PDF free online — draw, type or upload your signature. Drag-place on any page. Private, no upload. PDF44.' },
   redact:     { title:'Redact PDF Online Free — Black Out Sensitive Text | PDF44', desc:'Permanently redact (black out) sensitive text and regions in a PDF, free and private — runs in your browser. PDF44.' },
@@ -3152,16 +3152,16 @@ const SEO = {
   'how-to-compress-pdf':  { title:'How to Compress a PDF in 2026 — Complete Step-by-Step Guide | PDF44', desc:'How to compress a PDF in 2026: complete guide covering size targets, quality trade-offs, image downsampling, font subsetting, and the privacy-first browser method.' },
   'pdf-tools-for-students':{ title:'Best PDF Tools for Students 2026 — Free, Private, Mobile | PDF44', desc:'The best free PDF tools for students in 2026: merge research papers, compress for email, fill forms, sign documents, convert ebooks. Mobile-friendly, no signup.' },
   'pdf44-vs-ilovepdf':    { title:'PDF44 vs iLovePDF — Honest Side-by-Side Comparison (2026) | PDF44', desc:'PDF44 vs iLovePDF: privacy model, free-tier limits, supported formats, watermarks, offline support, mobile UX. Honest side-by-side comparison with screenshots and data.' },
-  'pdf-encryption-explained':{ title:'PDF Encryption Explained — AES-128 vs AES-256, Passwords & Permissions | PDF44', desc:'How PDF encryption actually works: AES-128 vs AES-256, owner vs user passwords, permission flags (print, copy, edit), known weaknesses, and the privacy-first way to encrypt PDFs in your browser.' },
+  'pdf-encryption-explained':{ title:'PDF Encryption Explained — AES-128 vs AES-256, Passwords & Permissions | PDF44', desc:'How PDF encryption actually works: AES-128 vs AES-256, owner vs user passwords, permission flags (print, copy, edit), known weaknesses, and how to encrypt a PDF locally with a desktop tool.' },
   'convert-pdf-online-free':{ title:'Convert PDF Online Free — Every Conversion in One Place | PDF44', desc:'Convert PDF to Word, JPG, PNG, Excel, Text or back — free, online, in your browser. Plus EPUB, MOBI, HTML, ZIP and image conversions. No signup, no upload, no watermark.' },
   'pdf44-vs-smallpdf':    { title:'PDF44 vs SmallPDF — Free, Private Alternative Compared (2026) | PDF44', desc:'PDF44 vs SmallPDF: privacy model, free-tier limits, pricing, watermarks and offline support compared. A free, client-side alternative to SmallPDF — no signup, no upload.' },
-  'pdf-tools-for-lawyers':{ title:'PDF Tools for Lawyers — Private Bates, Redaction & E-Sign | PDF44', desc:'Free, confidential PDF tools for legal teams: Bates numbering, permanent redaction, e-signatures, AES encryption and exhibit assembly — all client-side, nothing uploaded.' },
+  'pdf-tools-for-lawyers':{ title:'PDF Tools for Lawyers — Private Bates, Redaction & E-Sign | PDF44', desc:'Free, confidential PDF tools for legal teams: Bates numbering, permanent redaction, e-signatures and exhibit assembly — all client-side, nothing uploaded.' },
   'how-to-merge-pdf':     { title:'How to Merge PDF Files Free — Combine PDFs in Your Browser | PDF44', desc:'How to merge PDF files free in 4 steps: open Merge PDF, add files, drag to reorder, download. 100% private, in-browser, no upload, no watermark, no signup.' },
   'how-to-split-pdf':     { title:'How to Split a PDF Free — Separate Pages or Ranges | PDF44', desc:'How to split a PDF free: one PDF per page, every N pages, or custom ranges. Runs entirely in your browser — no upload, no limit, no watermark. Step-by-step guide.' },
   'how-to-edit-pdf':      { title:'How to Edit a PDF Free — Add Text, Images & Shapes | PDF44', desc:'How to edit a PDF for free without Acrobat: add text, images, highlights and shapes in your browser. Private, no upload, no signup. Step-by-step guide.' },
   'how-to-convert-pdf-to-word':{ title:'How to Convert PDF to Word Free — Editable .docx | PDF44', desc:'How to convert a PDF to an editable Word .docx free and privately: open the tool, upload, convert, edit in Word. In-browser, no upload, no watermark. Full guide.' },
   'how-to-sign-pdf':      { title:'How to Sign a PDF Free — Draw, Type or Upload a Signature | PDF44', desc:'How to add an e-signature to a PDF free: draw, type or upload your signature and place it anywhere. 100% private, in-browser, legally usable. Step-by-step guide.' },
-  'how-to-password-protect-pdf':{ title:'How to Password-Protect a PDF Free — AES Encryption | PDF44', desc:'How to password-protect a PDF free with AES encryption, entirely in your browser. Your file and password never reach a server. Step-by-step guide with FAQ.' },
+  'how-to-password-protect-pdf':{ title:'How to Password-Protect a PDF — Free Guide | PDF44', desc:'How to password-protect a PDF with a free desktop tool (qpdf, Acrobat). Browser-only tools cannot apply real encryption. Step-by-step guide with FAQ.' },
   // ── New how-to guides ────────────────────────────────────────
   'how-to-compress-pdf-file':  { title:'How to Compress a PDF File — Reduce Size Free | PDF44', desc:'How to compress a PDF file free: choose High, Medium or Low quality. Runs in your browser — no upload. Step-by-step guide with FAQs.' },
   'how-to-rotate-pdf':         { title:'How to Rotate a PDF — Fix Orientation Free Online | PDF44', desc:'How to rotate PDF pages 90°, 180° or 270° free. Per-page or whole doc. Runs in your browser, no upload. Step-by-step guide.' },
@@ -3236,7 +3236,7 @@ const SEO = {
   'compress-pdf-online':       { title:'Compress PDF Online Free — Reduce Size Privately | PDF44', desc:'Compress PDF files online free. High, Medium or Low quality. No upload, no file size limit. PDF44.' },
   'edit-pdf-online':           { title:'Edit PDF Online Free — No Software Needed | PDF44', desc:'Edit PDFs online free in your browser. Add text, images, shapes. No upload, no watermark. PDF44.' },
   'sign-pdf-online':           { title:'Sign PDF Online Free — E-Signature, No Upload | PDF44', desc:'Sign PDFs online free. Draw, type or upload a signature. No upload, no account. PDF44.' },
-  'protect-pdf-online':        { title:'Protect PDF Online Free — Password Encrypt | PDF44', desc:'Password protect PDFs online free. AES encryption in your browser. No upload. PDF44.' },
+  'protect-pdf-online':        { title:'Protect PDF Online — Password Guide | PDF44', desc:'How to password-protect a PDF. Real encryption needs a desktop tool — browser-only tools cannot write encrypted streams. PDF44.' },
   'unlock-pdf-online':         { title:'Unlock PDF Online Free — Remove Password | PDF44', desc:'Remove a known PDF password online free. Decryption in browser, password never sent. PDF44.' },
   'redact-pdf-online':         { title:'Redact PDF Online Free — Permanently Remove Text | PDF44', desc:'Redact PDFs online free. Permanently remove text and images. No upload. PDF44.' },
   'rotate-pdf-online':         { title:'Rotate PDF Online Free — Fix Page Orientation | PDF44', desc:'Rotate PDF pages online free. 90°, 180° or 270°. Per page or whole doc. No upload. PDF44.' },
@@ -3251,7 +3251,7 @@ const SEO = {
   // ── Additional how-to guides ─────────────────────────────────
   'how-to-split-pdf-into-pages':{ title:'How to Split PDF Into Pages Free | PDF44', desc:'How to split a PDF into individual pages free. One PDF per page, in-browser, no upload. Guide.' },
   'how-to-merge-jpg-to-pdf':   { title:'How to Merge JPG Files to PDF Free | PDF44', desc:'How to combine multiple JPG images into one PDF free. Drag to reorder. Private, in-browser. Guide.' },
-  'how-to-protect-pdf-with-password':{ title:'How to Protect a PDF With Password Free | PDF44', desc:'How to add AES password protection to a PDF free. File and password stay in browser. Guide.' },
+  'how-to-protect-pdf-with-password':{ title:'How to Protect a PDF With a Password Free | PDF44', desc:'How to password-protect a PDF free using a desktop tool (qpdf, Acrobat). Step-by-step guide.' },
   'how-to-sign-pdf-online-free':{ title:'How to Sign a PDF Online Free | PDF44', desc:'How to sign a PDF online for free — draw, type or upload signature. No upload. Step-by-step.' },
   'how-to-convert-pdf-to-png-free':{ title:'How to Convert PDF to PNG Free Online | PDF44', desc:'How to convert PDF pages to transparent PNG images free. Private, in-browser. Guide.' },
   'how-to-make-pdf-searchable':{ title:'How to Make a PDF Searchable Free — OCR Online | PDF44', desc:'How to add a searchable text layer to a scanned PDF free using Tesseract OCR. In-browser.' },
@@ -3263,7 +3263,7 @@ const SEO = {
   'how-to-insert-page-in-pdf': { title:'How to Insert a Page in a PDF Free | PDF44', desc:'How to add a blank page at any position in a PDF free online. Private, in-browser. Guide.' },
   // ── Additional audience hubs ─────────────────────────────────
   'pdf-tools-for-students-2026':{ title:'Best PDF Tools for Students 2026 — Free | PDF44', desc:'The best free PDF tools for students in 2026: compress for email, fill forms, sign, annotate. No signup.' },
-  'pdf-tools-for-lawyers-2026':{ title:'Best PDF Tools for Lawyers 2026 — Private | PDF44', desc:'The best private PDF tools for legal teams in 2026: Bates, redact, e-sign, encrypt. No upload.' },
+  'pdf-tools-for-lawyers-2026':{ title:'Best PDF Tools for Lawyers 2026 — Private | PDF44', desc:'The best private PDF tools for legal teams in 2026: Bates, redact, e-sign. No upload.' },
   'pdf-tools-for-marketing':   { title:'PDF Tools for Marketing Teams — Free | PDF44', desc:'Free PDF tools for marketers: watermark assets, compress campaigns, sign NDAs. No upload. PDF44.' },
   'pdf-tools-for-consultants': { title:'PDF Tools for Consultants — Free & Private | PDF44', desc:'Free PDF tools for consultants: sign proposals, protect deliverables, merge reports. PDF44.' },
   // ── Additional competitor comparisons ────────────────────────
@@ -3304,7 +3304,7 @@ const SEO = {
   'split-pdf-free':            { title:'Split PDF Free Online | PDF44', desc:'Split PDF into separate pages or ranges free online. No upload required. PDF44.' },
   'jpg-to-pdf-free':           { title:'JPG to PDF Free Online | PDF44', desc:'Convert JPG images to PDF free online. Combine multiple JPGs. No upload. PDF44.' },
   'pdf-to-jpg-free':           { title:'PDF to JPG Free Online | PDF44', desc:'Convert PDF pages to JPG images free online. High quality. No upload. PDF44.' },
-  'pdf-protect-online':        { title:'Protect PDF Online Free — Password Encrypt | PDF44', desc:'Password-protect a PDF online free. AES encryption. Private. No upload. PDF44.' }
+  'pdf-protect-online':        { title:'Password-Protect a PDF — Guide | PDF44', desc:'How to password-protect a PDF. Real encryption needs a desktop tool. Private. No upload. PDF44.' }
 };
 
 function _setMeta(selector, attr, value) {
@@ -4345,7 +4345,7 @@ function renderHubEncryption(container) {
     <article class="seo-content" itemscope itemtype="https://schema.org/Article" style="max-width:920px;margin:0 auto;">
       <div class="hero" style="padding-top:8px;">
         <h1><span>PDF Encryption</span> Explained</h1>
-        <p>AES-128 vs AES-256, owner vs user passwords, permission flags, known weaknesses, and the privacy-first way to encrypt PDFs in your browser.</p>
+        <p>AES-128 vs AES-256, owner vs user passwords, permission flags, known weaknesses, and how to encrypt a PDF the privacy-first way — locally, with a desktop tool.</p>
         <p style="font-size:12px;color:var(--text-3);margin-top:10px;">Published <time datetime="${published}" itemprop="datePublished">${published}</time> · Updated <time datetime="${updated}" itemprop="dateModified">${updated}</time></p>
       </div>
 
@@ -4355,7 +4355,7 @@ function renderHubEncryption(container) {
         <li>The <strong>user password</strong> is required to <em>open</em> the file.</li>
         <li>The <strong>owner password</strong> is required to <em>change permissions</em> (printing, copying, editing).</li>
         <li>"Permission-only" encryption (owner password, no user password) is easy to bypass with any modern PDF reader — don't rely on it for security.</li>
-        <li>If you want true privacy, encrypt locally and never upload the file. ${_toolLink('protect','PDF44 Protect PDF')} encrypts entirely in your browser.</li>
+        <li>If you want true privacy, encrypt locally with a desktop tool (qpdf, LibreOffice, Acrobat) and never upload the file. Browser-only tools — including ours — can't apply real PDF encryption.</li>
       </ul>
 
       <h2 class="seo-h2">AES-128 vs AES-256</h2>
@@ -4395,16 +4395,16 @@ function renderHubEncryption(container) {
 
       <h2 class="seo-h2">The privacy-first encryption workflow</h2>
       <ol class="seo-list">
-        <li>Open ${_toolLink('protect','PDF44 Protect PDF')} (it never uploads your file).</li>
+        <li>Use a desktop tool that supports real PDF encryption — qpdf (free), LibreOffice Draw, or Acrobat. (Browser-only tools, including ours, can't write encrypted streams.)</li>
         <li>Set both a user password and an owner password — use a passphrase, not a PIN.</li>
         <li>Pick AES-256 if your reader will be Acrobat 9+ or any modern app.</li>
         <li>Untick any permission flags you want to deny (printing, copying, etc.).</li>
-        <li>Process — the encrypted PDF downloads to your device. Send it to recipients separately from the password (different channel).</li>
+        <li>Save — the encrypted PDF stays on your device. Send it to recipients separately from the password (different channel).</li>
       </ol>
 
       <h2 class="seo-h2">Related tools</h2>
       <div class="tools-grid" style="margin-top:14px;">
-        <a class="tool-card" href="${_toolHref('protect')}" onclick="route('protect');return false;"><div class="tool-card-icon ti-red" aria-hidden="true">${icon('protect', {size:22, stroke:2.2})}</div><div class="tool-card-title">Protect PDF</div><div class="tool-card-desc">Encrypt with AES-128/256</div></a>
+        <a class="tool-card" href="${_toolHref('protect')}" onclick="route('protect');return false;"><div class="tool-card-icon ti-red" aria-hidden="true">${icon('protect', {size:22, stroke:2.2})}</div><div class="tool-card-title">Protect PDF</div><div class="tool-card-desc">Password basics (desktop tool needed)</div></a>
         <a class="tool-card" href="${_toolHref('unlock')}" onclick="route('unlock');return false;"><div class="tool-card-icon ti-green" aria-hidden="true">${icon('unlock', {size:22, stroke:2.2})}</div><div class="tool-card-title">Unlock PDF</div><div class="tool-card-desc">Remove a known password</div></a>
         <a class="tool-card" href="${_toolHref('redact')}" onclick="route('redact');return false;"><div class="tool-card-icon ti-slate" aria-hidden="true">${icon('redact', {size:22, stroke:2.2})}</div><div class="tool-card-title">Redact PDF</div><div class="tool-card-desc">Permanently remove text</div></a>
         <a class="tool-card" href="${_toolHref('sign')}" onclick="route('sign');return false;"><div class="tool-card-icon ti-blue" aria-hidden="true">${icon('sign', {size:22, stroke:2.2})}</div><div class="tool-card-title">Sign PDF</div><div class="tool-card-desc">Add e-signature</div></a>
@@ -4593,20 +4593,20 @@ const HOWTO_GUIDES = {
   },
   'how-to-password-protect-pdf': {
     primary: 'protect',
-    h1: ['How to Password-Protect a PDF', 'AES Encryption, Free'],
-    intro: 'Encrypting a PDF with a password keeps it readable only by people you share the password with. PDF44 applies strong AES encryption in your browser — the file and password never reach a server.',
+    h1: ['How to Password-Protect a PDF', 'Free'],
+    intro: 'A password-protected PDF can only be opened by people you give the password to. Important: real PDF encryption can’t be applied by a browser-only tool — including PDF44 — because it means writing encrypted content streams the in-browser library doesn’t support. Use a free desktop tool (qpdf, LibreOffice, or Acrobat) to apply a genuine password.',
     published: '2026-04-18', updated: '2026-05-27',
     steps: [
-      ['Open the Protect PDF tool', 'Go to {primary}. It runs in your browser with no signup.'],
-      ['Upload the PDF to encrypt', 'Drag your file in. It is processed locally for full confidentiality.'],
-      ['Set a strong password', 'Enter a password you will remember. A long passphrase with mixed characters is far harder to crack.'],
-      ['Encrypt and download', 'Click Process. PDF44 encrypts the document in your browser and downloads the protected PDF, which now prompts for the password on open.']
+      ['Pick a desktop tool that encrypts', 'Use one that supports real PDF encryption — qpdf (free, cross-platform), LibreOffice Draw, or Adobe Acrobat. Browser-only tools cannot write the encrypted streams.'],
+      ['Open your PDF in the tool', 'Everything stays on your computer — nothing is uploaded.'],
+      ['Set a strong password', 'Use a long passphrase with mixed characters. With qpdf: qpdf --encrypt PASS PASS 256 -- in.pdf out.pdf'],
+      ['Save the encrypted PDF', 'The saved file now prompts for the password on open. Keep it safe — encrypted PDFs cannot be recovered without the password.']
     ],
-    closing: 'To remove a password you already know, use the Unlock PDF tool. Keep your password safe — encrypted PDFs cannot be recovered without it.',
+    closing: 'PDF44’s in-browser Protect tool can’t apply real encryption (standard pdf-lib has no encryption support), so it tells you to use a desktop tool rather than hand back an unprotected file. To remove a password you already know, a desktop tool such as qpdf can do that too.',
     faqs: [
-      ['What encryption does PDF44 use?', 'PDF44 applies AES encryption to the document so it cannot be opened without the correct password.'],
-      ['Is the password sent to a server?', 'No. Encryption happens entirely in your browser, so neither the file nor the password is ever transmitted.'],
-      ['Can I remove a PDF password later?', 'Yes — if you know the password, use the Unlock PDF tool to produce an unprotected copy.'],
+      ['Can PDF44 encrypt a PDF in my browser?', 'No. Real PDF encryption means writing encrypted content streams, which the in-browser library can’t do. Use a desktop tool (qpdf, LibreOffice, Acrobat) for a genuinely encrypted PDF.'],
+      ['What encryption should I use?', 'AES-256 is the strongest standard PDF encryption — pick it if your reader is Acrobat 9+ or any modern app.'],
+      ['Can I remove a PDF password later?', 'Yes — if you know the password, a desktop tool such as qpdf can produce an unprotected copy.'],
       ['What if I forget the password?', 'There is no backdoor. A correctly encrypted PDF cannot be opened without its password, so store it somewhere safe.']
     ],
     related: ['unlock', 'redact', 'sign', 'flatten']
@@ -5034,12 +5034,12 @@ const HOWTO_GUIDES = {
   'how-to-unlock-pdf': {
     primary: 'unlock',
     h1: ['How to Unlock a PDF', 'Remove a Known Password'],
-    intro: 'Remove a password you already know from a PDF so it opens without prompting. PDF44 decrypts the file in your browser — the password never leaves your device.',
+    intro: 'Remove a password you already know from a PDF so it opens without prompting. Note: a browser-only tool (including PDF44) cannot decrypt a genuinely password-encrypted PDF — use a free desktop tool such as qpdf. Everything stays on your device.',
     published: '2026-05-15', updated: '2026-05-27',
     steps: [
       ['Open the Unlock PDF tool', 'Go to {primary}. No login or app needed.'],
       ['Upload the protected PDF', 'Drag the locked file in. It is handled entirely locally.'],
-      ['Enter the password', 'Type the known password. PDF44 uses it to decrypt the file in your browser.'],
+      ['Decrypt with a desktop tool', 'For a genuinely encrypted PDF, use qpdf: qpdf --password=PASS --decrypt in.pdf out.pdf. Browser-only tools cannot read encrypted streams.'],
       ['Download the unlocked PDF', 'Click Process. An unprotected copy downloads — keep it in a secure location.']
     ],
     closing: 'This tool only removes passwords you already know. It is not a brute-force cracker. If you have forgotten the password, the PDF cannot be opened.',
@@ -5361,7 +5361,7 @@ function renderHubForLawyers(container) {
         <li><strong>Bates numbering</strong> — Apply court-ready sequential identifiers with ${_toolLink('bates','Bates Numbering')}.</li>
         <li><strong>Redaction</strong> — Permanently black out privileged or PII content with ${_toolLink('redact','Redact PDF')}.</li>
         <li><strong>E-signatures</strong> — Sign engagement letters and agreements via ${_toolLink('sign','Sign PDF')}.</li>
-        <li><strong>Encryption</strong> — Password-protect sensitive filings with ${_toolLink('protect','Protect PDF')} (AES).</li>
+        <li><strong>Encryption</strong> — for a genuinely encrypted PDF, use a desktop tool (qpdf, Acrobat); browser-only tools cannot write encrypted streams.</li>
         <li><strong>Assembly</strong> — Combine exhibits with ${_toolLink('merge','Merge PDF')} and pull pages with ${_toolLink('extract','Extract Pages')}.</li>
       </ul>
 
@@ -5403,7 +5403,7 @@ const AUDIENCE_HUB_PAGES = {
     subtitle: 'From signing contracts to protecting financial reports, PDF44 covers every business PDF task — free, private, no file uploads.',
     tools: [
       { key:'sign',      why:'E-sign contracts and agreements without sending documents to a third party.' },
-      { key:'protect',   why:'Password-protect sensitive business documents with AES encryption.' },
+      { key:'protect',   why:'Password-protect sensitive business documents (real encryption needs a desktop tool).' },
       { key:'merge',     why:'Assemble multi-section reports, proposals and presentations into one PDF.' },
       { key:'fillpdf',   why:'Fill purchase orders, agreements and application forms digitally.' },
       { key:'compress',  why:'Shrink large PDFs to meet email attachment limits.' },
@@ -5487,7 +5487,7 @@ const AUDIENCE_HUB_PAGES = {
       ['Is PDF44 GDPR-friendly for employee data?', 'PDF44 processes all files locally in the browser, so personal data is never transmitted to or stored on external servers.'],
       ['Can HR teams use PDF44 without IT approval?', 'PDF44 is a web app — no software installation is required, and no data leaves the browser.'],
       ['Does PDF44 support digital signatures for employment documents?', 'Yes. The Sign PDF tool lets you draw, type or upload a signature for any HR document.'],
-      ['Can I protect an employee handbook with a password?', 'Yes. Use Protect PDF to add AES encryption and set an open password.']
+      ['Can I protect an employee handbook with a password?', 'For real password encryption, use a desktop tool (qpdf, Acrobat) — browser-only tools cannot write encrypted streams.']
     ]
   },
   'pdf-tools-for-freelancers': {
@@ -5792,7 +5792,7 @@ const COMPETITOR_PAGES = {
     faqs: [
       ['Is PDF44 a good free alternative to Adobe Acrobat?', 'For everyday tasks — merge, split, compress, sign, fill forms, convert — yes. For advanced paragraph editing or enterprise e-sign workflows, Acrobat has more depth.'],
       ['Does PDF44 upload files like Acrobat does?', 'No. PDF44 is 100% browser-based. Acrobat\'s web and cloud tools upload your files to Adobe\'s servers.'],
-      ['Can PDF44 handle AES-encrypted PDFs like Acrobat?', 'Yes. PDF44\'s Protect PDF applies AES encryption and Unlock PDF removes a known password, matching Acrobat\'s core encryption capability.'],
+      ['Can PDF44 handle AES-encrypted PDFs like Acrobat?', 'No — applying or removing real PDF encryption needs a desktop tool (qpdf, Acrobat). PDF44 runs entirely in the browser, which cannot write or read encrypted content streams.'],
       ['Which is better for legal e-signing?', 'Acrobat Sign provides certified signatures with audit trails. PDF44\'s e-signature is suitable for most agreements but does not provide a certification chain.']
     ]
   },
@@ -6513,18 +6513,18 @@ const CONVERSION_PAGES = {
     related: ['fillpdf', 'protect', 'flatten', 'edit']
   },
   'protect-pdf-online': {
-    h1: 'Protect PDF Online Free — AES Password Encryption',
-    intro: 'Password-protect any PDF online for free with AES encryption. Your file and password never leave your browser — true privacy.',
+    h1: 'Protect PDF Online — Password Guide',
+    intro: 'A password-protected PDF can only be opened by people you share the password with. Real PDF encryption needs a desktop tool (qpdf, Acrobat) — browser-only tools cannot write encrypted streams.',
     primaryTool: 'protect',
     benefits: [
-      'AES encryption in your browser',
-      'Password and file never transmitted',
+      'Free desktop-tool walkthrough',
+      'Use a strong passphrase',
       'No account required',
       'Works on all devices'
     ],
     faqs: [
-      ['What encryption does PDF44 use for protection?', 'AES encryption — the same standard used in banking and government.'],
-      ['Is my password sent to a server?', 'No. Encryption is entirely local — password never leaves your browser.'],
+      ['Can PDF44 encrypt a PDF in my browser?', 'No — real encryption means writing encrypted content streams, which the in-browser library cannot do. Use a desktop tool (qpdf, Acrobat).'],
+      ['What encryption should I use?', 'AES-256 is the strongest standard PDF encryption — pick it if your reader is Acrobat 9+ or any modern app.'],
       ['Can I remove the password later?', 'Yes — use the Unlock PDF tool if you know the password.'],
       ['What if I forget the password?', 'There is no backdoor — the PDF cannot be opened without it.']
     ],
@@ -6532,7 +6532,7 @@ const CONVERSION_PAGES = {
   },
   'unlock-pdf-online': {
     h1: 'Unlock PDF Online Free — Remove Known Password',
-    intro: 'Remove a password you know from a PDF online for free. The password is never sent to any server — decryption happens entirely in your browser.',
+    intro: 'To remove a password you know from a PDF, use a free desktop tool such as qpdf — a browser-only tool cannot read or rewrite the encrypted streams. Everything stays on your computer.',
     primaryTool: 'unlock',
     benefits: [
       'Remove open (user) and owner passwords',
@@ -6718,7 +6718,7 @@ const CONVERSION_PAGES = {
   // ── Additional how-to guide variants (use HOWTO_GUIDES redirect pattern) ──
   'how-to-split-pdf-into-pages': { h1:'How to Split a PDF Into Individual Pages', intro:'Extract every page of a PDF as a separate file — free, private, in your browser. Ideal for breaking apart large reports or separating scanned receipts.', primaryTool:'split', benefits:['One PDF file per page','No upload — 100% private','No signup','Instant ZIP download'], faqs:[['Is splitting PDFs into pages free?','Yes. PDF44 splits PDFs with no daily limit or account.'],['Does it upload my PDF?','No. Splitting runs locally using pdf-lib.'],['Can I split a 100-page PDF?','Yes — there is no page limit.'],['Will the pages be in order?','Yes. Each page appears in its original order.']], related:['merge','extract','remove','compress'] },
   'how-to-merge-jpg-to-pdf': { h1:'How to Merge JPG Files Into a PDF', intro:'Combine any number of JPG images into a single PDF document — free, private and instant. Drag to reorder pages before saving.', primaryTool:'jpg2pdf', benefits:['Supports JPG, PNG and WebP','Drag to set page order','Choose page size','Private — no upload'], faqs:[['Can I merge JPG and PNG together?','Yes — mix formats freely.'],['Is there a limit on the number of images?','No hard limit; browser memory is the ceiling.'],['Does it upload my images?','No. Conversion is 100% in-browser.'],['Will there be a watermark?','Never.']], related:['pdf2jpg','compress','merge','split'] },
-  'how-to-protect-pdf-with-password': { h1:'How to Protect a PDF With a Password', intro:'Add AES password protection to any PDF — free and private. The file and password are processed entirely in your browser and never sent to a server.', primaryTool:'protect', benefits:['AES encryption in your browser','Password never transmitted','No account required','Works on any device'], faqs:[['What encryption is used?','AES — the same standard used in banking.'],['Is the password sent to a server?','No — encryption is entirely local.'],['Can I remove the password later?','Yes, if you know it, using Unlock PDF.'],['What if I forget the password?','There is no backdoor — keep it safe.']], related:['unlock','redact','sign','flatten'] },
+  'how-to-protect-pdf-with-password': { h1:'How to Protect a PDF With a Password', intro:'Set a password so only people you share it with can open the PDF. Real PDF encryption needs a desktop tool (qpdf, Acrobat) — browser-only tools cannot write encrypted streams.', primaryTool:'protect', benefits:['Free desktop-tool walkthrough','Use a long passphrase','No account required','Works on any device'], faqs:[['What tool should I use?','qpdf (free), LibreOffice Draw or Acrobat — they can write real AES encryption.'],['Can PDF44 encrypt in the browser?','No — the in-browser library cannot write encrypted streams.'],['Can I remove the password later?','Yes, if you know it, using a desktop tool such as qpdf.'],['What if I forget the password?','There is no backdoor — keep it safe.']], related:['unlock','redact','sign','flatten'] },
   'how-to-sign-pdf-online-free': { h1:'How to Sign a PDF Online for Free', intro:'E-sign any PDF document online without printing, scanning or installing software. Draw, type or upload your signature, place it, and download the signed PDF.', primaryTool:'sign', benefits:['Draw, type or upload signature','Private — no upload','Sign on mobile with your finger','No account required'], faqs:[['Is it legally valid?','For most agreements yes (ESIGN Act, eIDAS).'],['Can I sign on mobile?','Yes — draw with your finger.'],['Does the signed document get uploaded?','No.'],['Can I add initials too?','Yes — add multiple text elements.']], related:['fillpdf','protect','flatten','edit'] },
   'how-to-convert-pdf-to-png-free': { h1:'How to Convert a PDF to PNG for Free', intro:'Convert every page of a PDF to a high-quality, lossless PNG image — free and private in your browser. Transparent page areas are preserved.', primaryTool:'pdf2png', benefits:['Lossless PNG output','Transparency preserved','Private — no upload','No account required'], faqs:[['Does the PNG have a transparent background?','Transparent areas are preserved as alpha.'],['Which is better, JPG or PNG?','PNG for crisp text and logos; JPG for smaller file size.'],['Is there a page limit?','No.'],['Is it free?','Yes — completely free, no watermark.']], related:['pdf2jpg','jpg2pdf','compress','extract'] },
   'how-to-make-pdf-searchable': { h1:'How to Make a PDF Searchable', intro:'Add a hidden text layer to a scanned PDF so you can search and copy text — free and private using Tesseract.js OCR in your browser.', primaryTool:'ocr', benefits:['Tesseract.js — 16+ languages','Output as searchable PDF or .txt','Works on scanned PDFs and photos','Private — no upload'], faqs:[['Does OCR change how the PDF looks?','No — the visual scan is unchanged.'],['What languages are supported?','16+ including EN, FR, DE, ES, ZH, JA.'],['How accurate is it?','95–99% for clean 300 dpi scans.'],['Does it upload my file?','No.']], related:['pdf2text','pdf2word','scan','compress'] },
@@ -6730,9 +6730,9 @@ const CONVERSION_PAGES = {
   'how-to-insert-page-in-pdf': { h1:'How to Insert a Blank Page in a PDF', intro:'Add a blank page at any position in a PDF — before, after, or between existing pages. Free, private, in-browser.', primaryTool:'insertblank', benefits:['Insert at any position','Multiple blank pages at once','Private — no upload','No account required'], faqs:[['Can I insert multiple blank pages?','Yes — specify how many to insert.'],['Can I insert a blank page between specific pages?','Yes — choose the insertion point.'],['Does it upload my file?','No.'],['Is it free?','Yes.']], related:['organize','remove','merge','pagenumber'] },
   // ── Audience hub extras ──────────────────────────────────────
   'pdf-tools-for-students-2026': { h1:'Best PDF Tools for Students 2026 — Free & Private', intro:'A 2026 guide to the best free PDF tools for students: compress papers for submission, merge study notes, fill forms, annotate readings and sign documents. All tools run in your browser.', primaryTool:'compress', benefits:['No account or signup','Works offline as a PWA','Free for every student','Private — files stay on your device'], faqs:[['Which PDF tool do students use most?','Compress PDF (for email submissions) and Merge PDF (for combining study notes) are the most popular student tools.'],['Does PDF44 work on a Chromebook?','Yes — in Chrome on ChromeOS.'],['Can I annotate lecture slides?','Yes — use the Edit PDF tool.'],['Is PDF44 free for students?','Yes — completely free, no limit.']], related:['compress','merge','sign','ocr'] },
-  'pdf-tools-for-lawyers-2026': { h1:'Best PDF Tools for Lawyers in 2026 — Private Workflows', intro:'The essential private PDF tools for legal professionals in 2026: Bates numbering, permanent redaction, AES encryption, e-signatures and exhibit assembly — all client-side.', primaryTool:'bates', benefits:['No file upload to any server','Permanent redaction','AES encryption','Free Bates numbering'], faqs:[['Is PDF44 safe for privileged documents?','Yes — 100% client-side, nothing uploaded.'],['Can I Bates-number a large document set?','Yes — process files sequentially with incrementing start numbers.'],['Is the redaction permanent?','Yes — content is removed from the PDF structure.'],['Is PDF44 free for law firms?','Yes.']], related:['bates','redact','protect','merge'] },
+  'pdf-tools-for-lawyers-2026': { h1:'Best PDF Tools for Lawyers in 2026 — Private Workflows', intro:'The essential private PDF tools for legal professionals in 2026: Bates numbering, permanent redaction, e-signatures and exhibit assembly — all client-side.', primaryTool:'bates', benefits:['No file upload to any server','Permanent redaction','Private — nothing uploaded','Free Bates numbering'], faqs:[['Is PDF44 safe for privileged documents?','Yes — 100% client-side, nothing uploaded.'],['Can I Bates-number a large document set?','Yes — process files sequentially with incrementing start numbers.'],['Is the redaction permanent?','Yes — content is removed from the PDF structure.'],['Is PDF44 free for law firms?','Yes.']], related:['bates','redact','protect','merge'] },
   'pdf-tools-for-marketing': { h1:'PDF Tools for Marketing Teams — Brand, Share & Protect', intro:'Create on-brand materials, watermark assets, compress large presentations and sign NDAs — all free and private in your browser.', primaryTool:'watermark', benefits:['Watermark PDFs with your brand','Compress large presentation PDFs','Sign marketing agreements privately','No upload — files stay on your device'], faqs:[['Can I add our logo to every page?','Yes — upload a PNG logo in the Watermark PDF tool.'],['How do I reduce a 50 MB PDF presentation?','Use Compress PDF on Medium quality — typical result 10–20 MB.'],['Can I sign an NDA without Acrobat?','Yes — use Sign PDF for free.'],['Does PDF44 add watermarks to our output?','Never.']], related:['watermark','compress','sign','protect'] },
-  'pdf-tools-for-consultants': { h1:'PDF Tools for Consultants — Proposals, Reports & Contracts', intro:'Deliver polished proposals, protect confidential reports and sign consulting agreements — free, private, and without installing software.', primaryTool:'protect', benefits:['Protect confidential deliverables','Sign agreements without Acrobat','Merge multi-section reports','No upload — fully private'], faqs:[['Can I password-protect a consulting proposal?','Yes — use Protect PDF with AES encryption.'],['How do I sign a Statement of Work remotely?','Use Sign PDF — draw, type or upload your signature.'],['Can I merge multiple report sections into one PDF?','Yes — use Merge PDF with unlimited files.'],['Is PDF44 free for consultants?','Yes.']], related:['protect','sign','merge','watermark'] },
+  'pdf-tools-for-consultants': { h1:'PDF Tools for Consultants — Proposals, Reports & Contracts', intro:'Deliver polished proposals, protect confidential reports and sign consulting agreements — free, private, and without installing software.', primaryTool:'protect', benefits:['Protect confidential deliverables','Sign agreements without Acrobat','Merge multi-section reports','No upload — fully private'], faqs:[['Can I password-protect a consulting proposal?','For real encryption use a desktop tool (qpdf, Acrobat); browser-only tools cannot write encrypted streams.'],['How do I sign a Statement of Work remotely?','Use Sign PDF — draw, type or upload your signature.'],['Can I merge multiple report sections into one PDF?','Yes — use Merge PDF with unlimited files.'],['Is PDF44 free for consultants?','Yes.']], related:['protect','sign','merge','watermark'] },
   // ── Competitor extras ────────────────────────────────────────
   'pdf44-vs-pdfgear': { h1:'PDF44 vs PDFgear — Free PDF Tools Compared', intro:'PDFgear is a free desktop PDF editor for Windows and Mac. PDF44 is a browser-based alternative that works on any OS and never uploads your files.', primaryTool:'edit', benefits:['No installation required','Works on iOS and Android','100% private — no upload','Works offline as PWA'], faqs:[['Is PDFgear free?','Yes, PDFgear is free. PDF44 is also free and works in any browser without installation.'],['Does PDF44 upload files like PDFgear does?','PDF44 is 100% client-side — nothing is uploaded. PDFgear is a desktop app.'],['Which works on Linux?','PDF44 works in any browser. PDFgear is for Windows and Mac only.'],['Which is better for mobile?','PDF44 works in mobile browsers and as a PWA. PDFgear is a desktop app.']], related:['edit','compress','merge','sign'] },
   'pdf44-vs-docfly': { h1:'PDF44 vs DocFly — Free PDF Tools Compared', intro:'DocFly is an online PDF editor with a free tier that uploads files. PDF44 is a private, unlimited alternative that never uploads your documents.', primaryTool:'edit', benefits:['No upload ever','No daily limit','No account required','Free for all tools'], faqs:[['Does DocFly upload my files?','Yes. DocFly processes files on its servers.'],['Is PDF44 better than DocFly for privacy?','Yes — PDF44 is 100% client-side.'],['Is DocFly free?','DocFly has a limited free tier. PDF44 is free for all tools with no limits.'],['Which has more tools?','PDF44 has 41+ tools covering all common PDF tasks.']], related:['edit','compress','sign','protect'] },
@@ -6741,7 +6741,7 @@ const CONVERSION_PAGES = {
   // ── Remaining conversion extras ──────────────────────────────
   'free-pdf-annotator': { h1:'Free PDF Annotator Online — Highlights & Comments', intro:'Add highlights, text comments and shapes to any PDF online for free. Private, in-browser — nothing uploaded.', primaryTool:'edit', benefits:['Highlights, text, shapes','Private — no upload','No account required','Works on all devices'], faqs:[['Does it upload my PDF?','No.'],['Can I highlight text?','Yes — use the highlight tool in the editor.'],['Is the annotation permanent?','After processing, annotations are flattened into the PDF.'],['Is it free?','Yes.']], related:['edit','fillpdf','sign','watermark'] },
   'free-pdf-filler': { h1:'Free PDF Form Filler Online — No Signup Required', intro:'Fill PDF forms with text, checkboxes and dropdowns online for free. No signup, no software, no upload — download the completed form instantly.', primaryTool:'fillpdf', benefits:['Text, checkboxes, dropdowns','No Acrobat needed','Private — no upload','No account'], faqs:[['Does it upload my form?','No.'],['What field types are supported?','Text boxes, checkboxes, radio buttons, dropdowns.'],['Can I save partially filled forms?','Download at any point — data is embedded.'],['Is it free?','Yes.']], related:['sign','edit','flatten','protect'] },
-  'free-pdf-password-remover': { h1:'Free PDF Password Remover Online', intro:'Remove a known PDF password online for free. The password and file never leave your browser — private decryption, instant download.', primaryTool:'unlock', benefits:['Removes user and owner passwords','Private — nothing transmitted','No account required','Works on any device'], faqs:[['Can it crack unknown passwords?','No — you must supply the correct password.'],['Is the password sent to a server?','No — decryption is entirely local.'],['Does removing a password change the PDF?','No — only the encryption wrapper is removed.'],['Is it free?','Yes.']], related:['protect','redact','sign','flatten'] },
+  'free-pdf-password-remover': { h1:'Free PDF Password Remover — Guide', intro:'To remove a known PDF password, use a free desktop tool such as qpdf — a browser-only tool cannot read or rewrite the encrypted streams. Everything stays on your computer.', primaryTool:'unlock', benefits:['Works with free qpdf','Nothing uploaded','No account required','Removes a password you know'], faqs:[['Can it crack unknown passwords?','No — you must supply the correct password.'],['Can PDF44 remove a password in the browser?','No — use a desktop tool such as qpdf: qpdf --password=PASS --decrypt in.pdf out.pdf.'],['Does removing a password change the PDF?','No — only the encryption wrapper is removed.'],['Is it free?','Yes.']], related:['protect','redact','sign','flatten'] },
   'free-pdf-watermark-tool': { h1:'Free PDF Watermark Tool Online', intro:'Stamp text or image watermarks on every page of a PDF online for free. Custom opacity, position and rotation — private, in-browser.', primaryTool:'watermark', benefits:['Text or image watermarks','Custom opacity and position','Private — no upload','No account required'], faqs:[['Can I use my logo as a watermark?','Yes — upload a PNG or JPG image.'],['Does the watermark appear on all pages?','Yes.'],['Does it upload my PDF?','No.'],['Is it free?','Yes.']], related:['edit','protect','redact','flatten'] },
   'free-pdf-page-remover': { h1:'Free PDF Page Remover Online', intro:'Delete unwanted pages from a PDF online for free. Select thumbnails, click Process, download. Private, in-browser.', primaryTool:'remove', benefits:['Select pages visually','No upload','No account','Instant download'], faqs:[['Can I remove multiple pages at once?','Yes.'],['Does it upload my PDF?','No.'],['Is the original file changed?','No — you download a new file.'],['Is it free?','Yes.']], related:['extract','split','organize','merge'] },
   'pdf-page-extractor-free': { h1:'Free PDF Page Extractor Online', intro:'Extract specific pages or ranges from a PDF into a new file — free, private, in-browser. Enter page numbers and download the extracted PDF.', primaryTool:'extract', benefits:['Custom page ranges','Private — no upload','No account required','Instant download'], faqs:[['Can I extract non-contiguous pages?','Yes — use comma-separated numbers.'],['Does it upload my PDF?','No.'],['Is there a page limit?','No.'],['Is it free?','Yes.']], related:['remove','split','organize','merge'] },
@@ -6772,7 +6772,7 @@ const CONVERSION_PAGES = {
   'split-pdf-free': { h1:'Split PDF Free Online — No Upload, No Signup', intro:'Split a PDF into separate pages or custom page ranges for free. Private, in-browser — no upload, no account, instant download.', primaryTool:'split', benefits:['Per-page, every-N or custom ranges','Private — no upload','No account required','Instant download'], faqs:[['Can I extract specific pages?','Yes — enter custom ranges like 1-3, 5, 7-9.'],['Does it upload my PDF?','No.'],['Is there a page limit?','No.'],['Is it free?','Yes.']], related:['merge','extract','remove','compress'] },
   'jpg-to-pdf-free': { h1:'JPG to PDF Free Online — Combine Images Instantly', intro:'Convert JPG images to a PDF document free online. Combine multiple JPGs into one PDF — private, in-browser, no account required.', primaryTool:'jpg2pdf', benefits:['Multiple JPGs into one PDF','Custom page size','Private — no upload','No account required'], faqs:[['Can I combine multiple JPGs?','Yes — each becomes a page.'],['Does it upload my images?','No.'],['What image formats are supported?','JPG, PNG and WebP.'],['Is it free?','Yes.']], related:['pdf2jpg','compress','merge','edit'] },
   'pdf-to-jpg-free': { h1:'PDF to JPG Free Online — High Quality, Private', intro:'Convert every page of a PDF to a high-quality JPG image for free online. Private and in-browser — nothing uploaded, instant download.', primaryTool:'pdf2jpg', benefits:['High-quality JPG output','One JPG per page','Private — no upload','No account required'], faqs:[['Are the JPGs high quality?','Yes — standard screen resolution output.'],['Does it upload my PDF?','No.'],['Is there a page limit?','No — all pages are converted.'],['Is it free?','Yes.']], related:['pdf2png','jpg2pdf','compress','edit'] },
-  'pdf-protect-online': { h1:'Protect PDF Online Free — AES Password Encryption', intro:'Password-protect a PDF with AES encryption online for free. Set an open password and permission flags — private, in-browser, instant download.', primaryTool:'protect', benefits:['AES-128 or AES-256 encryption','Set open and permissions passwords','Private — no upload','No account required'], faqs:[['What encryption is used?','AES-128 or AES-256 — you choose.'],['Does it upload my PDF?','No.'],['Can I set printing restrictions?','Yes — use permission flags.'],['Is it free?','Yes.']], related:['unlock','redact','sign','flatten'] }
+  'pdf-protect-online': { h1:'Protect PDF Online — Password Guide', intro:'Password-protect a PDF so only people with the password can open it. Real encryption needs a desktop tool (qpdf, Acrobat) — browser-only tools cannot write encrypted streams.', primaryTool:'protect', benefits:['Free desktop-tool walkthrough','Set open and permissions passwords','Private — no upload','No account required'], faqs:[['What tool should I use?','qpdf, LibreOffice Draw or Acrobat — they can write AES-128 or AES-256.'],['Does it upload my PDF?','No.'],['Can I set printing restrictions?','Yes — with the desktop tool permission flags.'],['Is it free?','Yes.']], related:['unlock','redact','sign','flatten'] }
 };
 
 function renderConversionPage(container, slug) {
@@ -6952,10 +6952,10 @@ function renderToolSEOBlock(toolKey) {
                ['Can I add a date and initials too?', 'Yes — add multiple text or signature elements per page (date, initials, name) before exporting.'],
                ['Is the signature stored anywhere?', 'No. The signature exists only in your browser memory and is embedded into your local PDF copy.'],
                ['Can I add signatures on mobile?', 'Yes — draw with your finger, then drag-place on any page. Works on iOS and Android.']],
-    protect:  [['What encryption does PDF44 use?', 'AES-128 / AES-256 standard PDF encryption (the same standard Adobe Acrobat uses).'],
+    protect:  [['Does PDF44 encrypt in the browser?', 'No — real PDF encryption needs a desktop tool (qpdf, Acrobat). The in-browser library cannot write encrypted streams.'],
                ['Can I set both an owner and user password?', 'Yes — set a user password for opening and an owner password for permissions (printing, editing, copying).'],
                ['What happens if I forget the password?', 'PDF44 cannot recover it. Use the Unlock PDF tool only if you remember the password — encrypted PDFs cannot be brute-forced for free.'],
-               ['Is the encryption done locally?', 'Yes — files are encrypted in your browser; no upload, no key ever leaves your device.']],
+               ['Can the encryption be done in the browser?', 'No — use a desktop tool (qpdf, Acrobat). Browser-only tools cannot write encrypted PDF streams.']],
     epub2pdf: [['Will all chapters be in the right order?', 'Yes — PDF44 reads the EPUB OPF spine, so chapters appear in the publisher\'s intended reading order.'],
                ['Can I choose page size and font size?', 'Yes — A4, US Letter, or A5, with adjustable font size for comfortable reading.'],
                ['Will images and chapter titles be preserved?', 'Chapter titles render as headings. Inline images and basic CSS are preserved where the EPUB embeds them.'],
