@@ -160,7 +160,13 @@
   function show(id) { ['noconfig','login','denied','app'].forEach(function(x){ $(x).classList.toggle('hide', x!==id); }); }
   function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function fmtDate(d){ return d ? new Date(d).toLocaleDateString() : '—'; }
-  function money(cents,cur){ return (cur||'USD')==='USD' ? '$'+((cents||0)/100).toFixed(2) : ((cents||0)/100).toFixed(2)+' '+(cur||''); }
+  // Currency-aware formatting. Payments are stored in the currency's MINOR unit
+  // (kobo for NGN, cents for USD) — money() takes minor units; moneyMajor() takes
+  // major units (used for MRR/ARR derived from the configured plan prices).
+  var CUR_SYM = { NGN:'₦', USD:'$', EUR:'€', GBP:'£', GHS:'₵', KES:'KSh', ZAR:'R', GHC:'₵' };
+  function curSym(c){ return CUR_SYM[c] || ''; }
+  function money(minor,cur){ var n=((minor||0)/100).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2}); var s=curSym(cur); return s ? s+n : n+' '+(cur||''); }
+  function moneyMajor(major,cur){ var n=Math.round(major||0).toLocaleString(); var s=curSym(cur); return s ? s+n : n+' '+(cur||''); }
 
   if (!CFG || !CFG.enabled || !window.supabase) { show('noconfig'); return; }
   var SB = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseAnonKey, { auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:true } });
@@ -230,7 +236,11 @@
     var act = activeSubByUser(), actList = Object.keys(act).map(function(k){return act[k];});
     var mo = actList.filter(function(s){return s.plan==='monthly';}).length;
     var yr = actList.filter(function(s){return s.plan==='annual';}).length;
-    var mrr = mo*1 + yr*(10/12);
+    // Real plan prices from config (e.g. "₦1,500" → 1500), in major units, and
+    // the actual currency the payments were taken in (was hardcoded to USD).
+    var planCur = (payments.filter(function(p){return p.status==='success'&&p.currency;})[0]||{}).currency || 'NGN';
+    var priceOf = function(key){ var pl=CFG&&CFG.plans&&CFG.plans[key]; return pl ? (parseInt(String(pl.price).replace(/[^0-9]/g,''),10)||0) : 0; };
+    var mrr = mo*priceOf('monthly') + yr*(priceOf('annual')/12);
     var rev = payments.filter(function(p){return p.status==='success';}).reduce(function(a,p){return a+(p.amount||0);},0);
     var d30 = Date.now() - 30*864e5;
     var newU = profiles.filter(function(p){ return new Date(p.created_at).getTime() > d30; }).length;
@@ -238,8 +248,8 @@
     var cards = [
       ['Total users', profiles.length, newU+' new in 30d'],
       ['Active subscribers', actList.length, mo+' monthly · '+yr+' annual'],
-      ['MRR', '$'+mrr.toFixed(2), 'ARR $'+(mrr*12).toFixed(2)],
-      ['Lifetime revenue', '$'+(rev/100).toFixed(2), payments.filter(function(p){return p.status==='success';}).length+' payments'],
+      ['MRR', moneyMajor(mrr,planCur), 'ARR '+moneyMajor(mrr*12,planCur)],
+      ['Lifetime revenue', money(rev,planCur), payments.filter(function(p){return p.status==='success';}).length+' payments'],
       ['Churned / past due', cancelled, ''],
       ['Admins', profiles.filter(function(p){return p.role==='admin';}).length, ''],
     ];
@@ -310,7 +320,8 @@
   /* ── payments ─────────────────────────────────────────────────────────── */
   function renderPayments() {
     var ok = payments.filter(function(p){return p.status==='success';}).reduce(function(a,p){return a+(p.amount||0);},0);
-    $('payTotal').textContent = money(ok,'USD')+' collected';
+    var payCur = (payments.filter(function(p){return p.status==='success'&&p.currency;})[0]||{}).currency || 'NGN';
+    $('payTotal').textContent = money(ok,payCur)+' collected';
     $('payBody').innerHTML = payments.length ? payments.map(function (p) {
       return '<tr><td class="wrap-cell"><code>'+esc(p.reference||'—')+'</code></td><td>'+esc(emailFor(p.user_id))+'</td><td>'+esc(p.plan||'—')+'</td><td>'+money(p.amount,p.currency)+'</td><td><span class="chip '+esc(p.status)+'">'+esc(p.status)+'</span></td><td>'+fmtDate(p.paid_at||p.created_at)+'</td></tr>';
     }).join('') : '<tr><td colspan="6" class="empty">No payments yet.</td></tr>';
