@@ -98,6 +98,68 @@ export async function organizePdf(bytes: Uint8Array, ops: OrganizeOp[]): Promise
   return out.save();
 }
 
+function hexToRgb(hex: string): {r: number; g: number; b: number} {
+  const h = (hex || '#000000').replace('#', '');
+  const v = h.length === 3 ? h.split('').map(c => c + c).join('') : h;
+  const n = parseInt(v || '000000', 16);
+  return {r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255};
+}
+
+export interface SignInput {
+  kind: 'Draw' | 'Type' | 'Image';
+  drawn?: string;                 // SVG path captured from the on-screen pad
+  drawnDims?: {w: number; h: number};
+  typed?: string;
+  image?: ImageInput;
+  color?: string;                 // ink hex
+  page?: 'last' | 'first' | 'all';
+}
+
+/** Stamp a real signature onto the PDF — typed text (drawText), the drawn ink
+ * path (drawSvgPath), or an uploaded image (embed + drawImage). Placed at the
+ * bottom-right of the chosen page(s); origin bottom-left so the maths is in PDF
+ * points. This is a genuine, on-device signed PDF, not a UI mock. */
+export async function signPdf(bytes: Uint8Array, sig: SignInput): Promise<Uint8Array> {
+  const doc = await PDFDocument.load(bytes, {ignoreEncryption: true});
+  const pages = doc.getPages();
+  if (!pages.length) return doc.save();
+  const targets =
+    sig.page === 'first' ? [pages[0]] : sig.page === 'all' ? pages : [pages[pages.length - 1]];
+
+  const ink = hexToRgb(sig.color || '#0f1729');
+  const color = rgb(ink.r, ink.g, ink.b);
+  const margin = 36;
+  const boxW = 170;
+
+  const img =
+    sig.kind === 'Image' && sig.image
+      ? sig.image.type === 'png'
+        ? await doc.embedPng(sig.image.bytes)
+        : await doc.embedJpg(sig.image.bytes)
+      : null;
+  const font = sig.kind === 'Type' ? await doc.embedFont(StandardFonts.HelveticaOblique) : null;
+
+  for (const page of targets) {
+    if (!page) continue;
+    const {width} = page.getSize();
+    const x = Math.max(margin, width - boxW - margin);
+    const y = margin;
+    if (sig.kind === 'Type' && font) {
+      page.drawText(sig.typed || 'Signature', {x, y: y + 6, size: 24, font, color});
+    } else if (sig.kind === 'Image' && img) {
+      const ih = boxW * (img.height / img.width);
+      page.drawImage(img, {x, y, width: boxW, height: ih});
+    } else if (sig.kind === 'Draw' && sig.drawn) {
+      const dims = sig.drawnDims && sig.drawnDims.w > 0 ? sig.drawnDims : {w: 300, h: 150};
+      const scale = boxW / dims.w;
+      // drawSvgPath maps SVG (0,0) → (x,y) and flips y, so the path renders
+      // upright extending downward; anchor the TOP so the bottom sits at margin.
+      page.drawSvgPath(sig.drawn, {x, y: y + dims.h * scale, scale, borderColor: color, borderWidth: 2});
+    }
+  }
+  return doc.save();
+}
+
 export type Corner = 'bottom-center' | 'bottom-right' | 'top-right' | 'top-center';
 
 /** Stamp page numbers onto every page. */

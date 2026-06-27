@@ -1,5 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {View, Text, Pressable, PanResponder, StyleSheet, TextInput} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {View, Text, Pressable, PanResponder, StyleSheet, TextInput, ActivityIndicator} from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {AppTheme} from '../theme/theme';
 import Svg, {Path} from 'react-native-svg';
@@ -7,13 +7,17 @@ import {TopAppBar, Body} from '../components/Chrome';
 import {BottomSheet} from '../components/Sheet';
 import Icon from '../components/Icon';
 import {useApp, useToast} from '../state/store';
+import {FileItem} from '../state/types';
+import {readUriBytes, writePdf, pickPdfs, pickImages, engineApi} from '../pdf/operations';
+import {ImageInput} from '../pdf/engine';
 
 const INK = ['#0f1729', '#1d4ed8', '#e5322d'];
 
-function SignaturePad({color, onPath}: {color: string; onPath: (d: string) => void}) {
+function SignaturePad({color, onPath}: {color: string; onPath: (d: string, w: number, h: number) => void}) {
   const t = useTheme() as AppTheme;
   const [d, setD] = useState('');
   const path = useRef('');
+  const dims = useRef({w: 300, h: 150});
   const responder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -26,11 +30,14 @@ function SignaturePad({color, onPath}: {color: string; onPath: (d: string) => vo
         path.current += ` L${e.nativeEvent.locationX.toFixed(1)},${e.nativeEvent.locationY.toFixed(1)}`;
         setD(path.current);
       },
-      onPanResponderRelease: () => onPath(path.current),
+      onPanResponderRelease: () => onPath(path.current, dims.current.w, dims.current.h),
     }),
   ).current;
   return (
-    <View style={[styles.pad, {borderColor: t.pdf44.border}]} {...responder.panHandlers}>
+    <View
+      style={[styles.pad, {borderColor: t.pdf44.border}]}
+      onLayout={e => { dims.current = {w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height}; }}
+      {...responder.panHandlers}>
       <Svg style={StyleSheet.absoluteFill}>
         <Path d={d} stroke={color} strokeWidth={3} fill="none" strokeLinecap="round" strokeLinejoin="round" />
       </Svg>
@@ -41,7 +48,7 @@ function SignaturePad({color, onPath}: {color: string; onPath: (d: string) => vo
 
 export default function FillSign() {
   const t = useTheme() as AppTheme;
-  const {params, back} = useApp();
+  const {params, back, go, addFile} = useApp();
   const {showToast} = useToast();
   const mode = params?.mode || 'both';
   const [sheet, setSheet] = useState(mode === 'sign');
@@ -49,15 +56,83 @@ export default function FillSign() {
   const [ink, setInk] = useState(INK[0]);
   const [typed, setTyped] = useState('Alex Cole');
   const [drawn, setDrawn] = useState('');
+  const [drawnDims, setDrawnDims] = useState({w: 300, h: 150});
+  const [sigImage, setSigImage] = useState<ImageInput | null>(null);
   const [signed, setSigned] = useState(false);
-  const [checked, setChecked] = useState(false);
+
+  const [bytes, setBytes] = useState<Uint8Array | null>(null);
+  const [name, setName] = useState<string>(params?.name || 'document.pdf');
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (params?.uri) {
+      readUriBytes(params.uri).then(b => setBytes(b)).catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const tools = mode === 'fill' ? ['Text', 'Check', 'Date'] : mode === 'sign' ? ['Sign'] : ['Text', 'Check', 'Date', 'Sign'];
 
+  const pickSigImage = async () => {
+    try {
+      const imgs = await pickImages();
+      if (imgs.length) { setSigImage(imgs[0]); }
+    } catch (e: any) {
+      if (e?.message !== 'cancelled') showToast('Could not load image', 'close');
+    }
+  };
+
   const useSignature = () => {
+    if (seg === 'Draw' && !drawn) { showToast('Draw your signature first', 'close'); return; }
+    if (seg === 'Type' && !typed.trim()) { showToast('Type your signature first', 'close'); return; }
+    if (seg === 'Image' && !sigImage) { showToast('Pick a signature image first', 'close'); return; }
     setSigned(true);
     setSheet(false);
     showToast('Signature added', 'sign');
+  };
+
+  const exportSigned = async () => {
+    setBusy(true);
+    try {
+      let src = bytes;
+      let fname = name;
+      if (!src) {
+        const picks = await pickPdfs();
+        if (!picks.length) { setBusy(false); return; }
+        src = await readUriBytes(picks[0].uri);
+        fname = picks[0].name;
+      }
+      const outBytes = await engineApi.signPdf(src, {
+        kind: seg,
+        drawn,
+        drawnDims,
+        typed,
+        image: sigImage || undefined,
+        color: ink,
+        page: 'last',
+      });
+      const outName = fname.replace(/\.pdf$/i, '') + '-signed.pdf';
+      const uri = await writePdf(outBytes, outName);
+      const pages = await engineApi.pageCount(outBytes);
+      const file: FileItem = {
+        id: 'out-' + Date.now(),
+        name: outName,
+        meta: `${pages} page${pages === 1 ? '' : 's'} · just now`,
+        accent: t.pdf44.accent,
+        seed: 0,
+        starred: false,
+        tags: ['Recent'],
+        uri,
+        pages,
+      };
+      addFile(file);
+      showToast('Exported signed PDF', 'install');
+      go('viewer', file);
+    } catch (e: any) {
+      showToast(e?.message || 'Could not export the signed PDF', 'close');
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -67,8 +142,8 @@ export default function FillSign() {
         onBack={back}
         actions={[
           signed
-            ? {icon: 'install', label: 'Export', primary: true, onPress: () => { showToast('Preview only — exporting the signed PDF isn’t available in this build yet', 'shield_check'); back(); }}
-            : {icon: 'share', label: 'Share', onPress: () => showToast('Sharing', 'share')},
+            ? {icon: 'install', label: busy ? 'Exporting…' : 'Export', primary: true, onPress: busy ? () => {} : exportSigned}
+            : {icon: 'share', label: 'Share', onPress: () => showToast('Add a signature first, then Export', 'sign')},
         ]}
       />
       {/* form tools */}
@@ -79,7 +154,7 @@ export default function FillSign() {
             <Pressable
               key={tool}
               disabled={disabled}
-              onPress={() => (tool === 'Sign' ? setSheet(true) : showToast('Tap the form to add ' + tool, 'text'))}
+              onPress={() => (tool === 'Sign' ? setSheet(true) : showToast('Form-field filling is preview-only in this build — use Sign for a real signed PDF', 'text'))}
               style={[styles.formTool, {backgroundColor: t.pdf44.bg2, borderColor: t.pdf44.border, opacity: disabled ? 0.4 : 1}]}>
               <Icon name={tool === 'Sign' ? 'sign' : tool === 'Check' ? 'check' : tool === 'Date' ? 'history' : 'text'} size={18} color={t.pdf44.text2} />
               <Text style={{fontSize: 13, color: t.pdf44.text2, fontWeight: '600'}}>{tool}</Text>
@@ -90,21 +165,16 @@ export default function FillSign() {
 
       <Body contentStyle={{padding: 20, alignItems: 'center'}}>
         <View style={styles.formPage}>
-          <Text style={{fontSize: 13, color: '#475569', marginBottom: 6}}>Full name</Text>
-          <View style={{borderBottomWidth: 1.5, borderColor: '#cbd5e1', paddingBottom: 6, marginBottom: 24}}>
-            <Text style={{fontSize: 16, color: '#0f1729'}}>Alex Cole</Text>
-          </View>
-          <Pressable onPress={() => setChecked(c => !c)} style={{flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 28}}>
-            <View style={{width: 20, height: 20, borderRadius: 4, borderWidth: 2, borderColor: checked ? t.pdf44.accent : '#94a3b8', backgroundColor: checked ? t.pdf44.accent : 'transparent', alignItems: 'center', justifyContent: 'center'}}>
-              {checked && <Icon name="check" size={12} color="#fff" />}
-            </View>
-            <Text style={{fontSize: 13.5, color: '#475569'}}>I agree to the terms above</Text>
-          </Pressable>
+          <Text style={{fontSize: 12.5, color: '#64748b', marginBottom: 16}}>
+            {bytes ? 'Sign below, then Export to stamp your signature onto the PDF.' : 'Tap Export to choose a PDF, then sign it.'}
+          </Text>
           <Text style={{fontSize: 13, color: '#475569', marginBottom: 8}}>Signature</Text>
           <Pressable onPress={() => setSheet(true)} style={[styles.signTarget, {borderColor: signed ? t.pdf44.accent : '#cbd5e1'}]}>
             {signed ? (
-              seg === 'Type' || drawn === '' ? (
+              seg === 'Type' ? (
                 <Text style={{fontSize: 26, color: ink, fontStyle: 'italic', fontFamily: 'serif'}}>{typed}</Text>
+              ) : seg === 'Image' && sigImage ? (
+                <Text style={{fontSize: 14, color: t.pdf44.accent}}>Signature image ready</Text>
               ) : (
                 <Svg width={180} height={56}><Path d={drawn} stroke={ink} strokeWidth={3} fill="none" /></Svg>
               )
@@ -113,6 +183,7 @@ export default function FillSign() {
             )}
           </Pressable>
         </View>
+        {busy && <ActivityIndicator style={{marginTop: 18}} color={t.pdf44.accent} />}
       </Body>
 
       <BottomSheet visible={sheet} onClose={() => setSheet(false)}>
@@ -125,16 +196,16 @@ export default function FillSign() {
           ))}
         </View>
         <View style={{paddingHorizontal: 16}}>
-          {seg === 'Draw' && <SignaturePad color={ink} onPath={setDrawn} />}
+          {seg === 'Draw' && <SignaturePad color={ink} onPath={(d, w, h) => { setDrawn(d); setDrawnDims({w, h}); }} />}
           {seg === 'Type' && (
             <View style={[styles.pad, {borderColor: t.pdf44.border}]}>
               <TextInput value={typed} onChangeText={setTyped} style={{fontSize: 30, fontStyle: 'italic', color: ink, fontFamily: 'serif', textAlign: 'center', width: '100%'}} />
             </View>
           )}
           {seg === 'Image' && (
-            <Pressable onPress={() => showToast('Pick a signature photo', 'image')} style={[styles.pad, {borderColor: t.pdf44.border}]}>
-              <Icon name="image" size={30} color={t.pdf44.text3} />
-              <Text style={{color: t.pdf44.text3, marginTop: 8}}>Upload a photo of your signature</Text>
+            <Pressable onPress={pickSigImage} style={[styles.pad, {borderColor: t.pdf44.border}]}>
+              <Icon name="image" size={30} color={sigImage ? t.pdf44.accent : t.pdf44.text3} />
+              <Text style={{color: sigImage ? t.pdf44.accent : t.pdf44.text3, marginTop: 8}}>{sigImage ? 'Image selected — tap to change' : 'Upload a photo of your signature'}</Text>
             </Pressable>
           )}
         </View>
