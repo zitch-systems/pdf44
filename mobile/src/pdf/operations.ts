@@ -36,7 +36,7 @@ export async function writePdf(bytes: Uint8Array, name: string): Promise<string>
   return 'file://' + path;
 }
 
-async function readUriBytes(uri: string): Promise<Uint8Array> {
+export async function readUriBytes(uri: string): Promise<Uint8Array> {
   const path = uri.replace(/^file:\/\//, '');
   const b64 = await RNFS.readFile(path, 'base64');
   return base64ToUint8(b64);

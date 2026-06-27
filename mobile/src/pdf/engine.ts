@@ -66,6 +66,38 @@ export async function reorderPages(bytes: Uint8Array, order: number[]): Promise<
   return extractPages(bytes, order);
 }
 
+/** A single output slot for the page organiser: copy source page `src` (0-based)
+ * with an extra `rotation` (degrees) applied, or insert a blank page when `src`
+ * is null. */
+export interface OrganizeOp {
+  src: number | null;
+  rotation: number;
+}
+
+/** Rebuild a PDF from an explicit list of slots — covers reorder, delete (omit a
+ * page), duplicate (repeat a src), per-page rotation and blank-page insertion in
+ * one pass. copyPages is called per slot so duplicated pages are independent. */
+export async function organizePdf(bytes: Uint8Array, ops: OrganizeOp[]): Promise<Uint8Array> {
+  const srcDoc = await PDFDocument.load(bytes, {ignoreEncryption: true});
+  const total = srcDoc.getPageCount();
+  const out = await PDFDocument.create();
+  for (const op of ops) {
+    if (op.src == null || op.src < 0 || op.src >= total) {
+      const size = total > 0 ? srcDoc.getPage(0).getSize() : {width: 595, height: 842};
+      out.addPage([size.width, size.height]);
+      continue;
+    }
+    const [copied] = await out.copyPages(srcDoc, [op.src]);
+    if (op.rotation) {
+      const cur = copied.getRotation().angle;
+      copied.setRotation(degrees((cur + op.rotation) % 360));
+    }
+    out.addPage(copied);
+  }
+  if (out.getPageCount() === 0) out.addPage();
+  return out.save();
+}
+
 export type Corner = 'bottom-center' | 'bottom-right' | 'top-right' | 'top-center';
 
 /** Stamp page numbers onto every page. */
