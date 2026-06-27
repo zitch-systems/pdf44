@@ -1,9 +1,13 @@
-// PDF44 Service Worker — v6
+// PDF44 Service Worker — v7
 // PWA offline caching
 
 // ── PDF44 PWA caching ─────────────────────────────────────────────
-const CACHE_NAME    = 'pdf44-v6';
-const RUNTIME_CACHE = 'pdf44-runtime-v6';
+// Bumped v6 → v7: the old worker cached EVERY GET (incl. Supabase entitlement
+// reads and config.js) cache-first with no revalidation, so a cancelled/expired
+// subscription kept reading "premium" forever. Bumping the cache name evicts any
+// already-poisoned runtime cache on existing clients.
+const CACHE_NAME    = 'pdf44-v7';
+const RUNTIME_CACHE = 'pdf44-runtime-v7';
 
 const APP_SHELL = [
   '/',
@@ -51,6 +55,21 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Cross-origin API/auth/billing calls that must ALWAYS hit the network — never be
+// served from a stale cache. Caching Supabase REST reads (subscriptions/profiles/
+// site_settings) was making a cancelled or expired subscription keep reading
+// "premium" indefinitely on the device.
+function isNeverCache(url) {
+  const h = url.hostname;
+  return h.endsWith('.supabase.co') || h.endsWith('.paystack.co') || h === 'api.paystack.co';
+}
+
+// Same-origin runtime config controls entitlement flags + public keys, so it must
+// stay fresh (flipped ad kill-switch / rotated keys must reach returning users).
+function isRuntimeConfig(url) {
+  return url.origin === self.location.origin && /(^|\/)config\.js(\?|$)/.test(url.pathname);
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
@@ -60,6 +79,24 @@ self.addEventListener('fetch', (event) => {
   // Never intercept ad/push/analytics traffic — let it go straight to network
   if (AD_DOMAINS.some((d) => url.hostname.includes(d))) return;
 
+  // Never intercept (or cache) Supabase/Paystack — entitlement + billing are live.
+  if (isNeverCache(url)) return;
+
+  // Runtime config: network-first so flipped flags / rotated keys propagate;
+  // fall back to the cached copy only when offline.
+  if (isRuntimeConfig(url)) {
+    event.respondWith(
+      fetch(req).then((response) => {
+        if (response && response.status === 200) {
+          const copy = response.clone();
+          caches.open(RUNTIME_CACHE).then((cache) => cache.put(req, copy)).catch(() => {});
+        }
+        return response;
+      }).catch(() => caches.match(req))
+    );
+    return;
+  }
+
   // Network-first for page navigations
   if (req.mode === 'navigate') {
     event.respondWith(
@@ -68,7 +105,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Cache-first for app shell + CDN assets
+  // Cache-first for app shell + CDN assets (versioned / immutable)
   event.respondWith(
     caches.match(req).then((cached) => {
       if (cached) return cached;
