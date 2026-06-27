@@ -2137,7 +2137,7 @@ input[type="range"]::-moz-range-thumb {
     <div class="noscript-tool"><strong>Fill PDF Form</strong><span>Fill interactive form fields and download</span></div>
     <div class="noscript-tool"><strong>Edit PDF</strong><span>Add text, shapes, and annotations</span></div>
     <div class="noscript-tool"><strong>Watermark PDF</strong><span>Stamp text or image watermarks on pages</span></div>
-    <div class="noscript-tool"><strong>Protect PDF</strong><span>Encrypt your PDF with a password</span></div>
+    <div class="noscript-tool"><strong>Protect PDF</strong><span>Password-protect a PDF (desktop tool needed for real encryption)</span></div>
     <div class="noscript-tool"><strong>Unlock PDF</strong><span>Remove a known password from a PDF</span></div>
     <div class="noscript-tool"><strong>Redact PDF</strong><span>Black out sensitive text regions</span></div>
     <div class="noscript-tool"><strong>Compare PDFs</strong><span>View two PDFs side by side</span></div>
@@ -2487,7 +2487,7 @@ const TOOLS = {
   bates:      { title:'Bates Numbering',  desc:'Add sequential legal-style numbers (ABC-000001).',         iconKey:'bates',      color:'rose',   cat:'edit',     accepts:'.pdf',                  multi:true  },
 
   // ── SECURITY ─────────────────────────────────────────────
-  protect:    { title:'Protect PDF',      desc:'Encrypt your PDF with a password.',                        iconKey:'protect',    color:'red',    cat:'security', accepts:'.pdf',                  multi:true  },
+  protect:    { title:'Protect PDF',      desc:'Password-protect a PDF (real encryption needs a desktop tool).', iconKey:'protect',    color:'red',    cat:'security', accepts:'.pdf',                  multi:true  },
   unlock:     { title:'Unlock PDF',       desc:'Remove a known password from a PDF.',                      iconKey:'unlock',     color:'green',  cat:'security', accepts:'.pdf',                  multi:true  },
   sign:       { title:'Sign PDF',         desc:'Draw, type, or upload your signature on a PDF.',           iconKey:'sign',       color:'blue',   cat:'security', accepts:'.pdf',                  multi:false },
   redact:     { title:'Redact PDF',       desc:'Black out sensitive text and regions permanently.',         iconKey:'redact',     color:'slate',  cat:'security', accepts:'.pdf',                  multi:false },
@@ -8426,7 +8426,7 @@ async function processOcr() {
         // PDF Y is bottom-up; canvas Y is top-down.
         const y = pageH - by - bh;
         const fontSize = Math.max(2, bh * 0.85);
-        page.drawText(word.text, {
+        page.drawText(safePdfText(word.text), {
           x: bx, y: y, size: fontSize, font: font,
           color: PDFLib.rgb(0, 0, 0), opacity: 0
         });
@@ -8452,7 +8452,7 @@ async function processEdit() {
   const rgb = hexToRgb(optVal('editColor','#000000'));
   if (pn < 1 || pn > f.pdfDoc.getPageCount()) { toast('Invalid page','error'); return; }
   const page = f.pdfDoc.getPage(pn-1);
-  page.drawText(text, { x, y, size: sz, color: PDFLib.rgb(rgb.r/255, rgb.g/255, rgb.b/255) });
+  page.drawText(safePdfText(text), { x, y, size: sz, color: PDFLib.rgb(rgb.r/255, rgb.g/255, rgb.b/255) });
   const bytes = await f.pdfDoc.save();
   downloadAndShow(bytes, `edited_${f.name}`);
   toast('Text added','success');
@@ -8484,9 +8484,9 @@ async function processWatermark() {
         const rgb = hexToRgb(optVal('wmColor','#ff0000'));
         if (pos === 'tile') {
           for (let tx = 0; tx < width; tx += sz*4) for (let ty = 0; ty < height; ty += sz*3)
-            page.drawText(txt, { x: tx, y: ty, size: sz, color: PDFLib.rgb(rgb.r/255,rgb.g/255,rgb.b/255), opacity, rotate: PDFLib.degrees(-30) });
+            page.drawText(safePdfText(txt), { x: tx, y: ty, size: sz, color: PDFLib.rgb(rgb.r/255,rgb.g/255,rgb.b/255), opacity, rotate: PDFLib.degrees(-30) });
         } else {
-          page.drawText(txt, { x, y, size: sz, color: PDFLib.rgb(rgb.r/255,rgb.g/255,rgb.b/255), opacity, rotate: PDFLib.degrees(-45) });
+          page.drawText(safePdfText(txt), { x, y, size: sz, color: PDFLib.rgb(rgb.r/255,rgb.g/255,rgb.b/255), opacity, rotate: PDFLib.degrees(-45) });
         }
       } else if (wmImg) {
         const d = wmImg.scale(0.3);
@@ -8528,7 +8528,7 @@ async function processPageNumber() {
       else if (pos === 'top-center')  { y = height - 24; }
       else if (pos === 'top-left')    { x = 36; y = height - 24; }
       else if (pos === 'top-right')   { x = width - 60; y = height - 24; }
-      page.drawText(label, { x, y, size: sz, color: PDFLib.rgb(0.35,0.35,0.4) });
+      page.drawText(safePdfText(label), { x, y, size: sz, color: PDFLib.rgb(0.35,0.35,0.4) });
     });
     const bytes = await f.pdfDoc.save();
     downloadAndShow(bytes, `numbered_${f.name}`);
@@ -8578,51 +8578,32 @@ async function processCrop() {
 }
 
 async function processProtect() {
-  const pw = optVal('userPw','');
-  const pw2 = optVal('userPw2','');
-  if (!pw || !pw.trim()) { toast('Enter a password','error'); return; }
-  if (pw !== pw2) { toast('Passwords do not match','error'); return; }
-  const allowPrint = optCheck('allowPrint',true);
-  const allowCopy = optCheck('allowCopy',false);
-  for (let n = 0; n < state.files.length; n++) {
-    const f = state.files[n];
-    if (!f.pdfDoc) continue;
-    try {
-      const bytes = await f.pdfDoc.save({
-        useObjectStreams: false,
-        encryption: {
-          userPassword: pw,
-          ownerPassword: pw + '_owner',
-          permissions: {
-            printing: allowPrint ? 'highResolution' : 'none',
-            modifying: false,
-            copying: allowCopy,
-            annotating: false,
-            fillingForms: false,
-            contentAccessibility: true,
-            documentAssembly: false
-          }
-        }
-      });
-      downloadAndShow(bytes, `protected_${f.name}`);
-    } catch(e) {
-      // pdf-lib free version may not support encryption — fall back to a warning
-      toast(`Encryption not available in this build for ${f.name}. Try a different tool.`,'warning');
-    }
-    showProgress((n+1)/state.files.length*100, `Protecting ${n+1} of ${state.files.length}…`);
-  }
-  toast('Protection applied','success');
+  // HONESTY: the standard pdf-lib build shipped here has NO encryption support — a
+  // `save({ encryption })` option is silently ignored, so the old code produced a
+  // fully UNENCRYPTED, password-free file while telling the user "Protection
+  // applied". Rather than hand back a false sense of security on confidential
+  // documents, fail honestly instead of emitting a fake "protected_" file.
+  toast('Real password encryption isn’t available in this in-browser build — the file would NOT actually be encrypted or password-protected. Use a desktop tool (qpdf, LibreOffice, Acrobat) for a genuinely encrypted PDF.', 'error');
 }
 
 async function processUnlock() {
-  const pw = optVal('unlockPw','');
-  if (!pw || !pw.trim()) { toast('Enter the known PDF password','error'); return; }
+  // HONESTY: the standard pdf-lib build cannot DECRYPT an encrypted PDF (it has no
+  // `password` load option — the old code's option was ignored, then it reported a
+  // misleading "Wrong password" for genuinely-encrypted files). Detect the two real
+  // cases honestly instead.
   for (const f of state.files) {
+    let encrypted = false;
     try {
-      const doc = await PDFLib.PDFDocument.load(f.arrayBuffer, { password: pw });
-      const bytes = await doc.save();
-      downloadAndShow(bytes, `unlocked_${f.name}`);
-    } catch(e) { toast(`Wrong password for ${f.name}`,'error'); }
+      // Loads fine (no throw) ⇒ the PDF is NOT actually password-protected.
+      await PDFLib.PDFDocument.load(f.arrayBuffer);
+    } catch (e) {
+      encrypted = true; // EncryptedPDFError ⇒ it really is encrypted
+    }
+    if (encrypted) {
+      toast(`${f.name} is encrypted — this in-browser build can’t remove real PDF passwords. Use a desktop tool (qpdf, Acrobat).`, 'error');
+    } else {
+      toast(`${f.name} is not password-protected — there’s nothing to unlock.`, 'info');
+    }
   }
 }
 
@@ -8704,19 +8685,64 @@ async function processSign() {
 
 async function processRedact() {
   const f = state.files[0];
-  if (!f.pdfDoc) return;
+  if (!f || !f.pdfDoc) return;
   const input = optVal('redactBoxes','').trim();
   if (!input) { toast('Enter at least one redaction rectangle','error'); return; }
-  const pages = f.pdfDoc.getPages();
-  const lines = input.split('\n').map(l => l.split(',').map(s => parseFloat(s.trim())));
-  for (const [p, x, y, w, h] of lines) {
-    if ([p,x,y,w,h].some(isNaN)) continue;
-    if (p < 1 || p > pages.length) continue;
-    pages[p-1].drawRectangle({ x, y, width: w, height: h, color: PDFLib.rgb(0,0,0) });
+  // "page,x,y,w,h" per line — coordinates in PDF points, origin bottom-left.
+  const rects = input.split('\n')
+    .map(l => l.split(',').map(s => parseFloat(s.trim())))
+    .filter(a => a.length >= 5 && a.every(v => !isNaN(v)));
+  if (!rects.length) { toast('No valid redaction rectangles (use: page,x,y,w,h)','error'); return; }
+
+  // TRUE redaction: rasterise each redacted page, paint the black boxes onto the
+  // raster, and replace the page with that flattened image — this actually removes
+  // the underlying text/images (the old version only drew a box on top, leaving the
+  // text fully selectable/recoverable). Pages without redactions are copied as-is
+  // so their real text is preserved.
+  if (!f.pdfjsDoc) {
+    const copy = f.arrayBuffer.slice(0);
+    f.pdfjsDoc = await pdfjsLib.getDocument({ data: copy }).promise;
   }
-  const bytes = await f.pdfDoc.save();
+  const pdfjsDoc = f.pdfjsDoc;
+  const total = pdfjsDoc.numPages;
+  const redactedPages = new Set(rects.map(r => Math.round(r[0])).filter(p => p >= 1 && p <= total));
+  const RASTER = 2; // ~144 dpi — readable while keeping file size sane
+
+  const out = await PDFLib.PDFDocument.create();
+  for (let p = 1; p <= total; p++) {
+    if (!redactedPages.has(p)) {
+      const [copied] = await out.copyPages(f.pdfDoc, [p - 1]);
+      out.addPage(copied);
+      continue;
+    }
+    const page = await pdfjsDoc.getPage(p);
+    const vp1 = page.getViewport({ scale: 1 });        // 1 unit == 1 PDF point
+    const vp  = page.getViewport({ scale: RASTER });
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.ceil(vp.width);
+    canvas.height = Math.ceil(vp.height);
+    const ctx = canvas.getContext('2d', { alpha: false });
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    await page.render({ canvasContext: ctx, viewport: vp, intent: 'display' }).promise;
+
+    ctx.fillStyle = '#000000';
+    for (const [pp, x, y, w, h] of rects) {
+      if (Math.round(pp) !== p) continue;
+      // PDF (bottom-left) → canvas (top-left) pixels.
+      ctx.fillRect(x * RASTER, (vp1.height - y - h) * RASTER, w * RASTER, h * RASTER);
+    }
+
+    const jpgBytes = dataUrlToUint8Array(canvas.toDataURL('image/jpeg', 0.92));
+    const img = await out.embedJpg(jpgBytes);
+    const newPage = out.addPage([vp1.width, vp1.height]);
+    newPage.drawImage(img, { x: 0, y: 0, width: vp1.width, height: vp1.height });
+    showProgress(p / total * 100, `Redacting page ${p} of ${total}…`);
+  }
+
+  const bytes = await out.save();
   downloadAndShow(bytes, `redacted_${f.name}`);
-  toast('Redaction applied — visual only. For true redaction (text removal), a server-side tool is needed.','warning');
+  toast('Redaction applied — redacted pages flattened to images; underlying text removed.', 'success');
 }
 
 async function processCompare() {
@@ -8843,6 +8869,25 @@ function loadImage(src) {
     img.src = src;
   });
 }
+// Make user text safe for pdf-lib's default Helvetica/WinAnsi (Latin-1) encoder.
+// Transliterate common typographic characters and replace anything WinAnsi can't
+// encode, so page.drawText() never throws an uncaught "cannot encode" error (which
+// previously aborted watermark/page-number/header/Bates/edit with no output and no
+// message, especially on smart quotes, en/em dashes, or non-Latin filenames).
+// NOTE: true non-Latin scripts (CJK, Cyrillic, …) need an embedded Unicode font;
+// here they degrade to "?" rather than crashing the tool.
+function safePdfText(s) {
+  if (s == null) return '';
+  let t = String(s)
+    .replace(/[‘’‚‛]/g, "'")
+    .replace(/[“”„‟]/g, '"')
+    .replace(/[‐‑‒–—―]/g, '-')
+    .replace(/…/g, '...')
+    .replace(/[   ]/g, ' ')
+    .replace(/[•·]/g, '-');
+  return t.replace(/[^\x09\x0A\x0D\x20-\x7E\xA0-\xFF]/g, '?');
+}
+
 function hexToRgb(hex) {
   return { r: parseInt(hex.slice(1,3),16), g: parseInt(hex.slice(3,5),16), b: parseInt(hex.slice(5,7),16) };
 }
@@ -9175,7 +9220,7 @@ async function processHeader() {
     pages.forEach((page, idx) => {
       const { width, height } = page.getSize();
       const subst = (s) => (s || '').replace(/\{page\}/g, idx+1).replace(/\{total\}/g, total).replace(/\{filename\}/g, f.name).replace(/\{date\}/g, today);
-      const drawAt = (text, ax, ay) => { if (!text) return; page.drawText(text, { x: ax, y: ay, size: sz, color }); };
+      const drawAt = (text, ax, ay) => { if (!text) return; page.drawText(safePdfText(text), { x: ax, y: ay, size: sz, color }); };
       // top margin and bottom margin = 24pt
       const top = height - 24, bot = 18;
       if (hL) drawAt(subst(hL), 36, top);
@@ -9199,18 +9244,24 @@ async function processBackground() {
   for (let n = 0; n < state.files.length; n++) {
     const f = state.files[n];
     if (!f.pdfDoc) continue;
-    const pages = f.pdfDoc.getPages();
-    pages.forEach(page => {
-      const { width, height } = page.getSize();
-      // Draw at the absolute back by inserting at index 0 — pdf-lib draws in call order,
-      // so we have to create a NEW page then copy content. Simpler: draw at bottom; visible
-      // only where original page is transparent.
+    // Draw the colour BEHIND the page content (the old version drew the rectangle
+    // on top of the content stream, hiding everything on a normal opaque page).
+    // Rebuild each page as: filled rectangle first, then the original page stamped
+    // on top as an embedded XObject.
+    const src = f.pdfDoc;
+    const srcPages = src.getPages();
+    const out = await PDFLib.PDFDocument.create();
+    const embedded = await out.embedPages(srcPages);
+    for (let i = 0; i < srcPages.length; i++) {
+      const { width, height } = srcPages[i].getSize();
+      const page = out.addPage([width, height]);
       page.drawRectangle({ x: 0, y: 0, width, height, color });
-    });
-    const bytes = await f.pdfDoc.save();
+      page.drawPage(embedded[i], { x: 0, y: 0, width, height });
+    }
+    const bytes = await out.save();
     downloadAndShow(bytes, `bg_${f.name}`);
   }
-  toast('Background applied (note: drawn over transparent regions)', 'success');
+  toast('Background applied behind page content', 'success');
 }
 
 // ---- Bates numbering ----
@@ -9232,7 +9283,7 @@ async function processBates() {
       if (pos === 'bottom-left') { x = 36; y = 14; }
       else if (pos === 'top-left') { x = 36; y = height - 18; }
       else if (pos === 'top-right') { x = width - 100; y = height - 18; }
-      page.drawText(label, { x, y, size: 10, color: PDFLib.rgb(0.4,0.4,0.45) });
+      page.drawText(safePdfText(label), { x, y, size: 10, color: PDFLib.rgb(0.4,0.4,0.45) });
     });
     const bytes = await f.pdfDoc.save();
     downloadAndShow(bytes, `bates_${f.name}`);
@@ -9972,18 +10023,27 @@ async function parseEpub(arrayBuffer) {
     const titleM  = opfXml.match(new RegExp("<dc:title[^>]*>([^<]+)<\/dc:title>", "i"));
     if (titleM) bookTitle = titleM[1].trim();
 
-    // Get spine item order
+    // Get spine item order. Parse each manifest <item> tag attribute-by-attribute
+    // so attribute ORDER and quote style don't matter. (The old fixed-order
+    // manifest regex and the malformed spine pattern `<itemrefs+idref` — a literal
+    // "s+" instead of "\s+" — matched nothing on real EPUBs, silently falling back
+    // to alphabetical filename order with cover/nav/toc dumped inline as chapters.)
     const manifestItems = {};
     let match;
-    const manifestRe = new RegExp('id="([^"]+)"[^>]+href="([^"]+)"[^>]+media-type="([^"]+)"', "gi");
-    while ((match = manifestRe.exec(opfXml)) !== null) {
-      manifestItems[match[1]] = { href: match[2], type: match[3] };
+    const attrOf = (tag, name) => {
+      const m = tag.match(new RegExp("\\b" + name + "\\s*=\\s*[\"']([^\"']+)[\"']", "i"));
+      return m ? m[1] : "";
+    };
+    const itemRe = /<item\b([^>]*)>/gi;
+    while ((match = itemRe.exec(opfXml)) !== null) {
+      const id = attrOf(match[1], "id"), href = attrOf(match[1], "href");
+      if (id && href) manifestItems[id] = { href, type: attrOf(match[1], "media-type") };
     }
-    const spineRe = /<itemrefs+idref="([^"]+)"/gi;
+    const spineRe = /<itemref\b[^>]*?\bidref\s*=\s*["']([^"']+)["']/gi;
     const opfDir  = opfPath.split('/').slice(0, -1).join('/');
     while ((match = spineRe.exec(opfXml)) !== null) {
       const item = manifestItems[match[1]];
-      if (item && item.type.includes('html')) {
+      if (item && (/html/i.test(item.type) || /\.x?html?$/i.test(item.href))) {
         const href = opfDir ? opfDir + '/' + item.href : item.href;
         const f    = zip.file(href) || zip.file(item.href);
         if (f) chapters.push({ title: item.href, file: f });
@@ -10043,30 +10103,83 @@ function epubHtmlToText(rawHtml) {
 // ── MOBI / AZW parser (text-only) ────────────────────────────────
 // MOBI starts with a PalmDB header (32 bytes name + ints).
 // Record 0 starts at offset given in PalmDB; contains Mobipocket HTML.
+// PalmDoc / LZ77 decompression — the standard compression (type 2) used by the
+// text records of virtually all real MOBI/AZW files. The previous parser never
+// decompressed, so it decoded still-compressed bytes as UTF-8 and produced a PDF
+// full of binary garbage while reporting success.
+function palmDocDecompress(data) {
+  const out = [];
+  let i = 0; const n = data.length;
+  while (i < n) {
+    const c = data[i++];
+    if (c >= 0x01 && c <= 0x08) {                 // 1..8: copy next c literal bytes
+      for (let j = 0; j < c && i < n; j++) out.push(data[i++]);
+    } else if (c < 0x80) {                          // 0x00, 0x09..0x7f: literal byte
+      out.push(c);
+    } else if (c >= 0xc0) {                         // 0xc0..0xff: space + (c ^ 0x80)
+      out.push(0x20, c ^ 0x80);
+    } else {                                        // 0x80..0xbf: 2-byte LZ77 pair
+      if (i >= n) break;
+      const x = (c << 8) | data[i++];
+      const dist = (x >> 3) & 0x07ff;
+      const len = (x & 0x07) + 3;
+      const start = out.length - dist;
+      if (start < 0) break;
+      for (let j = 0; j < len; j++) out.push(out[start + j]);
+    }
+  }
+  return new Uint8Array(out);
+}
+
+// Heuristic: does this string look like real readable text rather than binary
+// noise? Used to fail honestly instead of emitting a garbage "successful" PDF.
+function looksLikeText(s) {
+  if (!s) return false;
+  const sample = s.slice(0, 4000);
+  let printable = 0;
+  for (let i = 0; i < sample.length; i++) {
+    const c = sample.charCodeAt(i);
+    if (c === 9 || c === 10 || c === 13 || (c >= 32 && c < 127) || c >= 160) printable++;
+  }
+  return sample.length > 0 && (printable / sample.length) > 0.85;
+}
+
+// MOBI / AZW parser (text-only). Reads the PalmDB record table and the PalmDOC
+// header, then decompresses the text records (records 1..recordCount) and
+// returns plain text — or '' if extraction fails, so callers report honestly.
 function parseMobi(buf) {
   try {
+    const bytes = new Uint8Array(buf);
     const view = new DataView(buf);
-    // PalmDB: records count at offset 76
-    const numRecs = view.getUint16(76);
-    // Record list starts at 78; each entry is 8 bytes
-    if (numRecs < 1) throw new Error('No records in MOBI file');
-    const rec0Offset = view.getUint32(78);
-    const rec1Offset = numRecs > 1 ? view.getUint32(86) : buf.byteLength;
-    // Mobipocket record 0 starts with a 16-byte header
-    const mobiHeaderOffset = rec0Offset + 16;
-    // Compression: 2 = PalmDoc LZ77, 17480 = Huffman, 1 = none
-    const compression = view.getUint16(rec0Offset);
-    // For text, extract raw bytes from record 0 (skip Mobi header - 0xe8 bytes typically)
-    const mobi_header_len = view.getUint32(rec0Offset + 20); // extra data offset
-    const textStart = rec0Offset + 16 + mobi_header_len;
-    const textBuf = buf.slice(textStart, rec1Offset);
-    // Decode as UTF-8, strip HTML tags
+    const numRecs = view.getUint16(76);            // PalmDB record count
+    if (numRecs < 2) return '';
+    const recStart = [];
+    for (let k = 0; k < numRecs; k++) recStart.push(view.getUint32(78 + k * 8));
+    recStart.push(buf.byteLength);                  // sentinel for the last record's end
+
+    const r0 = recStart[0];
+    const compression = view.getUint16(r0);         // 1 none, 2 PalmDoc, 17480 HUFF/CDIC
+    const recordCount = view.getUint16(r0 + 8);     // number of text records
+    if (compression === 17480) return '';           // HUFF/CDIC not supported
+
+    const nText = Math.min(recordCount, numRecs - 1);
+    const parts = [];
+    for (let k = 1; k <= nText; k++) {
+      const slice = bytes.subarray(recStart[k], recStart[k + 1]);
+      parts.push(compression === 2 ? palmDocDecompress(slice) : slice);
+    }
+    let total = 0; for (const p of parts) total += p.length;
+    const all = new Uint8Array(total);
+    let off = 0; for (const p of parts) { all.set(p, off); off += p.length; }
+
     let raw;
-    try { raw = new TextDecoder('utf-8').decode(new Uint8Array(textBuf)); }
-    catch(e) { raw = String.fromCharCode(...new Uint8Array(textBuf)); }
-    return epubHtmlToText(raw) || 'Could not extract text from this MOBI file. The format may use unsupported compression.';
-  } catch(e) {
-    return 'MOBI parse error: ' + e.message + '. Note: heavily DRM-protected files cannot be processed.';
+    try { raw = new TextDecoder('utf-8').decode(all); }
+    catch (e) { raw = ''; for (let i = 0; i < all.length; i++) raw += String.fromCharCode(all[i]); }
+
+    const text = epubHtmlToText(raw);
+    return looksLikeText(text) ? text : '';
+  } catch (e) {
+    return '';
   }
 }
 
@@ -10188,12 +10301,13 @@ async function processEpub2Word() {
 async function processMobi2Pdf() {
   if (!state.files.length) { toast('Upload one or more MOBI or AZW files', 'error'); return; }
   const pageSize = optVal('mobiPageSize', 'a4');
+  let done = 0;
   for (let i = 0; i < state.files.length; i++) {
     const f = state.files[i];
     showProgress(0, `Parsing ${f.name}…`);
     try {
       const text = parseMobi(f.arrayBuffer);
-      if (!text.trim()) { toast(`No readable text in ${f.name}`, 'warning'); continue; }
+      if (!text.trim()) { toast(`Could not extract text from ${f.name} (it may be DRM-protected or use HUFF/CDIC compression)`, 'warning'); continue; }
       // Use a simple name fallback from the filename
       const title = f.name.replace(/\.(mobi|azw3?)$/i, '').replace(/[_-]/g, ' ');
       const blob = await textChaptersToPdf([{ title: '', text }], title, pageSize, 12, 54);
@@ -10201,9 +10315,10 @@ async function processMobi2Pdf() {
       saveAs(blob, outName);
       showResult(outName, blob.size, 'PDF', blob);
       addRecent(outName, blob.size, 'mobi2pdf');
+      done++;
     } catch(e) { toast(`${f.name}: ${e.message}`, 'error'); }
   }
-  toast('MOBI conversion complete', 'success');
+  if (done) toast(`MOBI conversion complete — ${done} file${done === 1 ? '' : 's'}`, 'success');
 }
 
 window.addEventListener('popstate', e => {
@@ -10375,7 +10490,7 @@ async function processEditPdf() {
       page.drawRectangle({ x: el.x-2, y: el.y-2, width: el.text.length*el.size*0.55+4, height: el.size+6,
         color: PDFLib.rgb(hr.r/255, hr.g/255, hr.b/255), opacity: 0.45 });
     }
-    page.drawText(el.text, { x: el.x, y: el.y, size: el.size,
+    page.drawText(safePdfText(el.text), { x: el.x, y: el.y, size: el.size,
       color: PDFLib.rgb(rgb.r/255, rgb.g/255, rgb.b/255) });
   }
   const bytes = await f.pdfDoc.save();

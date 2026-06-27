@@ -67,7 +67,7 @@ export default function FillSign() {
         onBack={back}
         actions={[
           signed
-            ? {icon: 'install', label: 'Export', primary: true, onPress: () => { showToast('Exported signed PDF', 'install'); back(); }}
+            ? {icon: 'install', label: 'Export', primary: true, onPress: () => { showToast('Preview only — exporting the signed PDF isn’t available in this build yet', 'shield_check'); back(); }}
             : {icon: 'share', label: 'Share', onPress: () => showToast('Sharing', 'share')},
         ]}
       />

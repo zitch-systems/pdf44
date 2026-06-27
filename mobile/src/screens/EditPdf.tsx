@@ -59,7 +59,7 @@ export default function EditPdf() {
       <View style={[styles.header, {borderBottomColor: t.pdf44.border}]}>
         <Pressable onPress={back} hitSlop={8} style={styles.hIcon}><Icon name="close" size={24} color={t.pdf44.text} /></Pressable>
         <Text style={{flex: 1, fontSize: 17, fontWeight: '700', color: t.pdf44.text}}>Edit PDF</Text>
-        <Pressable onPress={() => { showToast('Saved changes', 'check'); back(); }} style={[styles.done, {backgroundColor: t.pdf44.accent}]}>
+        <Pressable onPress={() => { showToast('Preview only — saving edits back to the PDF isn’t available in this build yet', 'shield_check'); back(); }} style={[styles.done, {backgroundColor: t.pdf44.accent}]}>
           <Text style={{color: '#fff', fontWeight: '700', fontSize: 14}}>Done</Text>
         </Pressable>
       </View>
