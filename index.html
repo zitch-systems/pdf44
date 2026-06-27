@@ -8111,25 +8111,61 @@ async function processExtract() {
 
 async function processCompress() {
   const level = document.querySelector('input[name="compressLevel"]:checked')?.value || 'high';
+  // Each level maps to a render DPI + JPEG quality. Lower = smaller file. (The old
+  // version only stripped metadata + re-saved — objectsPerTick has no effect on
+  // output size — so image-heavy PDFs barely shrank while the FAQ promised 30-80%.)
+  const cfg = level === 'low'    ? { dpi: 200, q: 0.82 }
+            : level === 'medium' ? { dpi: 144, q: 0.72 }
+            :                      { dpi: 110, q: 0.60 };
   for (let n = 0; n < state.files.length; n++) {
     const f = state.files[n];
     if (!f.pdfDoc) continue;
+
+    // Candidate 1 — lossless structural re-save (keeps selectable text). Strip
+    // metadata too. This is what the previous tool did.
     try {
-      f.pdfDoc.setTitle('');
-      f.pdfDoc.setAuthor('');
-      f.pdfDoc.setSubject('');
-      f.pdfDoc.setKeywords([]);
-      f.pdfDoc.setProducer('PDF44');
-      f.pdfDoc.setCreator('PDF44');
+      f.pdfDoc.setTitle(''); f.pdfDoc.setAuthor(''); f.pdfDoc.setSubject('');
+      f.pdfDoc.setKeywords([]); f.pdfDoc.setProducer('PDF44'); f.pdfDoc.setCreator('PDF44');
     } catch(e){}
-    const bytes = await f.pdfDoc.save({
-      useObjectStreams: true,
-      addDefaultPage: false,
-      objectsPerTick: level === 'high' ? 50 : level === 'medium' ? 100 : 200
-    });
-    const saved = f.size - bytes.length;
-    downloadAndShow(bytes, `compressed_${f.name}`);
-    if (saved > 0) toast(`Saved ${formatBytes(saved)} on ${f.name}`,'success');
+    let best = await f.pdfDoc.save({ useObjectStreams: true, addDefaultPage: false });
+    let flattened = false;
+
+    // Candidate 2 — rasterise every page to a JPEG at the chosen DPI/quality and
+    // rebuild. This genuinely shrinks image-heavy/scanned PDFs (at the cost of
+    // selectable text), so we only keep it when it actually comes out smaller.
+    try {
+      if (!f.pdfjsDoc) { const copy = f.arrayBuffer.slice(0); f.pdfjsDoc = await pdfjsLib.getDocument({ data: copy }).promise; }
+      const pdfjsDoc = f.pdfjsDoc;
+      const out = await PDFLib.PDFDocument.create();
+      for (let p = 1; p <= pdfjsDoc.numPages; p++) {
+        const page = await pdfjsDoc.getPage(p);
+        const vp1 = page.getViewport({ scale: 1 });
+        const vp  = page.getViewport({ scale: cfg.dpi / 72 });
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.ceil(vp.width);
+        canvas.height = Math.ceil(vp.height);
+        const ctx = canvas.getContext('2d', { alpha: false });
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: ctx, viewport: vp, intent: 'display' }).promise;
+        const jpg = dataUrlToUint8Array(canvas.toDataURL('image/jpeg', cfg.q));
+        const img = await out.embedJpg(jpg);
+        const pg = out.addPage([vp1.width, vp1.height]);
+        pg.drawImage(img, { x: 0, y: 0, width: vp1.width, height: vp1.height });
+        showProgress((p / pdfjsDoc.numPages) * 100, `Compressing page ${p} of ${pdfjsDoc.numPages}…`);
+      }
+      const raster = await out.save();
+      if (raster.length < best.length) { best = raster; flattened = true; }
+    } catch(e) { /* rasterise failed — fall back to the re-save */ }
+
+    const orig = f.size || best.length;
+    const saved = orig - best.length;
+    downloadAndShow(best, `compressed_${f.name}`);
+    if (saved > 0) {
+      const pct = Math.round((saved / orig) * 100);
+      toast(`Saved ${formatBytes(saved)} (${pct}%) on ${f.name}${flattened ? ' — pages flattened to images' : ''}`, 'success');
+    } else {
+      toast(`${f.name} is already well optimized — couldn't shrink it further`, 'info');
+    }
     showProgress((n+1)/state.files.length*100, `Compressing ${n+1} of ${state.files.length}…`);
   }
 }
