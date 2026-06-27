@@ -357,3 +357,23 @@ follow existing pdf.js/pdf-lib patterns in the file and warrant a manual in-brow
 Deliberately left: `0006_multiple_permissive_policies` (micro-opt, no correctness impact at this scale),
 `0005_unused_index` (informational), and **Leaked Password Protection** — an Auth dashboard setting
 (Authentication → Sign In/Providers), not SQL, so enable it there to clear that security advisor.
+
+---
+
+## Round 4 — webhook robustness (2026-06-27)
+
+`supabase/migrations/0007_webhook_idempotency.sql` + rewritten `paystack-webhook` (applied live, v7,
+`verify_jwt=false` preserved). Addresses the medium webhook findings:
+- **Idempotency** — new `public.webhook_events` ledger (sha256 of the raw signed body, RLS-on/no-policy,
+  service-role only). A retried/duplicate delivery is acknowledged 200 and does no work, so duplicate
+  `charge.success` no longer stacks subscription rows or re-writes payments.
+- **No more swallow-to-200** — DB write failures now return **500 so Paystack retries**; the dedup row is
+  written only after success, so a failed delivery is reprocessed. Previously any transient DB error
+  permanently lost a paid subscription with no retry. (Writes are error-checked via a `chk()` helper.)
+- **invoice.update can't resurrect a dead sub** — the status flip is scoped to rows currently
+  `active`/`past_due` (`.in("status", [...])`), so an expired/cancelled subscription can't be flipped
+  back to `active`.
+
+Still open on the webhook (out-of-order `subscription.create` arriving before `charge.success` never
+stores the subscription_code) — rare with Paystack's normal ordering; would need a customer-keyed
+pending-mapping to fully close. Documented, not done.
