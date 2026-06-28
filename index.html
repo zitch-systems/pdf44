@@ -612,6 +612,7 @@ a:hover { text-decoration: underline; }
   border: 1px solid transparent;
   user-select: none;
   white-space: nowrap;
+  text-decoration: none;
 }
 .nav-item:hover { background: var(--bg-glass); color: var(--text); }
 .nav-item.active {
@@ -1091,7 +1092,9 @@ a:hover { text-decoration: underline; }
   transition: all 0.2s var(--ease);
   font-family: inherit;
 }
-.form-input:focus, .form-select:focus, .form-textarea:focus {
+.form-input:focus, .form-input:focus-visible,
+.form-select:focus, .form-select:focus-visible,
+.form-textarea:focus, .form-textarea:focus-visible {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-glow);
@@ -1114,7 +1117,7 @@ input[type="range"] {
   height: 6px;
   background: var(--bg-3);
   border-radius: 3px;
-  outline: none;
+  /* outline handled by :focus-visible above */
 }
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -1350,6 +1353,21 @@ input[type="range"]::-moz-range-thumb {
 
 @media (prefers-reduced-motion: reduce) {
   .progress-fill::after, .progress-text::before, .pdf44-dl-ic svg, .pdf44-dl-bar > i { animation: none; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* ── Global keyboard focus indicator (WCAG 2.4.7) ─────────────────── */
+:where(a, button, [role="button"], input, select, textarea,
+        .tool-card, .quick-tool-btn, .modal-close, .theme-toggle,
+        .nav-item, summary):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(229,50,45,0.25);
+  border-radius: 4px;
+}
+input[type="range"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 
 .toast-container {
@@ -2304,18 +2322,18 @@ input[type="range"]::-moz-range-thumb {
 <!-- STICKY BOTTOM AD -->
 <div id="adSticky" class="ad-slot ad-sticky"></div>
 
-<div class="modal-overlay" id="modal">
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="modalTitle">Modal</div>
-      <button class="modal-close" onclick="closeModal()">×</button>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close dialog">×</button>
     </div>
     <div class="modal-body" id="modalBody"></div>
     <div class="modal-footer" id="modalFooter"></div>
   </div>
 </div>
 
-<div class="toast-container" id="toasts"></div>
+<div class="toast-container" id="toasts" role="status" aria-live="polite" aria-atomic="false"></div>
 
 <script>
 // ============================================================
@@ -2691,21 +2709,25 @@ const state = {
 // ============================================================
 function renderSidebar() {
   const nav = document.getElementById('sidebarNav');
+  // Helper to build a nav-item as a real <a> so it is keyboard-focusable and
+  // works with middle-click / right-click while still using the SPA router.
+  function navItem(key, label, iconHtml, extra) {
+    const slug = TOOL_SLUGS[key];
+    const href = slug ? '/' + slug : (key === 'home' ? '/' : '/?tool=' + key);
+    const active = state.currentTool === key ? ' active' : '';
+    const current = state.currentTool === key ? ' aria-current="page"' : '';
+    return `<a class="nav-item${active}" href="${href}" onclick="route('${key}');return false;"${current}>${iconHtml}<span>${label}</span>${extra||''}</a>`;
+  }
   let html = `
     <div class="nav-section">
-      <div class="nav-item ${state.currentTool==='home'?'active':''}" onclick="route('home')">
-        <span class="nav-icon">${icon('home', {size:17})}</span><span>Home</span>
-      </div>
+      ${navItem('home', 'Home', `<span class="nav-icon">${icon('home', {size:17})}</span>`)}
     </div>`;
   const recents = loadRecentTools().filter(k => TOOLS[k]);
   if (recents.length) {
     html += '<div class="nav-section"><div class="nav-label">Recently Used</div>';
     recents.forEach(key => {
       const t = TOOLS[key];
-      html += `
-        <div class="nav-item ${state.currentTool===key?'active':''}" onclick="route('${key}')">
-          <span class="nav-icon">${icon('history', {size:17, stroke:2})}</span><span>${t.title}</span>
-        </div>`;
+      html += navItem(key, t.title, `<span class="nav-icon">${icon('history', {size:17, stroke:2})}</span>`);
     });
     html += '</div>';
   }
@@ -2714,10 +2736,7 @@ function renderSidebar() {
     html += '<div class="nav-section"><div class="nav-label">Favorites</div>';
     favs.forEach(key => {
       const t = TOOLS[key];
-      html += `
-        <div class="nav-item ${state.currentTool===key?'active':''}" onclick="route('${key}')">
-          <span class="nav-icon">${icon('star', {size:17, stroke:2})}</span><span>${t.title}</span>
-        </div>`;
+      html += navItem(key, t.title, `<span class="nav-icon">${icon('star', {size:17, stroke:2})}</span>`);
     });
     html += '</div>';
   }
@@ -2726,22 +2745,16 @@ function renderSidebar() {
     if (!tools.length) return;
     html += `<div class="nav-section"><div class="nav-label">${cat.label}</div>`;
     tools.forEach(([key, t]) => {
-      html += `
-        <div class="nav-item ${state.currentTool===key?'active':''}" onclick="route('${key}')">
-          <span class="nav-icon">${icon(t.iconKey, {size:17})}</span><span>${t.title}</span>${['pdf2ppt','epub2pdf','epub2word','mobi2pdf'].includes(key)?'<span class="nav-badge">NEW</span>':''}
-        </div>`;
+      const badge = ['pdf2ppt','epub2pdf','epub2word','mobi2pdf'].includes(key) ? '<span class="nav-badge">NEW</span>' : '';
+      html += navItem(key, t.title, `<span class="nav-icon">${icon(t.iconKey, {size:17})}</span>`, badge);
     });
     html += `</div>`;
   });
   html += `
     <div class="nav-section">
       <div class="nav-label">App</div>
-      <div class="nav-item ${state.currentTool==='install'?'active':''}" onclick="route('install')">
-        <span class="nav-icon">${icon('install', {size:17})}</span><span>Get the App</span>
-      </div>
-      <div class="nav-item ${state.currentTool==='contact'?'active':''}" onclick="route('contact')">
-        <span class="nav-icon">${icon('contact', {size:17})}</span><span>Contact</span>
-      </div>
+      ${navItem('install', 'Get the App', `<span class="nav-icon">${icon('install', {size:17})}</span>`)}
+      ${navItem('contact', 'Contact', `<span class="nav-icon">${icon('contact', {size:17})}</span>`)}
     </div>`;
   nav.innerHTML = html;
 }
@@ -3606,13 +3619,16 @@ function route(tool) {
 
   // ── SEO: full dynamic metadata + JSON-LD update per route ──
   try { updateSEO(tool); } catch (e) { /* never let SEO break navigation */ }
+
+  // ── Accessibility: move focus to main content so keyboard/AT users land on
+  //    the new page rather than wherever they were in the previous route.
+  requestAnimationFrame(() => {
+    const main = document.getElementById('main-content');
+    if (main) { main.setAttribute('tabindex', '-1'); main.focus(); }
+  });
 }
 
-// Sync route on Back/Forward navigation so SEO meta + UI stay in lockstep.
-window.addEventListener('popstate', function () {
-  const t = detectToolFromLocation();
-  if (t && t !== state.currentTool) route(t);
-});
+// Back/Forward navigation is handled by the popstate listener near the bottom of this script.
 
 function toggleSidebar() {
   const open = document.getElementById('sidebar').classList.toggle('open');
@@ -7045,17 +7061,17 @@ function renderToolSEOBlock(toolKey) {
 function getToolSettingsHTML(toolKey) {
   switch(toolKey) {
     case 'split': return `
-      <div class="form-group"><label class="form-label">Split mode</label>
+      <div class="form-group"><label class="form-label" for="splitMode">Split mode</label>
         <select class="form-select" id="splitMode" onchange="updateSplitUI()">
           <option value="single">One PDF per page</option>
           <option value="every">Every N pages</option>
           <option value="ranges">Custom ranges</option>
         </select></div>
       <div class="form-group" id="splitEveryGroup" style="display:none;">
-        <label class="form-label">Every N pages</label>
+        <label class="form-label" for="splitEvery">Every N pages</label>
         <input type="number" class="form-input" id="splitEvery" value="1" min="1"></div>
       <div class="form-group" id="splitRangesGroup" style="display:none;">
-        <label class="form-label">Ranges (e.g. 1-3, 5, 7-10)</label>
+        <label class="form-label" for="splitRanges">Ranges (e.g. 1-3, 5, 7-10)</label>
         <input type="text" class="form-input" id="splitRanges" placeholder="1-3, 5, 7-10"></div>`;
     case 'compress': return `
       <div class="form-group"><label class="form-label">Compression level</label>
@@ -7066,7 +7082,7 @@ function getToolSettingsHTML(toolKey) {
         </div></div>
       <p style="font-size:11.5px;color:var(--text-3);line-height:1.5;">Strips metadata and rewrites the PDF using object streams. For deep image re-encoding, use a server-side compressor.</p>`;
     case 'rotate': return `
-      <div class="form-group"><label class="form-label">Rotation angle</label>
+      <div class="form-group"><label class="form-label" for="rotateAngle">Rotation angle</label>
         <select class="form-select" id="rotateAngle">
           <option value="90">90° Clockwise</option>
           <option value="180">180°</option>
@@ -7074,18 +7090,18 @@ function getToolSettingsHTML(toolKey) {
         </select></div>
       <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="rotateAll" checked onchange="toggleRotatePages()"> Apply to all pages</label></div>
       <div class="form-group" id="rotatePagesGroup" style="display:none;">
-        <label class="form-label">Specific pages (e.g. 1, 3, 5-7)</label>
+        <label class="form-label" for="rotatePages">Specific pages (e.g. 1, 3, 5-7)</label>
         <input type="text" class="form-input" id="rotatePages" placeholder="1, 3, 5-7"></div>`;
     case 'remove': return `
-      <div class="form-group"><label class="form-label">Pages to remove (e.g. 2, 4-6)</label>
+      <div class="form-group"><label class="form-label" for="removePages">Pages to remove (e.g. 2, 4-6)</label>
         <input type="text" class="form-input" id="removePages" placeholder="2, 4-6"></div>
       <p style="font-size:11.5px;color:var(--text-3);line-height:1.5;">Or use the drag-grid below to remove pages visually after uploading.</p>`;
     case 'extract': return `
-      <div class="form-group"><label class="form-label">Pages to extract (e.g. 1, 3, 5-7)</label>
+      <div class="form-group"><label class="form-label" for="extractPages">Pages to extract (e.g. 1, 3, 5-7)</label>
         <input type="text" class="form-input" id="extractPages" placeholder="1, 3, 5-7"></div>`;
     case 'pdf2jpg':
     case 'pdf2png': return `
-      <div class="form-group"><label class="form-label">Image resolution</label>
+      <div class="form-group"><label class="form-label" for="imageDpi">Image resolution</label>
         <select class="form-select" id="imageDpi">
           <option value="96">96 DPI · Web preview</option>
           <option value="150">150 DPI · Screen</option>
@@ -7100,7 +7116,7 @@ function getToolSettingsHTML(toolKey) {
       <p style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:12px;">Rebuilds your PDF as an editable <code style="background:var(--code-bg);padding:1px 5px;border-radius:4px;">.docx</code>. Text is reflowed into real paragraphs with heading sizes preserved — so the document reads naturally instead of breaking into scattered fragments.</p>
       <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="docxPageBreak" checked> Add page break between PDF pages</label></div>
       <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="docxOcr" checked> Run OCR on scanned pages (no selectable text)</label></div>
-      <div class="form-group"><label class="form-label">OCR language (for scanned pages)</label>
+      <div class="form-group"><label class="form-label" for="docxOcrLang">OCR language (for scanned pages)</label>
         <select class="form-select" id="docxOcrLang">
           <option value="eng">English</option>
           <option value="spa">Spanish</option>
@@ -7121,7 +7137,7 @@ function getToolSettingsHTML(toolKey) {
         </select></div>
       <p style="font-size:11.5px;color:var(--text-3);line-height:1.5;">Scanned pages are detected automatically. OCR downloads the Tesseract engine (~1.5 MB) only when needed, and runs entirely in your browser — files never leave your device.</p>`;
     case 'pdf2ppt': return `
-      <div class="form-group"><label class="form-label">Slide quality</label>
+      <div class="form-group"><label class="form-label" for="pptDpi">Slide quality</label>
         <select class="form-select" id="pptDpi">
           <option value="96">Standard · 96 DPI (smallest file)</option>
           <option value="150" selected>High · 150 DPI (recommended)</option>
@@ -7130,14 +7146,14 @@ function getToolSettingsHTML(toolKey) {
       <p style="font-size:11.5px;color:var(--text-3);line-height:1.5;">Each PDF page becomes one PowerPoint slide. The slide size matches your PDF page size, so nothing is cropped or distorted. Opens in PowerPoint, Keynote, and Google Slides.</p>`;
     case 'jpg2pdf': return `
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Page size</label>
+        <div class="form-group"><label class="form-label" for="img2pdfSize">Page size</label>
           <select class="form-select" id="img2pdfSize">
             <option value="fit">Fit to image</option>
             <option value="A4">A4</option>
             <option value="letter">Letter</option>
             <option value="legal">Legal</option>
           </select></div>
-        <div class="form-group"><label class="form-label">Orientation</label>
+        <div class="form-group"><label class="form-label" for="img2pdfOrient">Orientation</label>
           <select class="form-select" id="img2pdfOrient">
             <option value="auto">Auto</option>
             <option value="portrait">Portrait</option>
@@ -7146,25 +7162,25 @@ function getToolSettingsHTML(toolKey) {
       </div>
       <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="img2pdfMargin" checked> Add page margin</label></div>`;
     case 'html2pdf': return `
-      <div class="form-group"><label class="form-label">HTML content</label>
+      <div class="form-group"><label class="form-label" for="htmlContent">HTML content</label>
         <textarea class="form-textarea" id="htmlContent" rows="10" placeholder="Paste HTML here…" oninput="updateProcessButton()"><h1>Hello PDF44</h1>
 <p>Edit this HTML and click Process to render it as a PDF.</p>
 <ul><li>Headings work</li><li>Lists work</li><li>Inline styles work</li></ul></textarea></div>
       <p style="font-size:11.5px;color:var(--text-3);">Inline CSS only. Layout, fonts, and tables are rendered by jsPDF.</p>`;
     case 'text2pdf': return `
-      <div class="form-group"><label class="form-label">Text content</label>
+      <div class="form-group"><label class="form-label" for="textContent">Text content</label>
         <textarea class="form-textarea" id="textContent" rows="12" placeholder="Type or paste your text here…" oninput="updateProcessButton()"></textarea></div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Font size: <span id="textFontSizeVal">12pt</span></label>
+        <div class="form-group"><label class="form-label" for="textFontSize">Font size: <span id="textFontSizeVal">12pt</span></label>
           <input type="range" id="textFontSize" min="8" max="24" value="12" oninput="document.getElementById('textFontSizeVal').textContent=this.value+'pt'"></div>
-        <div class="form-group"><label class="form-label">Page size</label>
+        <div class="form-group"><label class="form-label" for="textPageSize">Page size</label>
           <select class="form-select" id="textPageSize"><option value="a4">A4</option><option value="letter">Letter</option></select></div>
       </div>`;
     case 'pdf2text': return `<p style="font-size:13px;color:var(--text-2);line-height:1.6;">Extracts text from each page using pdf.js. For scanned PDFs without embedded text, use the <a href="/ocr-pdf" onclick="route('ocr');return false;">OCR PDF tool</a> instead.</p>`;
     case 'ocr': return `
       <p style="font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:12px;">Runs Tesseract.js OCR fully in your browser — files never leave your device. Tesseract weighs ~1.5 MB and downloads only when you click <em>Process</em>. Expect ~3–8 seconds per page on a modern laptop.</p>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Language</label>
+        <div class="form-group"><label class="form-label" for="ocrLang">Language</label>
           <select class="form-select" id="ocrLang">
             <option value="eng">English</option>
             <option value="spa">Spanish</option>
@@ -7183,53 +7199,53 @@ function getToolSettingsHTML(toolKey) {
             <option value="hin">Hindi</option>
             <option value="tur">Turkish</option>
           </select></div>
-        <div class="form-group"><label class="form-label">Output</label>
+        <div class="form-group"><label class="form-label" for="ocrOutput">Output</label>
           <select class="form-select" id="ocrOutput">
             <option value="searchable">Searchable PDF (text + image)</option>
             <option value="text">Plain text (.txt)</option>
           </select></div>
       </div>
-      <div class="form-group"><label class="form-label">Render DPI (higher = better OCR, slower)</label>
+      <div class="form-group"><label class="form-label" for="ocrDpi">Render DPI (higher = better OCR, slower)</label>
         <select class="form-select" id="ocrDpi"><option value="150">150 DPI (fast)</option><option value="200" selected>200 DPI (recommended)</option><option value="300">300 DPI (max accuracy)</option></select></div>`;
     case 'edit': return `
-      <div class="form-group"><label class="form-label">Text to add</label>
+      <div class="form-group"><label class="form-label" for="editText">Text to add</label>
         <input type="text" class="form-input" id="editText" placeholder="Your text here"></div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Page</label>
+        <div class="form-group"><label class="form-label" for="editPage">Page</label>
           <input type="number" class="form-input" id="editPage" value="1" min="1"></div>
-        <div class="form-group"><label class="form-label">Font size</label>
+        <div class="form-group"><label class="form-label" for="editFontSize">Font size</label>
           <input type="number" class="form-input" id="editFontSize" value="24" min="6" max="200"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">X (from left, pt)</label>
+        <div class="form-group"><label class="form-label" for="editX">X (from left, pt)</label>
           <input type="number" class="form-input" id="editX" value="50"></div>
-        <div class="form-group"><label class="form-label">Y (from bottom, pt)</label>
+        <div class="form-group"><label class="form-label" for="editY">Y (from bottom, pt)</label>
           <input type="number" class="form-input" id="editY" value="50"></div>
       </div>
-      <div class="form-group"><label class="form-label">Color</label>
+      <div class="form-group"><label class="form-label" for="editColor">Color</label>
         <input type="color" id="editColor" value="#000000" style="width:60px;height:40px;border:none;background:none;cursor:pointer;border-radius:8px;"></div>`;
     case 'watermark': return `
-      <div class="form-group"><label class="form-label">Watermark type</label>
+      <div class="form-group"><label class="form-label" for="wmType">Watermark type</label>
         <select class="form-select" id="wmType" onchange="updateWatermarkUI()">
           <option value="text">Text watermark</option>
           <option value="image">Image watermark</option>
         </select></div>
       <div id="wmTextGroup">
-        <div class="form-group"><label class="form-label">Text</label>
+        <div class="form-group"><label class="form-label" for="wmText">Text</label>
           <input type="text" class="form-input" id="wmText" value="CONFIDENTIAL"></div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Color</label>
+          <div class="form-group"><label class="form-label" for="wmColor">Color</label>
             <input type="color" id="wmColor" value="#ff0000" style="width:60px;height:40px;border:none;border-radius:8px;cursor:pointer;"></div>
-          <div class="form-group"><label class="form-label">Font size</label>
+          <div class="form-group"><label class="form-label" for="wmSize">Font size</label>
             <input type="number" class="form-input" id="wmSize" value="48" min="8" max="200"></div>
         </div>
       </div>
       <div id="wmImageGroup" style="display:none;">
-        <div class="form-group"><label class="form-label">Upload image</label>
+        <div class="form-group"><label class="form-label" for="wmImageInput">Upload image</label>
           <input type="file" class="form-input" id="wmImageInput" accept="image/png,image/jpeg" onchange="handleWatermarkImage(this)"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Position</label>
+        <div class="form-group"><label class="form-label" for="wmPos">Position</label>
           <select class="form-select" id="wmPos">
             <option value="center">Center</option>
             <option value="top-left">Top left</option>
@@ -7238,12 +7254,12 @@ function getToolSettingsHTML(toolKey) {
             <option value="bottom-right">Bottom right</option>
             <option value="tile">Tiled (repeat)</option>
           </select></div>
-        <div class="form-group"><label class="form-label">Opacity: <span id="wmOpacityVal">30%</span></label>
+        <div class="form-group"><label class="form-label" for="wmOpacity">Opacity: <span id="wmOpacityVal">30%</span></label>
           <input type="range" id="wmOpacity" min="0.1" max="1" step="0.05" value="0.3" oninput="document.getElementById('wmOpacityVal').textContent=Math.round(this.value*100)+'%'"></div>
       </div>`;
     case 'pagenumber': return `
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Position</label>
+        <div class="form-group"><label class="form-label" for="pnPos">Position</label>
           <select class="form-select" id="pnPos">
             <option value="bottom-center">Bottom center</option>
             <option value="bottom-left">Bottom left</option>
@@ -7252,7 +7268,7 @@ function getToolSettingsHTML(toolKey) {
             <option value="top-left">Top left</option>
             <option value="top-right">Top right</option>
           </select></div>
-        <div class="form-group"><label class="form-label">Format</label>
+        <div class="form-group"><label class="form-label" for="pnFormat">Format</label>
           <select class="form-select" id="pnFormat">
             <option value="n">1, 2, 3</option>
             <option value="n_of_N">1 of 10</option>
@@ -7261,20 +7277,20 @@ function getToolSettingsHTML(toolKey) {
           </select></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label class="form-label">Start at</label>
+        <div class="form-group"><label class="form-label" for="pnStart">Start at</label>
           <input type="number" class="form-input" id="pnStart" value="1" min="1"></div>
-        <div class="form-group"><label class="form-label">Font size</label>
+        <div class="form-group"><label class="form-label" for="pnSize">Font size</label>
           <input type="number" class="form-input" id="pnSize" value="12" min="6" max="72"></div>
       </div>`;
     case 'crop': return `
-      <div class="form-group"><label class="form-label">Crop mode</label>
+      <div class="form-group"><label class="form-label" for="cropMode">Crop mode</label>
         <select class="form-select" id="cropMode" onchange="updateCropUI()">
           <option value="margin" selected>Equal margin (all sides)</option>
           <option value="custom">Custom per-side margins</option>
           <option value="box">Specific crop box (x, y, width, height)</option>
         </select></div>
       <div id="cropMarginGroup">
-        <div class="form-group"><label class="form-label">Margin to remove — all sides (pt) · 72 pt = 1 inch</label>
+        <div class="form-group"><label class="form-label" for="cropMargin">Margin to remove — all sides (pt) · 72 pt = 1 inch</label>
           <input type="number" class="form-input" id="cropMargin" value="36" min="0" max="400"></div>
       </div>
       <div id="cropCustomGroup" style="display:none;">
@@ -7299,14 +7315,14 @@ function getToolSettingsHTML(toolKey) {
         <p style="font-size:11px;color:var(--text-3);">A4: 595×842 · Letter: 612×792</p>
       </div>`;
     case 'protect': return `
-      <div class="form-group"><label class="form-label">User password (required to open)</label>
+      <div class="form-group"><label class="form-label" for="userPw">User password (required to open)</label>
         <input type="password" class="form-input" id="userPw" placeholder="Enter password"></div>
-      <div class="form-group"><label class="form-label">Confirm password</label>
+      <div class="form-group"><label class="form-label" for="userPw2">Confirm password</label>
         <input type="password" class="form-input" id="userPw2" placeholder="Re-enter password"></div>
       <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="allowPrint" checked> Allow printing</label></div>
       <div class="form-group"><label class="checkbox-label"><input type="checkbox" id="allowCopy"> Allow copying text</label></div>`;
     case 'unlock': return `
-      <div class="form-group"><label class="form-label">PDF password</label>
+      <div class="form-group"><label class="form-label" for="unlockPw">PDF password</label>
         <input type="password" class="form-input" id="unlockPw" placeholder="Enter known password"></div>`;
     case 'sign': return `
       <div class="form-group">
@@ -8012,6 +8028,7 @@ async function processSplit() {
 
   if (ranges.length === 1) {
     const [s, e] = ranges[0];
+    if (s < 0 || e >= pc || s > e) { toast('Page range out of bounds (PDF has ' + pc + ' pages)', 'error'); return; }
     const doc = await PDFLib.PDFDocument.create();
     const idx = []; for (let p = s; p <= e; p++) idx.push(p);
     const copied = await doc.copyPages(f.pdfDoc, idx);
@@ -8058,14 +8075,19 @@ async function processRotate() {
   for (let n = 0; n < state.files.length; n++) {
     const f = state.files[n];
     if (!f.pdfDoc) continue;
-    const pc = f.pdfDoc.getPageCount();
-    let pages = all ? f.pdfDoc.getPageIndices() : parsePagesInput(txt, pc);
+    // Work on a fresh copy so that re-clicking Process doesn't stack rotations
+    // on the cached f.pdfDoc (the shared doc must stay unmodified for re-use).
+    const out = await PDFLib.PDFDocument.create();
+    const srcPages = await out.copyPages(f.pdfDoc, f.pdfDoc.getPageIndices());
+    srcPages.forEach(p => out.addPage(p));
+    const pc = out.getPageCount();
+    let pages = all ? out.getPageIndices() : parsePagesInput(txt, pc);
     pages.forEach(i => {
-      const p = f.pdfDoc.getPage(i);
+      const p = out.getPage(i);
       const cur = p.getRotation().angle;
       p.setRotation(PDFLib.degrees((cur + angle) % 360));
     });
-    const bytes = await f.pdfDoc.save();
+    const bytes = await out.save();
     downloadAndShow(bytes, `rotated_${f.name}`);
     showProgress((n+1)/state.files.length*100, `Rotating ${n+1} of ${state.files.length}…`);
   }
@@ -9067,8 +9089,10 @@ function toast(msg, type='info') {
   const c = document.getElementById('toasts');
   const d = document.createElement('div');
   d.className = `toast ${type}`;
+  // Errors use role=alert (assertive interrupt); others inherit the container's aria-live=polite.
+  if (type === 'error' || type === 'warning') d.setAttribute('role', 'alert');
   const ti=type==='success'?icon('check',{size:16,stroke:2.5}):type==='error'?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg>':type==='warning'?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.4 0z"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>';
-  d.innerHTML = `<span class="toast-icon">${ti}</span><span>${escapeHtml(msg)}</span>`;
+  d.innerHTML = `<span class="toast-icon" aria-hidden="true">${ti}</span><span>${escapeHtml(msg)}</span>`;
   d.style.cursor = 'pointer';
   d.title = 'Click to dismiss';
   d.addEventListener('click', () => { d.style.opacity = '0'; setTimeout(() => d.remove(), 200); });
@@ -9080,6 +9104,8 @@ function openModal(title, body, footer='') {
   document.getElementById('modalBody').innerHTML = body;
   document.getElementById('modalFooter').innerHTML = footer;
   const overlay = document.getElementById('modal');
+  // Remember the element that opened the modal so we can return focus on close.
+  overlay._trigger = document.activeElement;
   overlay.classList.add('active');
   overlay.setAttribute('aria-hidden', 'false');
   // Trap focus inside modal
@@ -9102,10 +9128,14 @@ function openModal(title, body, footer='') {
 }
 function closeModal() {
   const overlay = document.getElementById('modal');
+  const trigger = overlay._trigger;
   overlay.classList.remove('active');
   overlay.setAttribute('aria-hidden', 'true');
   if (overlay._trap) { overlay.removeEventListener('keydown', overlay._trap); delete overlay._trap; }
   if (overlay._esc)  { document.removeEventListener('keydown', overlay._esc);  delete overlay._esc; }
+  delete overlay._trigger;
+  // Return focus to the element that opened the modal.
+  if (trigger && typeof trigger.focus === 'function') try { trigger.focus(); } catch(e) {}
 }
 
 // ============================================================
