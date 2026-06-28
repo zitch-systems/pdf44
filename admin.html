@@ -294,10 +294,11 @@
         var id = b.dataset.id, act = b.dataset.act;
         b.disabled = true;
         if (act === 'grant') {
-          var plan = prompt('Grant which plan? Type "monthly" or "annual":', 'annual');
+          var plan = (prompt('Grant which plan? Type "monthly" or "annual":', 'annual') || '').trim().toLowerCase();
           if (!plan) { b.disabled=false; return; }
+          if (plan !== 'monthly' && plan !== 'annual') { alert('Invalid plan. Enter "monthly" or "annual".'); b.disabled=false; return; }
           var end = new Date(); plan==='annual'?end.setFullYear(end.getFullYear()+1):end.setMonth(end.getMonth()+1);
-          SB.from('subscriptions').insert({ user_id:id, plan:plan==='annual'?'annual':'monthly', status:'active', source:'manual', current_period_end:end.toISOString() }).then(done);
+          SB.from('subscriptions').insert({ user_id:id, plan:plan, status:'active', source:'manual', current_period_end:end.toISOString() }).then(done);
         } else if (act === 'revoke') {
           SB.from('subscriptions').update({ status:'cancelled', cancel_at_period_end:true }).eq('user_id',id).eq('status','active').then(done);
         } else if (act === 'role') {
