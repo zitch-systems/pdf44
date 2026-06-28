@@ -1983,7 +1983,10 @@ input[type="range"]::-moz-range-thumb {
     var headers = { 'Content-Type': 'application/json', 'apikey': CFG.supabaseAnonKey };
     if (token) headers['Authorization'] = 'Bearer ' + token;
     return fetch(quotaUrl(), { method: 'POST', headers: headers, body: JSON.stringify({ action: 'consume' }) })
-      .then(function (r) { return r.json(); });
+      .then(function (r) {
+        if (!r.ok) return { allowed: true, premium: false }; // fail-open on HTTP errors
+        return r.json();
+      });
   }
 
   function paywall(kind) {
@@ -9890,6 +9893,12 @@ async function readerFind(query) {
 async function fetchPdfFromUrl() {
   const url = optVal('urlInput','').trim();
   if (!url) { toast('Enter a URL', 'error'); return; }
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+      toast('Only http:// and https:// URLs are supported', 'error'); return;
+    }
+  } catch (e) { toast('Invalid URL', 'error'); return; }
   toast('Fetching…', 'info');
   try {
     const resp = await fetch(url);
