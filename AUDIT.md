@@ -377,3 +377,24 @@ Deliberately left: `0006_multiple_permissive_policies` (micro-opt, no correctnes
 Still open on the webhook (out-of-order `subscription.create` arriving before `charge.success` never
 stores the subscription_code) — rare with Paystack's normal ordering; would need a customer-keyed
 pending-mapping to fully close. Documented, not done.
+
+---
+
+## Round 5 — Accessibility, Performance & Code Quality (2026-06-28)
+
+See **[AUDIT-2026-06-28.md](AUDIT-2026-06-28.md)** for the full round-5 report.
+
+Summary of changes applied this round (all in `index.html`):
+
+- **A11Y-1 CRITICAL** — Sidebar nav converted from `<div onclick>` to `<a href>` elements with `aria-current="page"`. All 41 tools now keyboard-navigable.
+- **A11Y-2 CRITICAL** — Global `:focus-visible` ring added for all interactive elements (buttons, links, cards, range sliders, nav items). Old `outline:none` on range/form inputs replaced by `:focus-visible` alternatives.
+- **A11Y-3 HIGH** — `for` attribute added to every `.form-label` across all tool settings (~30 label/input pairs), enabling programmatic label association for screen readers.
+- **A11Y-4 HIGH** — Toast container now `role="status" aria-live="polite"`; error/warning toasts get `role="alert"` for immediate announcement. Toast icons are `aria-hidden`.
+- **A11Y-5 HIGH** — Modal gets `role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true"` (initial); close button gets `aria-label="Close dialog"`. `closeModal()` returns focus to the trigger element.
+- **A11Y-6 HIGH** — `route()` now moves focus to `#main-content` after each SPA navigation (keyboard users land on new content, not the previous position).
+- **A11Y-12 MEDIUM** — `prefers-reduced-motion` block expanded to blanket `*, *::before, *::after` (covers all animations, not just 4 specific selectors).
+- **POPSTATE-1 LOW** — Removed duplicate `popstate` listener that double-fired `route()` on Back/Forward.
+- **MUT-1 HIGH** — `processRotate` now copies pages to a fresh `PDFDocument` before rotating; `f.pdfDoc` is no longer mutated in place (re-running rotate no longer stacks transforms).
+- **SPLIT-1 MEDIUM** — `processSplit` single-range path now validates bounds before calling `copyPages`, with a user-facing error toast instead of an uncaught crash.
+
+All changes verified clean: `node build.js` → 212 routes, CI JS syntax check → 4 blocks passed.
