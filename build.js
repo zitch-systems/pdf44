@@ -224,7 +224,7 @@ const ASSETS = [
   'robots.txt', 'sitemap.xml', 'llms.txt', '_headers', '404.html',
   'ad-test.html',
   // Accounts / subscriptions / admin
-  'config.js', 'admin.html',
+  'config.js',
 ];
 for (const f of ASSETS) {
   const src = path.join(ROOT, f);
@@ -235,6 +235,17 @@ for (const f of ASSETS) {
 const assetsDir = path.join(ROOT, 'assets');
 if (fs.existsSync(assetsDir)) {
   fs.cpSync(assetsDir, path.join(DIST, 'assets'), { recursive: true });
+}
+
+// Admin portal at the clean URL /admin. Emit it as a real directory-index asset
+// (dist/admin/index.html) — exactly how the prerendered tool pages are served —
+// instead of a `/admin /admin.html 200` rewrite. That rewrite loops forever on
+// Cloudflare Pages: CF auto-redirects /admin.html → /admin (clean URLs), and the
+// rewrite points /admin straight back at /admin.html (ERR_TOO_MANY_REDIRECTS).
+const adminSrc = path.join(ROOT, 'admin.html');
+if (fs.existsSync(adminSrc)) {
+  fs.mkdirSync(path.join(DIST, 'admin'), { recursive: true });
+  fs.copyFileSync(adminSrc, path.join(DIST, 'admin', 'index.html'));
 }
 
 // _redirects for dist:
