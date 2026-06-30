@@ -9,13 +9,12 @@ import Icon from '../components/Icon';
 import {useApp} from '../state/store';
 import {FLAT_TOOLS} from '../data/tools';
 import {openTool} from './Home';
-import {RECENTS} from './Home';
 
 const SUGGESTIONS = ['Merge', 'Compress', 'Sign', 'Scan', 'PDF to Word', 'Protect'];
 
 export default function Search() {
   const t = useTheme() as AppTheme;
-  const {go, back} = useApp();
+  const {go, back, state} = useApp();
   const [q, setQ] = useState('');
   const inputRef = useRef<TextInput>(null);
   useEffect(() => {
@@ -25,7 +24,7 @@ export default function Search() {
 
   const ql = q.trim().toLowerCase();
   const toolHits = ql ? FLAT_TOOLS.filter(x => (x.title + ' ' + (x.desc || '')).toLowerCase().includes(ql)).slice(0, 6) : [];
-  const fileHits = ql ? RECENTS.filter(f => f.name.toLowerCase().includes(ql)) : [];
+  const fileHits = ql ? state.files.filter(f => f.name.toLowerCase().includes(ql)) : [];
 
   return (
     <View style={{flex: 1}}>
@@ -57,8 +56,8 @@ export default function Search() {
               ))}
             </View>
             <SectionHeader title="Recent files" />
-            {RECENTS.map((f, i) => (
-              <FileRow key={i} {...f} onPress={() => go('viewer', f)} />
+            {state.files.map(f => (
+              <FileRow key={f.id} {...f} onPress={() => go('viewer', f)} />
             ))}
           </View>
         )}
@@ -75,8 +74,8 @@ export default function Search() {
         {!!ql && fileHits.length > 0 && (
           <View>
             <SectionHeader title="Files" />
-            {fileHits.map((f, i) => (
-              <FileRow key={i} {...f} onPress={() => go('viewer', f)} />
+            {fileHits.map(f => (
+              <FileRow key={f.id} {...f} onPress={() => go('viewer', f)} />
             ))}
           </View>
         )}

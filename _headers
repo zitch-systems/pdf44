@@ -58,6 +58,23 @@
   Content-Type: application/javascript; charset=utf-8
   Service-Worker-Allowed: /
 
+# Runtime config carries the live entitlement flags + public keys (Supabase anon
+# key, Paystack public key, ad kill-switch). It MUST stay fresh: the generic
+# /*.js rule below would otherwise stamp it `immutable, max-age=30d`, so a
+# rotated key or flipped flag would never reach returning visitors — and the
+# service worker's network-first handling of config.js (sw.js) can't help while
+# the browser HTTP cache still holds an immutable copy. Revalidate every load.
+/config.js
+  Cache-Control: no-cache, must-revalidate
+  Content-Type: application/javascript; charset=utf-8
+
+# Account / billing controller — not content-hashed, so it must revalidate or a
+# shipped billing fix is pinned in returning users' caches for up to 30 days
+# under the generic immutable /*.js rule. A conditional request is cheap (304).
+/assets/pdf44-account.js
+  Cache-Control: public, max-age=0, must-revalidate
+  Content-Type: application/javascript; charset=utf-8
+
 /manifest.json
   Cache-Control: public, max-age=3600
   Content-Type: application/manifest+json; charset=utf-8

@@ -1,13 +1,18 @@
-// PDF44 Service Worker — v7
+// PDF44 Service Worker — v8
 // PWA offline caching
 
 // ── PDF44 PWA caching ─────────────────────────────────────────────
 // Bumped v6 → v7: the old worker cached EVERY GET (incl. Supabase entitlement
 // reads and config.js) cache-first with no revalidation, so a cancelled/expired
-// subscription kept reading "premium" forever. Bumping the cache name evicts any
-// already-poisoned runtime cache on existing clients.
-const CACHE_NAME    = 'pdf44-v7';
-const RUNTIME_CACHE = 'pdf44-runtime-v7';
+// subscription kept reading "premium" forever.
+// Bumped v7 → v8: also treat the account/billing controller
+// (/assets/pdf44-account.js) as always-fresh (network-first). It was still
+// served cache-first, so a shipped fix to the isPremium()/subscription/checkout
+// logic wouldn't reach installed-PWA users until the next cache bump. Bumping
+// the cache name evicts any already-poisoned runtime cache (config.js or
+// account.js) on existing clients.
+const CACHE_NAME    = 'pdf44-v8';
+const RUNTIME_CACHE = 'pdf44-runtime-v8';
 
 const APP_SHELL = [
   '/',
@@ -64,10 +69,15 @@ function isNeverCache(url) {
   return h.endsWith('.supabase.co') || h.endsWith('.paystack.co') || h === 'api.paystack.co';
 }
 
-// Same-origin runtime config controls entitlement flags + public keys, so it must
-// stay fresh (flipped ad kill-switch / rotated keys must reach returning users).
+// Same-origin scripts that carry LIVE entitlement/billing logic must stay fresh
+// so a flipped ad kill-switch, rotated key, or shipped billing fix reaches
+// returning users: config.js (flags + public keys) and the account controller
+// pdf44-account.js (isPremium()/subscription + checkout logic). Both are served
+// network-first below, falling back to cache only when offline.
 function isRuntimeConfig(url) {
-  return url.origin === self.location.origin && /(^|\/)config\.js(\?|$)/.test(url.pathname);
+  if (url.origin !== self.location.origin) return false;
+  return /(^|\/)config\.js(\?|$)/.test(url.pathname)
+      || /\/assets\/pdf44-account\.js(\?|$)/.test(url.pathname);
 }
 
 self.addEventListener('fetch', (event) => {

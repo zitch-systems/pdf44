@@ -31,7 +31,7 @@ function Card({children}: {children: React.ReactNode}) {
 
 export default function Settings() {
   const t = useTheme() as AppTheme;
-  const {state, dispatch, navTab} = useApp();
+  const {state, dispatch} = useApp();
   const {showToast} = useToast();
   const setPref = (key: any, value: any) => dispatch({type: 'setPref', key, value});
 
@@ -116,7 +116,6 @@ export default function Settings() {
         </Card>
 
         <Text style={{textAlign: 'center', fontSize: 12, color: t.pdf44.text3, marginTop: 24}}>No uploads · no registration · no watermarks</Text>
-        <View style={{height: 1}} onLayout={() => navTab} />
       </Body>
     </View>
   );

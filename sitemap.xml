@@ -244,11 +244,10 @@
   <url><loc>https://pdf44.com/pdf-to-jpg-free</loc>                  <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://pdf44.com/pdf-protect-online</loc>               <lastmod>2026-05-27</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 
-  <!-- ═══ Legacy ?tool= URLs (kept for backwards-compat) ═════ -->
-  <url><loc>https://pdf44.com/?tool=merge</loc>     <lastmod>2026-05-28</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://pdf44.com/?tool=split</loc>     <lastmod>2026-05-28</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://pdf44.com/?tool=compress</loc>  <lastmod>2026-05-28</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://pdf44.com/?tool=pdf2word</loc>  <lastmod>2026-05-28</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://pdf44.com/?tool=sign</loc>      <lastmod>2026-05-28</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <!-- Legacy ?tool= URLs are intentionally NOT listed here: they load the
+       homepage with a query param (canonical → "/" statically, or the clean
+       slug after JS), so listing them submitted non-canonical duplicates to
+       crawlers. The clean-slug pages above already cover every tool, and the
+       old ?tool= links still resolve for existing bookmarks via the SPA. -->
 
 </urlset>
