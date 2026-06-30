@@ -3584,6 +3584,7 @@ function route(tool) {
   state.pageOrder = [];
   state.pageRotations = {};
   state.watermarkImage = null;
+  try { stopScanner(); } catch (e) {} // leaving any tool must release the camera
 
   if (TOOLS[tool]) trackRecent(tool);
   const shareBtn = document.getElementById('shareBtn');
@@ -7716,8 +7717,9 @@ function updateProcessButton() {
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function formatBytes(b) {
   if (!b) return '0 B';
-  const k = 1024, sizes = ['B','KB','MB','GB'];
-  const i = Math.floor(Math.log(b) / Math.log(k));
+  const k = 1024, sizes = ['B','KB','MB','GB','TB','PB'];
+  // Clamp the index to the table so ≥1 TB inputs don't read "1.00 undefined".
+  const i = Math.min(sizes.length - 1, Math.floor(Math.log(b) / Math.log(k)));
   return parseFloat((b / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
@@ -8501,9 +8503,23 @@ async function processOcr() {
   toast('OCR complete — searchable PDF ready', 'success');
 }
 
+// Reload a file's cached pdf-lib doc from its ORIGINAL bytes so an in-place
+// editing tool always starts from a pristine document. Without this, drawing
+// onto the shared f.pdfDoc and re-clicking "Process" stacks edits (e.g. a
+// watermark or page numbers applied twice, extra blank pages inserted each
+// click). processRotate already avoids this by copying into a fresh doc;
+// refreshDoc gives the other in-place editors the same guarantee in one call.
+async function refreshDoc(f) {
+  if (f && f.arrayBuffer) {
+    try { f.pdfDoc = await PDFLib.PDFDocument.load(f.arrayBuffer, { ignoreEncryption: true }); }
+    catch (e) { /* keep the existing doc if the reload fails */ }
+  }
+}
+
 async function processEdit() {
   const f = state.files[0];
   if (!f.pdfDoc) return;
+  await refreshDoc(f);
   const text = optVal('editText','');
   if (!text || !text.trim()) { toast('Enter text to add','error'); return; }
   const pn = optInt('editPage',1);
@@ -8526,6 +8542,7 @@ async function processWatermark() {
   for (let n = 0; n < state.files.length; n++) {
     const f = state.files[n];
     if (!f.pdfDoc) continue;
+    await refreshDoc(f);
     const pages = f.pdfDoc.getPages();
     let wmImg = null;
     if (type === 'image' && state.watermarkImage) {
@@ -8574,6 +8591,7 @@ async function processPageNumber() {
   for (let n = 0; n < state.files.length; n++) {
     const f = state.files[n];
     if (!f.pdfDoc) continue;
+    await refreshDoc(f);
     const pages = f.pdfDoc.getPages();
     const total = pages.length;
     pages.forEach((page, idx) => {
@@ -8671,6 +8689,7 @@ async function processUnlock() {
 async function processSign() {
   const f = state.files[0];
   if (!f?.pdfDoc) { toast('Upload a PDF first', 'error'); return; }
+  await refreshDoc(f);
 
   const totalPages = f.pdfDoc.getPageCount();
   if (!totalPages) { toast('PDF has no pages', 'error'); return; }
@@ -9226,6 +9245,7 @@ async function processNUp() {
 // ---- Insert blank pages ----
 async function processInsertBlank() {
   const f = state.files[0]; if (!f.pdfDoc) return;
+  await refreshDoc(f);
   const after      = optInt('ibAfter', 1);
   const count      = Math.min(50, Math.max(1, optInt('ibCount', 1)));
   const sizeChoice = optVal('ibSize', 'match');
@@ -9284,6 +9304,7 @@ async function processHeader() {
   for (let n = 0; n < state.files.length; n++) {
     const f = state.files[n];
     if (!f.pdfDoc) continue;
+    await refreshDoc(f);
     const pages = f.pdfDoc.getPages();
     const total = pages.length;
     pages.forEach((page, idx) => {
@@ -9343,6 +9364,7 @@ async function processBates() {
   for (let n = 0; n < state.files.length; n++) {
     const f = state.files[n];
     if (!f.pdfDoc) continue;
+    await refreshDoc(f);
     const pages = f.pdfDoc.getPages();
     pages.forEach(page => {
       const { width, height } = page.getSize();
@@ -9363,6 +9385,24 @@ async function processBates() {
 // ---- Scan to PDF (camera) ----
 let scanStream = null;
 const scanPages = [];
+
+// Stop the live camera stream and clear any captured-but-unsaved scan state.
+// Called when the scan PDF is produced AND whenever the user navigates away
+// (route()), so the webcam / phone-camera indicator never stays lit after you
+// leave the Scan tool. Previously the stream was only stopped inside
+// processScan(), so navigating away mid-scan left the camera running.
+function stopScanner() {
+  if (scanStream) {
+    try { scanStream.getTracks().forEach(t => t.stop()); } catch (e) {}
+    scanStream = null;
+  }
+  const video = document.getElementById('scanVideo');
+  if (video) { try { video.srcObject = null; } catch (e) {} }
+  scanPages.length = 0;
+  state.scanCount = 0;
+  const thumbs = document.getElementById('scanThumbs'); if (thumbs) thumbs.innerHTML = '';
+  const cnt = document.getElementById('scanPageCount'); if (cnt) cnt.textContent = '0';
+}
 
 async function startScanner() {
   try {
@@ -9424,9 +9464,8 @@ async function processScan() {
   const blob = doc.output('blob');
   saveAs(blob, 'scanned.pdf');
   showResult('scanned.pdf', blob.size, 'PDF');
-  // Stop camera & reset
-  if (scanStream) scanStream.getTracks().forEach(t => t.stop());
-  scanPages.length = 0;
+  // Stop camera & reset all scan state (also clears thumbnails + counters).
+  stopScanner();
   toast('Scan saved', 'success');
 }
 
@@ -10554,6 +10593,7 @@ async function processEditPdf() {
   const f = state.files[0];
   if (!f?.pdfDoc) return;
   if (!_editEls.length) { toast('Add at least one text element first', 'error'); return; }
+  await refreshDoc(f);
   const pc = f.pdfDoc.getPageCount();
   for (const el of _editEls) {
     const idx = el.page - 1;
