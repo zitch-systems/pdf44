@@ -17,6 +17,12 @@ const ROOT = __dirname;
 const DIST = path.join(ROOT, 'dist');
 const SITE = 'https://pdf44.com';
 
+// Private admin portal path. Override per-deploy with the ADMIN_SLUG env var
+// (set it in the Cloudflare Pages build environment) so the real URL need not
+// live in the repo. The committed default is still unguessable, but treat the
+// env var as the source of truth for a public repo.
+const ADMIN_SLUG = (process.env.ADMIN_SLUG || 'mgmt-8658ee7147').replace(/^\/+|\/+$/g, '').trim();
+
 // ── 1. Read index.html as the page template ──────────────────────────────────
 const template = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
@@ -221,7 +227,7 @@ for (const slug of [...slugSet].sort()) {
 // Copy static assets
 const ASSETS = [
   'sw.js', 'manifest.json', 'icon.svg', 'og-image.png', 'og-image.svg',
-  'robots.txt', 'sitemap.xml', 'llms.txt', '_headers', '404.html',
+  'robots.txt', 'sitemap.xml', 'llms.txt', '404.html',
   'ad-test.html',
   // Accounts / subscriptions / admin
   'config.js',
@@ -237,15 +243,36 @@ if (fs.existsSync(assetsDir)) {
   fs.cpSync(assetsDir, path.join(DIST, 'assets'), { recursive: true });
 }
 
-// Admin portal at the clean URL /admin. Emit it as a real directory-index asset
-// (dist/admin/index.html) — exactly how the prerendered tool pages are served —
-// instead of a `/admin /admin.html 200` rewrite. That rewrite loops forever on
-// Cloudflare Pages: CF auto-redirects /admin.html → /admin (clean URLs), and the
-// rewrite points /admin straight back at /admin.html (ERR_TOO_MANY_REDIRECTS).
+// Admin portal at a PRIVATE, unguessable URL (ADMIN_SLUG) — never /admin, which
+// is public and guessable. Emitted as a real directory-index asset
+// (dist/<slug>/index.html), exactly how the prerendered tool pages are served,
+// so it serves at the clean URL with no rewrite. /admin and /admin.html have no
+// asset and no rule, so they fall through to the 404 catch-all — the admin area
+// is not advertised at the obvious path.
+if (!process.env.ADMIN_SLUG) {
+  console.warn('⚠ ADMIN_SLUG not set — admin portal uses the committed default slug, which is PUBLIC in this repo. Set ADMIN_SLUG in the Cloudflare Pages build environment for a genuinely private URL.');
+}
 const adminSrc = path.join(ROOT, 'admin.html');
 if (fs.existsSync(adminSrc)) {
-  fs.mkdirSync(path.join(DIST, 'admin'), { recursive: true });
-  fs.copyFileSync(adminSrc, path.join(DIST, 'admin', 'index.html'));
+  fs.mkdirSync(path.join(DIST, ADMIN_SLUG), { recursive: true });
+  fs.copyFileSync(adminSrc, path.join(DIST, ADMIN_SLUG, 'index.html'));
+  console.log(`✓ Admin portal emitted at /${ADMIN_SLUG}`);
+}
+
+// dist/_headers — copy the static rules, then append a hardened block for the
+// private admin URL (never cached, never indexed, no Referer leak of the path,
+// not framable). _headers is consumed by Cloudflare Pages at the edge and is
+// never served to clients, so the slug here is not publicly exposed.
+{
+  const headersSrc = path.join(ROOT, '_headers');
+  let headersTxt = fs.existsSync(headersSrc) ? fs.readFileSync(headersSrc, 'utf8') : '';
+  headersTxt += '\n# Private admin portal — slug resolved at build time (ADMIN_SLUG).\n' +
+    '/' + ADMIN_SLUG + '\n' +
+    '  Cache-Control: no-store\n' +
+    '  X-Robots-Tag: noindex, nofollow\n' +
+    '  Referrer-Policy: no-referrer\n' +
+    '  X-Frame-Options: DENY\n';
+  fs.writeFileSync(path.join(DIST, '_headers'), headersTxt);
 }
 
 // _redirects for dist:

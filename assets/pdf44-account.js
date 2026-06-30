@@ -249,7 +249,9 @@
         '<div class="pdf44-acct-field"><label>New password</label><input name="newpw" type="password" minlength="6" placeholder="At least 6 characters" autocomplete="new-password"></div>' +
         '<button type="submit" class="pdf44-acct-btn-ghost">Change password</button>' +
       '</form>' +
-      (profile.role === 'admin' ? '<a class="pdf44-acct-btn-ghost" href="/admin" style="margin-top:10px;text-decoration:none;">Open admin portal</a>' : '') +
+      // The admin portal is intentionally NOT linked here — it lives at a private,
+      // unguessable URL and must never be advertised in public client code, even
+      // to admins. Admins reach it via their bookmarked secret link.
       '<button class="pdf44-acct-btn-ghost" id="pdf44SignOut" style="margin-top:10px;">Sign out</button>'
     );
 
