@@ -264,7 +264,11 @@
 /account                /index.html                   200
 /pricing                /index.html                   200
 /billing/callback       /index.html                   200
-/admin                  /admin.html                   200
+# /admin is emitted by build.js as dist/admin/index.html and served at the clean
+# URL. Do NOT add `/admin  /admin.html  200`: Cloudflare Pages auto-redirects
+# /admin.html → /admin (clean URLs), so that rewrite ping-pongs forever
+# (ERR_TOO_MANY_REDIRECTS). Keep the old /admin.html link working via a 301.
+/admin.html             /admin                        301
 
 # ── SPA fallback (must be last) ──────────────────────────────
 /*                      /index.html                   200
