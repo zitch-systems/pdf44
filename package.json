@@ -2,8 +2,5 @@
   "scripts": {
     "build": "node build.js",
     "test:admin": "node test/admin.selftest.mjs"
-  },
-  "dependencies": {
-    "sharp": "^0.34.5"
   }
 }
