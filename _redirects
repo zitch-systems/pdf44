@@ -260,15 +260,13 @@
 /llms-full.txt          /llms.txt                     200
 
 # ── Accounts / subscriptions / admin ─────────────────────────
-# Served by the SPA (account.js reads the path); admin is its own page.
+# Served by the SPA (account.js reads the path). The admin portal is emitted by
+# build.js at a private ADMIN_SLUG directory-index and is intentionally NOT
+# routed here — /admin and /admin.html fall through to the 404 catch-all so the
+# admin area is not discoverable at the obvious path.
 /account                /index.html                   200
 /pricing                /index.html                   200
 /billing/callback       /index.html                   200
-# /admin is emitted by build.js as dist/admin/index.html and served at the clean
-# URL. Do NOT add `/admin  /admin.html  200`: Cloudflare Pages auto-redirects
-# /admin.html → /admin (clean URLs), so that rewrite ping-pongs forever
-# (ERR_TOO_MANY_REDIRECTS). Keep the old /admin.html link working via a 301.
-/admin.html             /admin                        301
 
 # ── SPA fallback (must be last) ──────────────────────────────
 /*                      /index.html                   200

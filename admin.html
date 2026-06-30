@@ -314,7 +314,9 @@
       gate(r.data.user);
     });
   };
-  $('googleBtn').onclick = function () { SB.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: location.origin + '/admin' } }); };
+  // Return to THIS page after Google OAuth (the private admin URL), not a fixed
+  // /admin path — so the portal keeps working wherever it is mounted.
+  $('googleBtn').onclick = function () { SB.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: location.origin + location.pathname } }); };
   $('deniedSignout').onclick = $('signout').onclick = function () { SB.auth.signOut().then(function(){ location.reload(); }); };
 
   /* ── tabs ─────────────────────────────────────────────────────────────── */
