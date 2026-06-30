@@ -312,7 +312,10 @@ const distRedirects = redirectsText
   .join('\n')
   .replace(
     /^\/\*\s+\/index\.html\s+200\s*$/m,
-    '/*                      /404.html                     404'
+    '# No SPA catch-all: every real route is a prerendered file or an explicit\n' +
+    '# rewrite above. Cloudflare Pages automatically serves /404.html (HTTP 404)\n' +
+    '# for anything unmatched. (A `/* … 404` rule is invalid on Pages — only\n' +
+    '# 200/301/302/303/307/308 are allowed — so we deliberately emit none.)'
   );
 fs.writeFileSync(path.join(DIST, '_redirects'), distRedirects);
 console.log(`✓ Removed ${shadowing} redundant rewrite(s) that could shadow prerendered pages`);
