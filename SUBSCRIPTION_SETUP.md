@@ -90,15 +90,26 @@ http://localhost:8788/account     # if testing locally
 
 ## 4. Create the Paystack plans
 
-Paystack dashboard → **Plans → Create Plan** (do this twice):
+**Option A — one command (recommended).** Reads your secret key from the
+environment (never committed/printed), creates both plans, reuses them if they
+already exist, and prints the plan codes + a ready-to-paste secrets block:
+
+```bash
+PAYSTACK_SECRET_KEY=sk_live_xxx node scripts/create-paystack-plans.mjs
+```
+
+> Use `sk_test_…` first to rehearse on test mode, then re-run with `sk_live_…`
+> for production. The script is idempotent, so re-running never duplicates a plan.
+
+**Option B — dashboard.** Paystack → **Plans → Create Plan** (do this twice):
 
 | Plan | Interval | Amount | Currency |
 |---|---|---|---|
 | PDF44 Monthly | Monthly | 1,500 | NGN* |
 | PDF44 Annual | Annually | 15,000 | NGN* |
 
-Copy each **plan code** (`PLN_xxxxxxxx`). Grab your **secret key** (`sk_...`) from
-Settings → API Keys & Webhooks.
+Either way, copy each **plan code** (`PLN_xxxxxxxx`). Grab your **secret key**
+(`sk_...`) from Settings → API Keys & Webhooks.
 
 > *Currency:* priced in **NGN** (≈ \$1/mo and \$10/yr). Paystack settles in
 > NGN/GHS/ZAR/KES and USD depending on your account. To switch currency, set
