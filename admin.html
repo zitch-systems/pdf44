@@ -87,7 +87,6 @@
 <div id="login" class="center hide"><div class="auth">
   <div class="brand" style="margin-bottom:14px"><span class="logo">P</span> Admin sign in</div>
   <div id="loginMsg" class="msg"></div>
-  <button id="googleBtn" class="btn" style="width:100%;margin-bottom:12px">Continue with Google</button>
   <div class="field"><label>Email</label><input id="email" type="email" placeholder="you@example.com" autocomplete="username"></div>
   <div class="field"><label>Password</label><input id="password" type="password" placeholder="••••••••" autocomplete="current-password"></div>
   <button id="loginBtn" class="btn primary" style="width:100%">Sign in</button>
@@ -314,9 +313,8 @@
       gate(r.data.user);
     });
   };
-  // Return to THIS page after Google OAuth (the private admin URL), not a fixed
-  // /admin path — so the portal keeps working wherever it is mounted.
-  $('googleBtn').onclick = function () { SB.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: location.origin + location.pathname } }); };
+  // Admin sign-in is email + password only (Google removed). RLS still gates all
+  // data, so a non-admin who signs in just gets the "access denied" screen.
   $('deniedSignout').onclick = $('signout').onclick = function () { SB.auth.signOut().then(function(){ location.reload(); }); };
 
   /* ── tabs ─────────────────────────────────────────────────────────────── */

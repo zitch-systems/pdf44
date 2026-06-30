@@ -262,11 +262,14 @@
 # ── Accounts / subscriptions / admin ─────────────────────────
 # Served by the SPA (account.js reads the path). The admin portal is emitted by
 # build.js at a private ADMIN_SLUG directory-index and is intentionally NOT
-# routed here — /admin and /admin.html fall through to the 404 catch-all so the
-# admin area is not discoverable at the obvious path.
+# served at /admin. Explicitly redirect the obvious admin paths to the homepage
+# so the admin area is never discoverable there (302 = valid on Cloudflare Pages;
+# a redirect also re-evaluates instead of serving a stale cached page).
 /account                /index.html                   200
 /pricing                /index.html                   200
 /billing/callback       /index.html                   200
+/admin                  /                             302
+/admin.html             /                             302
 
 # ── SPA fallback (must be last) ──────────────────────────────
 /*                      /index.html                   200
