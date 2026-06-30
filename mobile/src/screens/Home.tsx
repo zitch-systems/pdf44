@@ -34,7 +34,7 @@ function GreetingHeader() {
 
 export default function Home() {
   const t = useTheme() as AppTheme;
-  const {go, navTab} = useApp();
+  const {go, navTab, state} = useApp();
   return (
     <View style={{flex: 1}}>
       <View style={{paddingTop: 6}}>
@@ -49,8 +49,8 @@ export default function Home() {
         <ToolGroup items={QUICK} />
         <SectionHeader title="Recent" actionLabel="All files" onAction={() => navTab('files')} />
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{gap: 14, paddingHorizontal: 22, paddingBottom: 6}}>
-          {RECENTS.map((f, i) => (
-            <FileCard key={i} {...f} onPress={() => go('viewer', f)} />
+          {state.files.slice(0, 10).map(f => (
+            <FileCard key={f.id} {...f} onPress={() => go('viewer', f)} />
           ))}
         </ScrollView>
         <SectionHeader title="Popular tools" actionLabel="See all" onAction={() => navTab('tools')} />
@@ -63,13 +63,6 @@ export default function Home() {
     </View>
   );
 }
-
-export const RECENTS = [
-  {name: 'Lease Agreement.pdf', meta: '12 pages · 2h ago', accent: '#e5322d', seed: 0},
-  {name: 'Invoice 0481.pdf', meta: '2 pages · Yesterday', accent: '#3b82f6', seed: 1},
-  {name: 'Resume — A. Cole.pdf', meta: '1 page · Mon', accent: '#22c55e', seed: 2},
-  {name: 'Q2 Report.pdf', meta: '34 pages · Apr 28', accent: '#f97316', seed: 0},
-];
 
 const styles = StyleSheet.create({
   greet: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 22, paddingTop: 4},
